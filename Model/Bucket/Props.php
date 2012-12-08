@@ -1,7 +1,7 @@
 <?php
 namespace Kbrw\RiakBundle\Model\Bucket;
 
-use JMS\SerializerBundle\Annotation as Ser;
+use JMS\Serializer\Annotation as Ser;
 
 /** 
  * @Ser\AccessType("public_method") 
