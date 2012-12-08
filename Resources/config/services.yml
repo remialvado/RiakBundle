@@ -1,0 +1,11 @@
+parameters:
+  kbrw.content.type.normalizer.class: "Kbrw\RiakBundle\Service\Content\ContentTypeNormalizer"
+  kbrw.content.type.normalizer.types:
+    "application/xml": [xml, xsd, xslt]
+    "application/json": [json]
+    "text/plain": [txt]
+  
+services:
+  kbrw.content.type.normalizer:
+    class: "%kbrw.content.type.normalizer.class%"
+    arguments: [%kbrw.content.type.normalizer.types%]
