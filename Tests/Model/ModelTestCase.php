@@ -4,7 +4,8 @@ namespace Kbrw\RiakBundle\Tests\Model;
 use Kbrw\RiakBundle\Model\KV\Transmutable;
 use Kbrw\RiakBundle\Tests\BaseTestCase;
 
-abstract class ModelTestCase extends BaseTestCase {
+abstract class ModelTestCase extends BaseTestCase
+{
     
     protected $serializarionMethod          = "xml";
     protected $systemUnderTestFullClassName = null;

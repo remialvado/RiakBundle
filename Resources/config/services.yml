@@ -5,7 +5,36 @@ parameters:
     "application/json": [json]
     "text/plain": [txt]
   
+  kbrw.guzzle.client.provider.class: "Kbrw\RiakBundle\Service\WebserviceClient\Guzzle\SimpleGuzzleClientProvider"
+  
+  kbrw.riak.bucket.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakBucketServiceClient"
+  kbrw.riak.bucket.route: "{protocol}://{domain}:{port}/riak/{bucket}"
+  
+  kbrw.riak.kv.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakKVServiceClient"
+  kbrw.riak.kv.route: "%kbrw.riak.bucket.route%/{id}"
+  
+  
 services:
   kbrw.content.type.normalizer:
     class: "%kbrw.content.type.normalizer.class%"
     arguments: [%kbrw.content.type.normalizer.types%]
+    
+  kbrw.guzzle.client.provider:
+    class: "%kbrw.guzzle.client.provider.class%"
+      
+  kbrw.riak.bucket:
+    class: "%kbrw.riak.bucket.class%"
+    calls:
+      - [setRoute,                 [ "%kbrw.riak.bucket.route%" ] ]
+      - [setLogger,                [ "@logger" ] ]
+      - [setGuzzleClientProvider,  [ "@kbrw.guzzle.client.provider" ] ]
+      - [setSerializer,            [ "@jms_serializer" ] ]
+      
+  kbrw.riak.kv:
+    class: "%kbrw.riak.kv.class%"
+    calls:
+      - [setRoute,                 [ "%kbrw.riak.kv.route%" ] ]
+      - [setLogger,                [ "@logger" ] ]
+      - [setGuzzleClientProvider,  [ "@kbrw.guzzle.client.provider" ] ]
+      - [setContentTypeNormalizer, [ "@kbrw.content.type.normalizer" ] ]
+      - [setSerializer,            [ "@jms_serializer" ] ]

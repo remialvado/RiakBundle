@@ -7,23 +7,30 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class RiakAdminCountCommand extends ContainerAwareCommand
+class RiakDebugCommand extends ContainerAwareCommand
 {
     
-    protected $slugifier;
+    /**
+     * @var \Kbrw\RiakBundle\Model\Cluster\Cluster
+     */
+    protected $cluster;
     
     protected function configure()
     {
         $this
-            ->setName('riakAdmin:countKeys')
-            ->setDescription('Count keys in a given bucket')
+            ->setName('riak:debug')
+            ->setDescription('Debug stuffs')
             //->addArgument('bucket', InputArgument::REQUIRED, 'Bucket name to be deleted')
             //->addOption("list", "l", InputOption::VALUE_NONE, "List keys as well")
         ;
     }
+    
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $service = $this->getContainer()->get("kbrw.content.type.normalizer");
-        echo $service->getContentType("json") . "\n";
+        $this->cluster = $this->getContainer()->get("riak.cluster.backend");
+        $bucket = $this->cluster->getBucket("users");
+        $bucket->delete($bucket->keys());
+        $bucket->put(array("remi" => new \Acme\DemoBundle\Model\User("remi", "remi.alvado" . rand(1, 10000) . "@gmail.com")));
+        print_r($bucket->uniq("remi")->getStructuredContent());
     }
 }

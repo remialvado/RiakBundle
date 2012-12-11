@@ -8,17 +8,9 @@ abstract class BaseServiceClient
     /**
      * @return \Guzzle\Service\Client 
      */
-    public function getClient($config = null)
+    public function getClient($guzzleClientProvider, $config)
     {
-        return $this->guzzleClientProvider->getClient($this->route, isset($config) ? $config : $this->getConfig());
-    }
-    
-    public function getConfig()
-    {
-        return array(
-                "domain" => $this->getDomain(),
-                "port"   => $this->getPort()
-               );
+        return $guzzleClientProvider->getClient($this->route, $config);
     }
     
     /**
@@ -52,26 +44,6 @@ abstract class BaseServiceClient
         $this->route = $route;
     }
 
-    public function getDomain()
-    {
-        return $this->domain;
-    }
-
-    public function setDomain($domain)
-    {
-        $this->domain = $domain;
-    }
-
-    public function getPort()
-    {
-        return $this->port;
-    }
-
-    public function setPort($port)
-    {
-        $this->port = $port;
-    }
-
     public function getLogger()
     {
         return $this->logger;
@@ -80,16 +52,6 @@ abstract class BaseServiceClient
     public function setLogger($logger)
     {
         $this->logger = $logger;
-    }
-
-    public function getSerializer()
-    {
-        return $this->serializer;
-    }
-
-    public function setSerializer($serializer)
-    {
-        $this->serializer = $serializer;
     }
 
     public function getGuzzleClientProvider()
@@ -112,24 +74,9 @@ abstract class BaseServiceClient
     public $route;
     
     /**
-     * @var string
-     */
-    public $domain;
-    
-    /**
-     * @var string
-     */
-    public $port;
-    
-    /**
      * @var \Symfony\Component\HttpKernel\Log\LoggerInterface
      */
     public $logger;
-    
-    /**
-     * @var \Symfony\Component\Serializer\SerializerInterface
-     */
-    public $serializer;
     
     /**
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\GuzzleClientProviderInterface

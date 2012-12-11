@@ -10,40 +10,29 @@ use Kbrw\RiakBundle\Model\KV\Datas;
 
 class RiakKVServiceClient extends BaseServiceClient
 {
-
-    const MAX_PARALLEL_REQUESTS = 50;
     
     /**
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket || string $bucket
+     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
      * @param array<string, mixed> $objects
-     * @param string $format
-     * @param boolean $shouldSerialized
      * @return boolean
      */
-    public function put($bucket, $objects, $format = "json", $shouldSerialized = true) {
+    public function put($cluster, $bucket, $objects)
+    {
         if (!is_array($objects)) $objects = array($objects);
 
         // Split work in smaller pieces to avoid exception caused by too many opened connections
-        if (count($objects) > self::MAX_PARALLEL_REQUESTS) {
-            $chunks = array_chunk($objects, self::MAX_PARALLEL_REQUESTS, true);
+        if (count($objects) > $cluster->getMaxParallelCalls()) {
+            $chunks = array_chunk($objects, $cluster->getMaxParallelCalls(), true);
             $result = true;
             foreach($chunks as $chunk) {
-                $tmpResult = $this->put($bucket, $chunk, $format, $shouldSerialized);
+                $tmpResult = $this->put($cluster, $bucket, $chunk);
                 $result = $result && $tmpResult;
             }
             return $result;
         }
-        
-        $r = null;
-        $w = null;
-        $dw = null;
-        if ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) {
-            $r  = $bucket->getProps()->getR();
-            $w  = $bucket->getProps()->getW();
-            $dw = $bucket->getProps()->getDw();
-        }
                
-        $client = $this->getClient($this->getConfig($bucket, $r, $w, $dw));
+        $client = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket, $bucket->getProps()->getR(), $bucket->getProps()->getW(), $bucket->getProps()->getDw()));
         $curlMulti = $client->getCurlMulti();
         $requests = array();
 
@@ -59,18 +48,14 @@ class RiakKVServiceClient extends BaseServiceClient
             
             // Prepare Body
             $content = $object;
-            if ($shouldSerialized) {
-                if (method_exists($object, "preSerialize"))
-                {
-                    $object->preSerialize();
-                }
-                $content = $this->getSerializer()->serialize($object, $format);
+            if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($bucket->getFormat())) {
+                $content = $this->getSerializer()->serialize($object, $bucket->getFormat());
             }
             
             // Prepare Headers
             if (!is_array($headers)) $headers = array();
-            $headers['X-Riak-ClientId'] = $this->clientId;
-            $headers['Content-Type'] = $this->contentTypeNormalizer->getContentType($format);
+            $headers['X-Riak-ClientId'] = $cluster->getClientId();
+            $headers['Content-Type'] = $this->contentTypeNormalizer->getContentType($bucket->getFormat());
             
             // Prepare Request
             $request = $client->put($key, $headers, $content);
@@ -96,36 +81,31 @@ class RiakKVServiceClient extends BaseServiceClient
     }
 
     /**
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket || string $bucket
+     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
      * @param array<string> $keys
      * @return boolean
      */
-    public function delete($bucket, $keys)
+    public function delete($cluster, $bucket, $keys)
     {
         if (!is_array($keys)) $keys = array($keys);
         
         // Split work in smaller pieces to avoid exception caused by too many opened connections
-        if (count($keys) > self::MAX_PARALLEL_REQUESTS) {
-            $chunks = array_chunk($keys, self::MAX_PARALLEL_REQUESTS);
+        if (count($keys) > $cluster->getMaxParallelCalls()) {
+            $chunks = array_chunk($keys, $cluster->getMaxParallelCalls());
             $result = true;
             foreach($chunks as $chunk) {
-                $tmpResult = $this->delete($bucket, $chunk);
+                $tmpResult = $this->delete($cluster, $bucket, $chunk);
                 $result = $result && $tmpResult;
             }
             return $result;
         }
         
-        $w = null;
-        $dw = null;
-        if ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) {
-            $w  = $bucket->getProps()->getW();
-            $dw = $bucket->getProps()->getDw();
-        }
         
-        $client = $this->getClient($this->getConfig($bucket, null, $w, $dw));
+        $client = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket, null, $bucket->getProps()->getW(), $bucket->getProps()->getDw()));
         $curlMulti = $client->getCurlMulti();
         $requests = array();
-        $headers = array('X-Riak-ClientId' => $this->clientId);
+        $headers = array('X-Riak-ClientId' => $cluster->getClientId());
 
         foreach ($keys as $key) {
             $key = trim($key);
@@ -151,45 +131,29 @@ class RiakKVServiceClient extends BaseServiceClient
     }
 
     /**
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket || string $bucket $bucket
+     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
      * @param array<string> $keys
-     * @param string $objectFQCN
-     * @return \Kbrw\RiakBundle\Model\KV\Data
-     */
-    public function uniq($bucket, $keys, $objectFQCN = null) {
-        $datas = $this->get($bucket, $keys, $objectFQCN)->getDatas();
-        return (is_array($datas) && count($datas) > 0) ? $datas[0] : null;
-    }
-
-    /**
-     * 
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket || string $bucket
-     * @param array<string> $keys
-     * @param string $objectFQCN
      * @return \Kbrw\RiakBundle\Model\KV\Datas
      */
-    public function get($bucket, $keys, $objectFQCN = null) {
+    public function fetch($cluster, $bucket, $keys)
+    {
         if (!is_array($keys)) $keys = array($keys);
         $datas = new Datas();
         
         // Split work in smaller pieces to avoid exception caused by too many opened connections
-        if (count($keys) > self::MAX_PARALLEL_REQUESTS) {
-            $chunks = array_chunk($keys, self::MAX_PARALLEL_REQUESTS);
+        if (count($keys) > $cluster->getMaxParallelCalls()) {
+            $chunks = array_chunk($keys, $cluster->getMaxParallelCalls());
             foreach($chunks as $chunk) {
-                $datas->addAll($this->get($bucket, $chunk, $objectFQCN));
+                $datas->addAll($this->fetch($cluster, $bucket, $chunk));
             }
             return $datas;
         }
         
-        $r = null;
-        if ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) {
-            $r  = $bucket->getProps()->getR();
-        }
-        
-        $client = $this->getClient($this->getConfig($bucket, $r));
+        $client = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket, $bucket->getProps()->getR()));
         $curlMulti = $client->getCurlMulti();
         $requests = array();
-        $headers = array('X-Riak-ClientId' => $this->clientId);
+        $headers = array('X-Riak-ClientId' => $cluster->getClientId());
         foreach ($keys as $key) {
             $key = trim($key);
             $request = $client->get($key, $headers);
@@ -210,12 +174,9 @@ class RiakKVServiceClient extends BaseServiceClient
                 if ($request->getState() === RequestInterface::STATE_COMPLETE && $request->getResponse()->getStatusCode() == "200") {
                     $response = $request->getResponse();
                     $data->setRawContent($response->getBody(true));
-                    if (isset($objectFQCN)) {
-                        $riakKVObject = $this->serializer->deserialize($data->getRawContent(), $objectFQCN, $this->contentTypeNormalizer->getNormalizedContentType($response->getContentType()));
+                    if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($bucket->getFormat())) {
+                        $riakKVObject = $this->serializer->deserialize($data->getRawContent(), $bucket->getFullyQualifiedClassName(), $this->contentTypeNormalizer->getNormalizedContentType($response->getContentType()));
                         if ($riakKVObject !== false) {
-                            if (method_exists($riakKVObject, "postDeserialize")) {
-                                $riakKVObject->postDeserialize($data);
-                            }
                             if ($riakKVObject instanceof Transmutable) {
                                 $riakKVObject = $riakKVObject->transmute();
                             }
@@ -224,76 +185,73 @@ class RiakKVServiceClient extends BaseServiceClient
                     }
                 }
             } catch (\Exception $e) {
-                $this->logger->error("Unable to create the Data object for key '$key'. Full message is : \n" . $e->getMessage . "");
+                $this->logger->err("Unable to create the Data object for key '$key'. Full message is : \n" . $e->getMessage() . "");
             }
             $datas->add($data);
         }
         return $datas;
     }
+
+    /**
+     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @param array<string> $key
+     * @return \Kbrw\RiakBundle\Model\KV\Data
+     */
+    public function uniq($cluster, $bucket, $key)
+    {
+        $datas = $this->fetch($cluster, $bucket, array($key))->getDatas();
+        return (is_array($datas) && count($datas) > 0) ? $datas[0] : null;
+    }
     
     /**
-     * 
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket || string $bucket
+     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
      * @param string $key
      * @return string
      */
-    public function getUri($bucket, $key) {
-        $client = $this->getClient($this->getConfig($bucket));
+    public function getUri($cluster, $bucket, $key)
+    {
+        $client = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket));
         return $client->get($key)->getUrl();
     }
     
-    public function getKeys($dataStore) {
-        $keys = array();
-        $client = $this->getClient($this->getConfig($dataStore));
-        $request = $client->get("?keys=stream&props=false");
-        $request->getCurlOptions()->set(CURLOPT_WRITEFUNCTION, function($ch, $data) use (&$keys) {
-            $content = json_decode($data, true);
-            if (is_array($content) && array_key_exists("keys", $content)) {
-                foreach($content["keys"] as $key) {
-                    $keys[] = $key;
-                }
-            }
-            return strlen($data);
-        });
-        if ($this->debug) error_log("[GET] url : " . $request->getUrl());
-        try {
-            $request->send();            
-        }
-        catch(\Exception $e) {
-            if ($this->debug) error_log("Error while getting keys" . $e->getMessage());
-        }
-        return $keys;
-    }
-    
-    public function countKeys($dataStore) {
-        $keys = 0;
-        $client = $this->getClient($this->getConfig($dataStore));
-        $request = $client->get("?keys=stream&props=false");
-        $request->getCurlOptions()->set(CURLOPT_WRITEFUNCTION, function($ch, $data) use (&$keys) {
-            $content = json_decode($data, true);
-            if (is_array($content) && array_key_exists("keys", $content)) {
-                $keys += count($content["keys"]);
-            }
-            return strlen($data);
-        });
-        if ($this->debug) error_log("[GET] url : " . $request->getUrl());
-        try {
-            $request->send();            
-        }
-        catch(\Exception $e) {
-            if ($this->debug) error_log("Error while getting keys" . $e->getMessage());
-        }
-        return $keys;
-    }
-    
-    public function getConfig($bucket = null, $r = null, $w = null, $dw = null)
+    /**
+     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @return array<string,string>
+     */
+    public function getConfig($cluster, $bucket, $r = null, $w = null, $dw = null)
     {
-        $config = parent::getConfig();
-        $config["bucket"] = $bucket;
-        $config["r"]  = $r;
-        $config["w"]  = $w;
-        $config["dw"] = $dw;
+        $config = array();
+        $config["protocol"] = $cluster->getProtocol();
+        $config["domain"]   = $cluster->getDomain();
+        $config["port"]     = $cluster->getPort();
+        $config["bucket"]   = $bucket->getName();
+        $config["r"]        = $r;
+        $config["w"]        = $w;
+        $config["dw"]       = $dw;
         return $config;
+    }
+    
+    public function getContentTypeNormalizer()
+    {
+        return $this->contentTypeNormalizer;
+    }
+
+    public function setContentTypeNormalizer($contentTypeNormalizer)
+    {
+        $this->contentTypeNormalizer = $contentTypeNormalizer;
+    }
+    
+    public function getSerializer()
+    {
+        return $this->serializer;
+    }
+
+    public function setSerializer($serializer)
+    {
+        $this->serializer = $serializer;
     }
     
     /**
@@ -302,7 +260,7 @@ class RiakKVServiceClient extends BaseServiceClient
     public $contentTypeNormalizer;
     
     /**
-     * @var string
+     * @var \JMS\Serializer\Serializer
      */
-    public $clientId;
+    public $serializer;
 }

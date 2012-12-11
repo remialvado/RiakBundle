@@ -45,4 +45,9 @@ class ContentTypeNormalizer
     {
         $this->contentTypes = $contentTypes;
     }
+    
+    public function isFormatSupportedForSerialization($format)
+    {
+        return in_array($format, array("json", "xml", "yaml"));
+    }
 }

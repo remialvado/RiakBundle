@@ -15,8 +15,6 @@
         "symfony/framework-bundle": "2.1.*",
         "guzzle/guzzle": "3.0.*",
         "jms/serializer-bundle": "1.0.*",
-        "jms/security-extra-bundle": "1.*",
-        "jms/di-extra-bundle": "1.*"
     },
     "autoload": {
         "psr-0": { "Kbrw\\RiakBundle": "" }

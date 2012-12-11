@@ -32,7 +32,7 @@ class Data
         $this->setKey($key);
         $this->setHeaders($headers);
         $this->setRawContent($rawContent);
-        $this->ssetStructuredContent($structuredContent);
+        $this->setStructuredContent($structuredContent);
     }
     
     /**

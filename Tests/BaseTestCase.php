@@ -11,7 +11,11 @@ abstract class BaseTestCase extends WebTestCase {
         self::$kernel->boot();
     }
     
+    protected function getContainer() {
+        return static::$kernel->getContainer();
+    }
+    
     protected function getService($serviceId) {
-        return static::$kernel->getContainer()->get($serviceId);
+        return $this->getContainer()->get($serviceId);
     }
 }

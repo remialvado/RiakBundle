@@ -5,6 +5,8 @@ namespace Kbrw\RiakBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
+use Kbrw\RiakBundle\Model\Cluster\Cluster;
+
 /**
  * This is the class that validates and merges configuration from your app/config files
  *
@@ -12,6 +14,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -20,10 +24,33 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('riak');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
-
+        $rootNode
+            ->children()
+                ->arrayNode("clusters")
+                    ->useAttributeAsKey('name')
+                    ->prototype("array")
+                        ->children()
+                            ->scalarNode("protocol")->defaultValue(Cluster::DEFAULT_PROTOCOL)->end()
+                            ->scalarNode("domain")->defaultValue(Cluster::DEFAULT_DOMAIN)->end()
+                            ->scalarNode("port")->defaultValue(Cluster::DEFAULT_PORT)->end()
+                            ->scalarNode("client_id")->isRequired()->end()
+                            ->scalarNode("max_parallel_calls")->defaultValue(Cluster::DEFAULT_MAX_PARALLEL_CALLS)->end()
+                            ->scalarNode("guzzle_client_provider_service")->defaultValue(Cluster::DEFAULT_GUZZLE_CLIENT_PROVIDER_SERVICE)->end()
+                            ->arrayNode("buckets")
+                                ->useAttributeAsKey('name')
+                                ->prototype("array")
+                                    ->children()
+                                        ->scalarNode("fqcn")->defaultNull()->end()
+                                        ->scalarNode("format")->defaultNull()->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->scalarNode("default_cluster")->defaultNull()->end()
+            ->end()
+        ;
         return $treeBuilder;
     }
 }
