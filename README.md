@@ -157,3 +157,23 @@ bucket->setFormat("json");
 ```
 
 ## Insert data into a bucket
+
+Once your bucket is configured, you just have to create an instance of the object you want to store and ask RiakBundle to store it for you. Example :
+```php
+$backendCluster = $container->get("riak.cluster.backend");
+$user = new MyCompany\MyBundle\Model\User("remi", "remi.alvado@yahoo.fr");
+$backendCluster->selectBucket("user)->put(array("remi" => $user));
+```
+
+You can even write multiple users at the same time using parallel calls to Riak : 
+```php
+$backendCluster = $container->get("riak.cluster.backend");
+$grenoble = new MyCompany\MyBundle\Model\City("38000", "Grenoble");
+$paris = new MyCompany\MyBundle\Model\City("75000", "Paris");
+$backendCluster->selectBucket("city)->put(
+  array(
+    "38000" => $grenoble,
+    "38000" => $paris
+  )
+);
+```
