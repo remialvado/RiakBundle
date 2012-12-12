@@ -194,8 +194,8 @@ Once you have some data into your bucket, you can start fetching them. As a matt
 The Bucket class provides two ways to fetch data depending on your needs : 
 - get one single data with the ```uniq($key)``` function
 - get a list of data with the ```fetch($keys)``` function
-Internally, this two methods are doing the same thing but "uniq" will provide you a [\Kbrw\RiakBundle\Model\KV\Data](blob/master/Model/KV/Data.php) instance while "fetch" will provide you a [\Kbrw\RiakBundle\Model\KV\Datas](blob/master/Model/KV/Datas.php) one.
-[\Kbrw\RiakBundle\Model\KV\Data](blob/master/Model/KV/Data.php) class lets you access the actual object (User, City, ...) but also the Response headers like VClock, Last-Modified, ...
+Internally, this two methods are doing the same thing but "uniq" will provide you a [\Kbrw\RiakBundle\Model\KV\Data](RiakBundle/blob/master/Model/KV/Data.php) instance while "fetch" will provide you a [\Kbrw\RiakBundle\Model\KV\Datas](RiakBundle/blob/master/Model/KV/Datas.php) one.
+[\Kbrw\RiakBundle\Model\KV\Data](RiakBundle/blob/master/Model/KV/Data.php) class lets you access the actual object (User, City, ...) but also the Response headers like VClock, Last-Modified, ...
 
 Example : 
 ```php
