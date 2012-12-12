@@ -194,6 +194,7 @@ class Cluster
         $bucket->setRiakKVServiceClient($this->riakKVServiceClient);
         $bucket->setCluster($this);
         $this->buckets[$bucket->getName()] = $bucket;
+        return $bucket;
     }
     
     /**
