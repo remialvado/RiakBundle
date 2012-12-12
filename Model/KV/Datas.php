@@ -50,4 +50,12 @@ class Datas
     {
         $this->datas = array_merge($this->datas, $datas->getDatas());
     }
+    
+    /**
+     * @return \Kbrw\RiakBundle\Model\KV\Data
+     */
+    public function first()
+    {
+        return (is_array($this->datas) && count($this->datas) > 0) ? $this->datas[0] : null;
+    }
 }

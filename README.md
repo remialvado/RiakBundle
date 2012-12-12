@@ -161,19 +161,45 @@ bucket->setFormat("json");
 Once your bucket is configured, you just have to create an instance of the object you want to store and ask RiakBundle to store it for you. Example :
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
-$user = new MyCompany\MyBundle\Model\User("remi", "remi.alvado@yahoo.fr");
-$backendCluster->selectBucket("user)->put(array("remi" => $user));
+$user = new \MyCompany\MyBundle\Model\User("remi", "remi.alvado@yahoo.fr");
+$backendCluster->selectBucket("user")->put(array("remi" => $user));
 ```
 
 You can even write multiple users at the same time using parallel calls to Riak : 
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
-$grenoble = new MyCompany\MyBundle\Model\City("38000", "Grenoble");
-$paris = new MyCompany\MyBundle\Model\City("75000", "Paris");
-$backendCluster->selectBucket("city)->put(
+$grenoble = new \MyCompany\MyBundle\Model\City("38000", "Grenoble");
+$paris = new \MyCompany\MyBundle\Model\City("75000", "Paris");
+$backendCluster->selectBucket("city")->put(
   array(
     "38000" => $grenoble,
-    "38000" => $paris
+    "75000" => $paris
   )
 );
+```
+
+## Fetch data from a bucket
+
+Once you have some data into your bucket, you can start fetching them. As a matter of fact, you can even have no data and start fetching :)
+The Bucket class provides two ways to fetch data depending on your needs : 
+- get one single data with the ```uniq($key)``` function
+- get a list of data with the ```fetch($keys)``` function
+Internally, this two methods are doing the same thing but "uniq" will provide you a [\Kbrw\RiakBundle\Model\KV\Data](blob/master/Model/KV/Data.php) instance while "fetch" will provide you a [\Kbrw\RiakBundle\Model\KV\Datas](blob/master/Model/KV/Datas.php) one.
+[\Kbrw\RiakBundle\Model\KV\Data](blob/master/Model/KV/Data.php) class lets you access the actual object (User, City, ...) but also the Response headers like VClock, Last-Modified, ...
+
+Example : 
+```php
+// Using fetch to get multiple objects
+$backendCluster = $container->get("riak.cluster.backend");
+$datas = $backendCluster->selectBucket("city")->fetch(array("paris", "grenoble"));
+$cities = $datas->getStructuredObjects(); // $cities will be an array of \MyCompany\MyBundle\Model\City instances
+
+// Using fetch to get one object
+$backendCluster = $container->get("riak.cluster.backend");
+$datas = $backendCluster->selectBucket("city")->fetch(array("paris"));
+$city = $datas->first()->getStructuredContent(); // $city will be a \MyCompany\MyBundle\Model\City instance
+
+// Using uniq to get one object
+$backendCluster = $container->get("riak.cluster.backend");
+$city = $backendCluster->selectBucket("city")->uniq("paris"); // $city will be a \MyCompany\MyBundle\Model\City instance
 ```
