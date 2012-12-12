@@ -53,6 +53,7 @@ Configuration
 For the next sections, let's assume your infrastructure is made of 2 Riak clusters : one used to store your backend objects and one to store all logs.
 The backend cluster contains two pre-defined buckets. One to store some users in JSON and one to store some cities in XML.
 On the log cluster, you create a new bucket every day(I know it's strange but why not...) so you can't pre-configured buckets in this cluster.
+Moreover, you have conducted robustness campaigns and you know that backend cluster is able to support up to 500 parallels connection where your Frontend is never hitted by more than 5 connections in parallels. So you know that you can send 100 backend requests in parallels per frontend requests but no more. If you try to store or fetch or delete more than 100 objects at once, only the first 100 will be processed. Others will have to wait for a slot to opened. RiakBundle will handle this slot mecanism for you.
 
 All configuration can be made on config.yml file under a new ```riak``` namespace. With that in mind, you should define the following configuration : 
 
@@ -64,6 +65,7 @@ riak:
       domain: "127.0.0.1"
       port: "8098"
       client_id: "frontend"
+      max_parallel_calls: 100
       buckets:
         users:
           fqcn: 'MyCompany\MyBundle\Model\User'
@@ -77,10 +79,10 @@ riak:
       client_id: "frontend"
 ```
 
-Usage
------
+Basic Usage
+-----------
 
-## Accessing a cluster
+### Accessing a cluster
 
 Each cluster becomes a service called "riak.cluster.<clusterName>". In our example, you can access your two clusters using : 
 ```php
@@ -88,7 +90,7 @@ $backendCluster = $container->get("riak.cluster.backend");
 $logCluster = $container->get("riak.cluster.log");
 ```
 
-## Defining bucket content
+### Defining bucket content
 
 Riak stores text-based objects so you need to provide a text-based version of your objects. The best practice we recommand is to create an annotated object which represent your model. 
 For example, an User class could be implemented this way : 
@@ -156,7 +158,7 @@ bucket->setFullyQualifiedClassName("MyCompany\MyBundle\Model\LogEntry");
 bucket->setFormat("json");
 ```
 
-## Insert data into a bucket
+### Insert or update data into a bucket
 
 Once your bucket is configured, you just have to create an instance of the object you want to store and ask RiakBundle to store it for you. Example :
 ```php
@@ -178,7 +180,15 @@ $backendCluster->selectBucket("city")->put(
 );
 ```
 
-## Fetch data from a bucket
+The same mecanism can be used to update a data : 
+```php
+$backendCluster = $container->get("riak.cluster.backend");
+$paris = $backendCluster->selectBucket("city")->uniq("paris");
+$paris->setName("paris intra muros");
+$backendCluster->selectBucket("city")->put(array("75000" => $paris));
+```
+
+### Fetch data from a bucket
 
 Once you have some data into your bucket, you can start fetching them. As a matter of fact, you can even have no data and start fetching :)
 The Bucket class provides two ways to fetch data depending on your needs : 
@@ -203,3 +213,41 @@ $city = $datas->first()->getStructuredContent(); // $city will be a \MyCompany\M
 $backendCluster = $container->get("riak.cluster.backend");
 $city = $backendCluster->selectBucket("city")->uniq("paris"); // $city will be a \MyCompany\MyBundle\Model\City instance
 ```
+
+### Delete data from a bucket
+
+You just have to supply a list of keys that have to been deleted.
+Example : 
+```php
+// delete a list of key/value pairs
+$backendCluster = $container->get("riak.cluster.backend");
+$backendCluster->selectBucket("city")->delete(array("paris", "grenoble"));
+
+// delete one single key/value pair
+$backendCluster = $container->get("riak.cluster.backend");
+$backendCluster->selectBucket("city")->delete("paris");
+```
+
+### List keys inside a bucket
+
+Riak does not provide an easy way like SQL databases to list all keys inside a bucket. To do so, it has to run over all keys in the cluster. So, this operation can be really long on a big cluster even if you query against a very small bucket.
+Moreover, even if RiakBundle uses the "keys=stream" parameter to stream keys from Riak instead of asking Riak to return them all in one response, please keep in mind that PHP might not work well with a multi-million values array.
+To display all keys inside a bucket : 
+```php
+// delete a list of key/value pairs
+$backendCluster = $container->get("riak.cluster.backend");
+foreach($backendCluster->selectBucket("city")->keys() as $key) {
+  echo "$key\n";
+}
+```
+
+### Count keys inside a bucket
+
+Sometimes, there are too many keys inside a bucket to get them but you might want to count them.
+To count all keys inside a bucket : 
+```php
+// delete a list of key/value pairs
+$backendCluster = $container->get("riak.cluster.backend");
+echo "'city' bucket contains" . $backendCluster->selectBucket("city")->count() . " key(s)."
+```
+
