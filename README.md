@@ -1,14 +1,24 @@
-* auto-gen TOC:
-{:toc}
-
-RiakBundle
-==========
-
-RiakBundle is designed to ease interaction with [Riak](http://basho.com/products/riak-overview/) database. It allows developers to focus on
-stored objects instead of on communication APIs.
+Table Of Content
+================
+- [Features](#features)
+- [Roadmap](#roadmap)
+- [Dependencies](#dependencies)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Basic Usage](#basic-usage)
+    - [Accessing a Cluster](#accessing-a-cluster) 
+    - [Defining Bucket content](#defining-bucket-content)
+    - [Insert or Update Data into a Bucket](#insert-or-update-data-into-a-bucket)
+    - [Fetch Data from a Bucket](#fetch-data-from-a-bucket)
+    - [Delete Data from a Bucket](#delete-data-from-a-bucket)
+    - [List keys inside a Bucket](#list-keys-inside-a-bucket)
+    - [Count keys inside a Bucket](#count-keys-inside-a-bucket)
 
 Features
 --------
+
+RiakBundle is designed to ease interaction with [Riak](http://basho.com/products/riak-overview/) database. It allows developers to focus on
+stored objects instead of on communication APIs. Supported features are : 
 
 - support for multi-clustering
 - configure clusters : protocol, domain, port, maximum supported connections in parallel, buckets list, ...
