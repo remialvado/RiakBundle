@@ -264,3 +264,36 @@ $backendCluster = $container->get("riak.cluster.backend");
 echo "'city' bucket contains" . $backendCluster->selectBucket("city")->count() . " key(s)."
 ```
 
+Advanced Usage
+--------------
+
+### Load and Edit Bucket configuration
+
+Riak allows developers to customize some bucket configuration like _nval_, the number of replicas to be store in the cluster for each and every data.
+Please have a look at Riak documentation for closer details.
+
+Using RiakBundle, you can easily update bucket configuration. The [\Kbrw\RiakBundle\Model\Bucket\Bucket](RiakBundle/blob/master/Model/Bucket/Bucket.php) class is not only the place used to execute operations on a bucket, it also contains bucket properties that you can manage.
+Example : 
+```php
+$backendCluster = $container->get("riak.cluster.backend");
+$users = $backendCluster->addBucket("users", true); // the second parameter will force RiakBundle to fetch properties for this bucket
+$users->getProps()->setNVal(5);
+$users->save();
+```
+
+### Play with headers
+
+Riak does not only associate an object to a key but also some headers. Some are pre-defined (Last-Modified, X-Riak-Vclock, ...) but you can also put your own custom headers.
+As explained above, the ```put($objects)``` method takes an associated array of objects. Thoses objects can either be your own simple representation of the data you want to store in Riak or a [\Kbrw\RiakBundle\Model\KV\Data](RiakBundle/blob/master/Model/KV/Data.php) instance (the same one returned by the fetch and uniq methods).
+On this object, you can define your own custom headers. Example : 
+```php
+$remi = new \MyCompany\MyBundle\Model\User("remi", "remi.alvado@yahoo.fr");
+$data = new \Kbrw\RiakBundle\Model\KV\Data("remi");
+$data->setStructuredContent($remi);
+$data->addHeader("X-Signup-Date", date('Y-m-d'));
+
+$backendCluster = $container->get("riak.cluster.backend");
+$backendCluster->selectBucket("users")->put($remi);
+```
+
+The same mecanism can be used to handle Riak merge issues with the X-Riak-Vclock header.

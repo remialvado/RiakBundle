@@ -41,6 +41,7 @@ class RiakKVServiceClient extends BaseServiceClient
             if ($object instanceof \Kbrw\RiakBundle\Model\KV\Data) {
                 $key = $object->getKey();
                 $headers = $object->getHeaders();
+                $object = $object->getStructuredContent();
             }
             
             // Prepare Key 

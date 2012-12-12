@@ -71,10 +71,12 @@ class Data
      */
     public function getHeader($name, $default = null)
     {
-        if (is_array($this->headers) && array_key_exists($name, $this->headers)) {
-            return $this->headers[$name];
-        }
-        return $default;
+        return isset($this->headers[$name]) ? $this->headers[$name] : $default;
+    }
+    
+    public function addHeader($name, $value)
+    {
+        $this->headers[$name] = $value;
     }
 
     /**
