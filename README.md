@@ -13,6 +13,9 @@ Table Of Content
     - [Delete Data from a Bucket](#delete-data-from-a-bucket)
     - [List keys inside a Bucket](#list-keys-inside-a-bucket)
     - [Count keys inside a Bucket](#count-keys-inside-a-bucket)
+- [Extended Usage](#extended-usage)
+    - [Load and edit Bucket configuration](#load-and-edit-bucket-configuration)
+    - [Play with Headers](#play-with-headers)
 
 Features
 --------
