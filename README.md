@@ -295,12 +295,13 @@ $users->save();
 
 Riak does not only associate an object to a key but also some headers. Some are pre-defined (Last-Modified, X-Riak-Vclock, ...) but you can also put your own custom headers.
 As explained above, the ```put($objects)``` method takes an associated array of objects. Thoses objects can either be your own simple representation of the data you want to store in Riak or a [\Kbrw\RiakBundle\Model\KV\Data](RiakBundle/blob/master/Model/KV/Data.php) instance (the same one returned by the fetch and uniq methods).
-On this object, you can define your own custom headers. Example : 
+On this object, you can define your own custom headers by using the headerBag property which is a [\Symfony\Component\HttpFoundation\HeaderBag](../symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/HeaderBag.php).
+Example : 
 ```php
 $remi = new \MyCompany\MyBundle\Model\User("remi", "remi.alvado@yahoo.fr");
 $data = new \Kbrw\RiakBundle\Model\KV\Data("remi");
-$data->setStructuredContent($remi);
-$data->addHeader("X-Signup-Date", date('Y-m-d'));
+$data->setContent($remi);
+$data->getHeaderBag()->setHeader("X-Signup-Date", date('Y-m-d'));
 
 $backendCluster = $container->get("riak.cluster.backend");
 $backendCluster->getBucket("users")->put($remi);

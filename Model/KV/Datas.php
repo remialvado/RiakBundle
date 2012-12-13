@@ -18,14 +18,14 @@ class Datas
     }
     
     /**
-     * @return array
+     * @return array<mixed>
      */
-    public function getStructuredObjects() {
+    public function getContents($asString = false) {
         $objects = array();
         array_walk($this->datas, function($data) use (&$objects) {
             if (isset($data))
             {
-                $objects[] = $data->getStructuredContent();
+                $objects[] = $data->getContent($asString);
             }
         });
         return $objects;

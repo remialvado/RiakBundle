@@ -2,6 +2,8 @@
 
 namespace Kbrw\RiakBundle\Model\KV;
 
+use Symfony\Component\HttpFoundation\HeaderBag;
+
 /**
  * @author remi
  */
@@ -13,26 +15,27 @@ class Data
     protected $key;
     
     /**
-     * @var array<string,string>
+     * @var \Symfony\Component\HttpFoundation\HeaderBag
      */
-    protected $headers;
+    protected $headerBag;
     
     /**
      * @var string
      */
-    protected $rawContent;
+    protected $stringContent;
     
     /**
      * @var mixed
      */
-    protected $structuredContent;
+    protected $content;
     
-    function __construct($key = null, $headers = array(), $rawContent = null, $structuredContent = null)
+    function __construct($key = null, $headerBag = null, $stringContent = null, $content = null)
     {
         $this->setKey($key);
-        $this->setHeaders($headers);
-        $this->setRawContent($rawContent);
-        $this->setStructuredContent($structuredContent);
+        if (!isset($headerBag)) $headerBag = new HeaderBag();
+        $this->setHeaderBag($headerBag);
+        $this->setStringContent($stringContent);
+        $this->setContent($content);
     }
     
     /**
@@ -52,56 +55,33 @@ class Data
     }
     
     /**
-     * @return array<string,string>
+     * @return \Symfony\Component\HttpFoundation\HeaderBag
      */
-    public function getHeaders()
+    public function getHeaderBag()
     {
-        return $this->headers;
+        return $this->headerBag;
     }
 
-    public function setHeaders($headers)
+    public function setHeaderBag($headerBag)
     {
-        $this->headers = $headers;
-    }
-    
-    /**
-     * @param string $nane
-     * @param mixed $default
-     * @return mixed
-     */
-    public function getHeader($name, $default = null)
-    {
-        return isset($this->headers[$name]) ? $this->headers[$name] : $default;
-    }
-    
-    public function addHeader($name, $value)
-    {
-        $this->headers[$name] = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRawContent()
-    {
-        return $this->rawContent;
-    }
-
-    public function setRawContent($rawContent)
-    {
-        $this->rawContent = $rawContent;
+        $this->headerBag = $headerBag;
     }
 
     /**
      * @return mixed
      */
-    public function getStructuredContent()
+    public function getContent($asString = false)
     {
-        return $this->structuredContent;
+        return (!$asString && isset($this->content)) ? $this->content : $this->stringContent;
+    }
+    
+    public function setContent($content)
+    {
+        $this->content = $content;
     }
 
-    public function setStructuredContent($structuredContent)
+    public function setStringContent($stringContent)
     {
-        $this->structuredContent = $structuredContent;
+        $this->stringContent = $stringContent;
     }
 }

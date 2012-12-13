@@ -40,8 +40,8 @@ class RiakKVServiceClient extends BaseServiceClient
             $headers = array();
             if ($object instanceof \Kbrw\RiakBundle\Model\KV\Data) {
                 $key = $object->getKey();
-                $headers = $object->getHeaders();
-                $object = $object->getStructuredContent();
+                $headers = $object->getHeaderBag()->all();
+                $object = $object->getContent();
             }
             
             // Prepare Key 
@@ -54,7 +54,6 @@ class RiakKVServiceClient extends BaseServiceClient
             }
             
             // Prepare Headers
-            if (!is_array($headers)) $headers = array();
             $headers['X-Riak-ClientId'] = $cluster->getClientId();
             $headers['Content-Type'] = $this->contentTypeNormalizer->getContentType($bucket->getFormat());
             
@@ -174,14 +173,14 @@ class RiakKVServiceClient extends BaseServiceClient
             try {
                 if ($request->getState() === RequestInterface::STATE_COMPLETE && $request->getResponse()->getStatusCode() == "200") {
                     $response = $request->getResponse();
-                    $data->setRawContent($response->getBody(true));
+                    $data->setStringContent($response->getBody(true));
                     if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($bucket->getFormat())) {
-                        $riakKVObject = $this->serializer->deserialize($data->getRawContent(), $bucket->getFullyQualifiedClassName(), $this->contentTypeNormalizer->getNormalizedContentType($response->getContentType()));
+                        $riakKVObject = $this->serializer->deserialize($data->getContent(true), $bucket->getFullyQualifiedClassName(), $this->contentTypeNormalizer->getNormalizedContentType($response->getContentType()));
                         if ($riakKVObject !== false) {
                             if ($riakKVObject instanceof Transmutable) {
                                 $riakKVObject = $riakKVObject->transmute();
                             }
-                            $data->setStructuredContent($riakKVObject);
+                            $data->setContent($riakKVObject);
                         }
                     }
                 }
@@ -201,8 +200,7 @@ class RiakKVServiceClient extends BaseServiceClient
      */
     public function uniq($cluster, $bucket, $key)
     {
-        $datas = $this->fetch($cluster, $bucket, array($key))->getDatas();
-        return (is_array($datas) && count($datas) > 0) ? $datas[0] : null;
+        return $this->fetch($cluster, $bucket, array($key))->first();
     }
     
     /**
