@@ -15,3 +15,7 @@ app/config/parameters.yml
 
 # Composer
 composer.lock
+/nbproject/private/
+
+# Misc
+nbproject/*

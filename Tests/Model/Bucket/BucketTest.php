@@ -190,7 +190,7 @@ class BucketTest extends ModelTestCase
     {
         $this->bucket->getProps()->setNVal(5);
         $this->assertTrue($this->bucket->save());
-        $this->assertEquals(5, $this->cluster->fetchBucket($this->bucket->getName())->getProps()->getNVal());
+        $this->assertEquals(5, $this->cluster->bucketProperties($this->bucket->getName())->getProps()->getNVal());
     }
     
     /**

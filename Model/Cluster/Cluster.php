@@ -69,13 +69,54 @@ class Cluster
     
     /**
      * @param string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @param boolean $buildFromCluster
+     * @return \Kbrw\RiakBundle\Model\Bucket\Bucket
      */
-    public function selectBucket($bucket)
+    public function addBucket(&$bucket, $buildFromCluster = false)
     {
-        if (!$this->hasBucket($bucket)) {
-            $this->addBucket ($bucket);
+        if ($buildFromCluster) {
+            $bucketName = ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) ? $bucket->getName() : $bucket;
+            $bucket = $this->bucketProperties($bucketName);
         }
-        return $this->getBucket($bucket);
+        if (! $bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) {
+            $bucket = new Bucket($bucket);
+        }
+        $bucket->setRiakBucketServiceClient($this->riakBucketServiceClient);
+        $bucket->setRiakKVServiceClient($this->riakKVServiceClient);
+        $bucket->setCluster($this);
+        $this->buckets[$bucket->getName()] = $bucket;
+        return $bucket;
+    }
+    
+    /**
+     * @param string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     */
+    public function hasBucket($bucket)
+    {
+        $bucketName = ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) ? $bucket->getName() : $bucket;
+        return isset($this->buckets[$bucketName]);
+    }
+    
+    /**
+     * @param string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @return \Kbrw\RiakBundle\Model\Bucket\Bucket
+     */
+    public function getBucket($bucket, $buildFromCluster = false)
+    {
+        $bucketName = ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) ? $bucket->getName() : $bucket;
+        if (!$this->hasBucket($bucketName)) {
+            $this->addBucket($bucket, $buildFromCluster);
+        }
+        return $this->buckets[$bucketName];
+    }
+    
+    /**
+     * @param string $bucketName
+     * @return \Kbrw\RiakBundle\Model\Bucket\Bucket
+     */
+    public function bucketProperties($bucketName)
+    {
+        return $this->riakBucketServiceClient->properties($this, $bucketName);
     }
     
     public function getName()
@@ -176,52 +217,5 @@ class Cluster
     public function setBuckets($buckets)
     {
         $this->buckets = $buckets;
-    }
-    
-    /**
-     * @param string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
-     */
-    public function addBucket(&$bucket, $buildFromCluster = false)
-    {
-        if ($buildFromCluster) {
-            $bucketName = ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) ? $bucket->getName() : $bucket;
-            $bucket = $this->fetchBucket($bucketName);
-        }
-        if (! $bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) {
-            $bucket = new Bucket($bucket);
-        }
-        $bucket->setRiakBucketServiceClient($this->riakBucketServiceClient);
-        $bucket->setRiakKVServiceClient($this->riakKVServiceClient);
-        $bucket->setCluster($this);
-        $this->buckets[$bucket->getName()] = $bucket;
-        return $bucket;
-    }
-    
-    /**
-     * @param string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
-     */
-    public function hasBucket($bucket)
-    {
-        if ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) $bucket = $bucket->getName ();
-        return isset($this->buckets[$bucket]);
-    }
-    
-    /**
-     * @param string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
-     * @return \Kbrw\RiakBundle\Model\Bucket\Bucket
-     */
-    public function getBucket($bucket)
-    {
-        if ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) return $bucket;
-        return isset($this->buckets[$bucket]) ? $this->buckets[$bucket] : null;
-    }
-    
-    /**
-     * @param string $bucketName
-     * @return \Kbrw\RiakBundle\Model\Bucket\Bucket
-     */
-    public function fetchBucket($bucketName)
-    {
-        return $this->riakBucketServiceClient->properties($this, $bucketName);
     }
 }

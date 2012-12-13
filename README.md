@@ -39,7 +39,12 @@ Roadmap
 - support for Secondary indexes insert and fetch operations
 - support for MapReduce queries for both Javascript and Erlang
 - support for extended bucket configuration (n_val, ...)
-- performance dashboard added to Sylfony Debug Toolbar
+- add some console tasks to handle common admin operations : 
+    - display bucket size
+    - list keys inside a bucket
+    - delete all datas inside a bucket
+    - ...
+- performance dashboard added to Symfony Debug Toolbar
 
 Dependencies
 ------------
@@ -171,7 +176,7 @@ RiakBundle can automatically take care of serialization / deserialization so tha
 Your model class and the serialization method can be defined into configuration like described above or you can specify it on a bucket instance like this : 
 ```php
 $logCluster = $container->get("riak.cluster.log");
-$bucket = $logCluster->addBucket("log_" . date('Y-m-d'));
+$bucket = $logCluster->getBucket("log_" . date('Y-m-d'));
 bucket->setFullyQualifiedClassName("MyCompany\MyBundle\Model\LogEntry");
 bucket->setFormat("json");
 ```
@@ -182,7 +187,7 @@ Once your bucket is configured, you just have to create an instance of the objec
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
 $user = new \MyCompany\MyBundle\Model\User("remi", "remi.alvado@yahoo.fr");
-$backendCluster->selectBucket("user")->put(array("remi" => $user));
+$backendCluster->getBucket("user")->put(array("remi" => $user));
 ```
 
 You can even write multiple users at the same time using parallel calls to Riak : 
@@ -190,7 +195,7 @@ You can even write multiple users at the same time using parallel calls to Riak 
 $backendCluster = $container->get("riak.cluster.backend");
 $grenoble = new \MyCompany\MyBundle\Model\City("38000", "Grenoble");
 $paris = new \MyCompany\MyBundle\Model\City("75000", "Paris");
-$backendCluster->selectBucket("city")->put(
+$backendCluster->getBucket("city")->put(
   array(
     "38000" => $grenoble,
     "75000" => $paris
@@ -201,9 +206,9 @@ $backendCluster->selectBucket("city")->put(
 The same mecanism can be used to update a data : 
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
-$paris = $backendCluster->selectBucket("city")->uniq("paris");
+$paris = $backendCluster->getBucket("city")->uniq("paris");
 $paris->setName("paris intra muros");
-$backendCluster->selectBucket("city")->put(array("75000" => $paris));
+$backendCluster->getBucket("city")->put(array("75000" => $paris));
 ```
 
 ### Fetch data from a bucket
@@ -219,17 +224,17 @@ Example :
 ```php
 // Using fetch to get multiple objects
 $backendCluster = $container->get("riak.cluster.backend");
-$datas = $backendCluster->selectBucket("city")->fetch(array("paris", "grenoble"));
+$datas = $backendCluster->getBucket("city")->fetch(array("paris", "grenoble"));
 $cities = $datas->getStructuredObjects(); // $cities will be an array of \MyCompany\MyBundle\Model\City instances
 
 // Using fetch to get one object
 $backendCluster = $container->get("riak.cluster.backend");
-$datas = $backendCluster->selectBucket("city")->fetch(array("paris"));
+$datas = $backendCluster->getBucket("city")->fetch(array("paris"));
 $city = $datas->first()->getStructuredContent(); // $city will be a \MyCompany\MyBundle\Model\City instance
 
 // Using uniq to get one object
 $backendCluster = $container->get("riak.cluster.backend");
-$city = $backendCluster->selectBucket("city")->uniq("paris"); // $city will be a \MyCompany\MyBundle\Model\City instance
+$city = $backendCluster->getBucket("city")->uniq("paris"); // $city will be a \MyCompany\MyBundle\Model\City instance
 ```
 
 ### Delete data from a bucket
@@ -239,11 +244,11 @@ Example :
 ```php
 // delete a list of key/value pairs
 $backendCluster = $container->get("riak.cluster.backend");
-$backendCluster->selectBucket("city")->delete(array("paris", "grenoble"));
+$backendCluster->getBucket("city")->delete(array("paris", "grenoble"));
 
 // delete one single key/value pair
 $backendCluster = $container->get("riak.cluster.backend");
-$backendCluster->selectBucket("city")->delete("paris");
+$backendCluster->getBucket("city")->delete("paris");
 ```
 
 ### List keys inside a bucket
@@ -254,7 +259,7 @@ To display all keys inside a bucket :
 ```php
 // delete a list of key/value pairs
 $backendCluster = $container->get("riak.cluster.backend");
-foreach($backendCluster->selectBucket("city")->keys() as $key) {
+foreach($backendCluster->getBucket("city")->keys() as $key) {
   echo "$key\n";
 }
 ```
@@ -266,7 +271,7 @@ To count all keys inside a bucket :
 ```php
 // delete a list of key/value pairs
 $backendCluster = $container->get("riak.cluster.backend");
-echo "'city' bucket contains" . $backendCluster->selectBucket("city")->count() . " key(s)."
+echo "'city' bucket contains" . $backendCluster->getBucket("city")->count() . " key(s)."
 ```
 
 Advanced Usage
@@ -298,7 +303,7 @@ $data->setStructuredContent($remi);
 $data->addHeader("X-Signup-Date", date('Y-m-d'));
 
 $backendCluster = $container->get("riak.cluster.backend");
-$backendCluster->selectBucket("users")->put($remi);
+$backendCluster->getBucket("users")->put($remi);
 ```
 
 The same mecanism can be used to handle Riak merge issues with the X-Riak-Vclock header.
