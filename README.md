@@ -177,8 +177,8 @@ Your model class and the serialization method can be defined into configuration 
 ```php
 $logCluster = $container->get("riak.cluster.log");
 $bucket = $logCluster->getBucket("log_" . date('Y-m-d'));
-bucket->setFullyQualifiedClassName("MyCompany\MyBundle\Model\LogEntry");
-bucket->setFormat("json");
+$bucket->setFullyQualifiedClassName("MyCompany\MyBundle\Model\LogEntry");
+$bucket->setFormat("json");
 ```
 
 ### Insert or update data into a bucket
