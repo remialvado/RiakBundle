@@ -110,18 +110,18 @@ class MockedRiakKVServiceClient extends RiakKVServiceClient
             $key = trim($key);
             $data = new Data($key);
             if (isset($this->content[$key])) {
-                $data->setRawContent($this->content[$key]);
+                $data->setStringContent($this->content[$key]);
                 if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($bucket->getFormat())) {
                     /*var_dump($data->getRawContent());
                     var_dump($bucket->getFullyQualifiedClassName());
                     var_dump($bucket->getFormat());
                     exit;*/
-                    $riakKVObject = $this->serializer->deserialize($data->getRawContent(), $bucket->getFullyQualifiedClassName(), $bucket->getFormat());
+                    $riakKVObject = $this->serializer->deserialize($data->getContent(true), $bucket->getFullyQualifiedClassName(), $bucket->getFormat());
                     if ($riakKVObject !== false) {
                         if ($riakKVObject instanceof Transmutable) {
                             $riakKVObject = $riakKVObject->transmute();
                         }
-                        $data->setStructuredContent($riakKVObject);
+                        $data->setContent($riakKVObject);
                     }
                 }
             }

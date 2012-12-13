@@ -98,7 +98,7 @@ class BucketTest extends ModelTestCase
         $data = $this->bucket->uniq("foo1");
         $this->assertNotNull($data);
         $this->assertEquals($data->getKey(), "foo1");
-        $this->assertEquals($data->getStructuredContent(), new SomeClass("bar1"));
+        $this->assertEquals($data->getContent(), new SomeClass("bar1"));
     }
     
     /**
@@ -109,7 +109,7 @@ class BucketTest extends ModelTestCase
         $data = $this->bucket->uniq("foo3");
         $this->assertNotNull($data);
         $this->assertEquals($data->getKey(), "foo3");
-        $this->assertEquals($data->getStructuredContent(), null);
+        $this->assertEquals($data->getContent(), null);
     }
     
     /**
@@ -205,14 +205,14 @@ class BucketTest extends ModelTestCase
         $this->bucket->riakKVServiceClient->content[$key]     = $serializedContent;
     }
     
-    protected function assertContainData($datas, $key, $structuredContent)
+    protected function assertContainData($datas, $key, $content)
     {
         $this->assertNotNull($datas);
         $datas = $datas->getDatas();
         $this->assertNotNull($datas);
         foreach($datas as $data) {
             if ($data->getKey() === $key) {
-                $this->assertEquals($data->getStructuredContent(), $structuredContent);
+                $this->assertEquals($data->getContent(), $content);
                 return;
             }
         }
