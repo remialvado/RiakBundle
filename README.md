@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/remialvado/RiakBundle.png?branch=master)](https://travis-ci.org/remialvado/RiakBundle)
+
 Table Of Content
 ================
 - [Features](#features)
