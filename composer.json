@@ -28,7 +28,8 @@
         "symfony/twig-bundle": "*",
         "doctrine/orm": "*",
         "symfony/form": "*",
-        "symfony/validator": "*"
+        "symfony/validator": "*",
+        "symfony/monolog-bundle": "2.1.*"
     },
     "minimum-stability": "dev",
     "autoload": {

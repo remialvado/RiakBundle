@@ -22,4 +22,8 @@
             <group>performance</group>
         </exclude>
     </groups>
+
+    <php>
+        <server name="KERNEL_DIR" value="./Resources/tests/app/" />
+    </php>
 </phpunit>

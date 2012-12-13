@@ -5,9 +5,13 @@ app/bootstrap*
 vendor/*
 */logs/*
 */cache/*
+Resources/tests/app/cache/*
 web/uploads/*
 web/bundles/*
 
 # Configuration files
 app/config/parameters.ini
 app/config/parameters.yml
+
+# Composer
+composer.lock
