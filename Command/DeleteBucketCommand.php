@@ -6,7 +6,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class RiakDebugCommand extends ContainerAwareCommand
+class DeleteBucketCommand extends ContainerAwareCommand
 {
     
     const OPTION_BUCKET   = "bucket";
