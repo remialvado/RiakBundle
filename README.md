@@ -31,6 +31,7 @@ stored objects instead of on communication APIs. Supported features are :
 - insert, delete and fetch objects into a bucket with support for parallel calls (curl_multi) 
 - fetch, edit and save bucket properties
 - list and count keys inside a bucket
+- console tasks to list and count keys inside a bucket, delete a single key or an entire bucket
 
 Roadmap
 -------
@@ -39,10 +40,9 @@ Roadmap
 - support for Secondary indexes insert and fetch operations
 - support for MapReduce queries for both Javascript and Erlang
 - support for extended bucket configuration (n_val, ...)
-- add some console tasks to handle common admin operations : 
-    - display bucket size
-    - list keys inside a bucket
-    - delete all datas inside a bucket
+- add some console tasks to handle some other admin operations : 
+    - display buckets inside a cluster
+    - delete all buckets inside a cluster
     - ...
 - performance dashboard added to Symfony Debug Toolbar
 

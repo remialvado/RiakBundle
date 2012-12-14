@@ -113,7 +113,7 @@ class RiakBucketServiceClient extends BaseServiceClient
         $config["port"]     = $cluster->getPort();
         $config["bucket"]   = $bucketName;
         $config["keys"]     = (string) $keys;
-        $config["props"]    = (string) $props;
+        $config["props"]    = $props ? "true" : "false";
         return $config;
     }
     

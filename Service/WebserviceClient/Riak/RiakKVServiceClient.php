@@ -67,7 +67,7 @@ class RiakKVServiceClient extends BaseServiceClient
         try {
             $curlMulti->send();
         } catch (\Exception $e) {
-            $this->logger->error("Unable to put an object into Riak. Full message is : \n" . $e->getMessage . "");
+            $this->logger->err("Unable to put an object into Riak. Full message is : \n" . $e->getMessage() . "");
             return false;
         }
         foreach ($requests as $request) {
@@ -118,7 +118,7 @@ class RiakKVServiceClient extends BaseServiceClient
         try {
             $curlMulti->send();
         } catch (\Exception $e) {
-            $this->logger->error("Unable to delete an object in Riak. Full message is : \n" . $e->getMessage . "");
+            $this->logger->err("Unable to delete an object in Riak. Full message is : \n" . $e->getMessage() . "");
             return false;
         }
         
@@ -165,7 +165,7 @@ class RiakKVServiceClient extends BaseServiceClient
         try {
             $curlMulti->send();
         } catch (\Exception $e) {
-            $this->logger->error("Unable to get an object from Riak. Full message is : \n" . $e->getMessage . "");
+            $this->logger->err("Unable to get an object from Riak. Full message is : \n" . $e->getMessage() . "");
         }
 
         foreach ($requests as $key => $request) {
