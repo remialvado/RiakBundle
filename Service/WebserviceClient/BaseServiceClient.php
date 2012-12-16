@@ -53,16 +53,6 @@ abstract class BaseServiceClient
     {
         $this->logger = $logger;
     }
-
-    public function getGuzzleClientProvider()
-    {
-        return $this->guzzleClientProvider;
-    }
-
-    public function setGuzzleClientProvider($guzzleClientProvider)
-    {
-        $this->guzzleClientProvider = $guzzleClientProvider;
-    }
     
     /**
      * All dependencies needs to be injected by services.{xml|yml} or by an annotation on child class
@@ -77,9 +67,4 @@ abstract class BaseServiceClient
      * @var \Symfony\Component\HttpKernel\Log\LoggerInterface
      */
     public $logger;
-    
-    /**
-     * @var \Kbrw\RiakBundle\Service\WebserviceClient\GuzzleClientProviderInterface
-     */
-    public $guzzleClientProvider;
 }

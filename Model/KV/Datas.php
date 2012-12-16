@@ -31,6 +31,9 @@ class Datas
         return $objects;
     }
     
+    /**
+     * @return array<\Kbrw\RiakBundle\Model\KV\Data>
+     */
     public function getDatas()
     {
         return $this->datas;
@@ -57,5 +60,14 @@ class Datas
     public function first()
     {
         return (is_array($this->datas) && count($this->datas) > 0) ? $this->datas[0] : null;
+    }
+    
+    public function chunk($size)
+    {
+        $chunks = array();
+        foreach(array_chunk($this->datas, $size, true) as $datasAsArray) {
+            $chunks[] = new Datas($datasAsArray);
+        }
+        return $chunks;
     }
 }

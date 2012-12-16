@@ -26,7 +26,6 @@ services:
     calls:
       - [setRoute,                 [ "%kbrw.riak.bucket.route%" ] ]
       - [setLogger,                [ "@logger" ] ]
-      - [setGuzzleClientProvider,  [ "@kbrw.guzzle.client.provider" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
       
   kbrw.riak.kv:
@@ -34,6 +33,5 @@ services:
     calls:
       - [setRoute,                 [ "%kbrw.riak.kv.route%" ] ]
       - [setLogger,                [ "@logger" ] ]
-      - [setGuzzleClientProvider,  [ "@kbrw.guzzle.client.provider" ] ]
       - [setContentTypeNormalizer, [ "@kbrw.content.type.normalizer" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]

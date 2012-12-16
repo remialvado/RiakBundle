@@ -28,10 +28,11 @@ class RiakDebugCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->cluster = $this->getContainer()->get("riak.cluster.backend");
-        $bucket = $this->cluster->getBucket("users");
+        $bucket = $this->cluster->getBucket("users", true);
         $bucket->delete($bucket->keys());
         $bucket->put(array("remi1" => new \Acme\DemoBundle\Model\User("remi", "remi.alvado" . rand(1, 10000) . "@gmail.com")));
         $bucket->put(array("remi2" => new \Acme\DemoBundle\Model\User("remi", "remi.alvado" . rand(1, 10000) . "@gmail.com")));
-        print_r($bucket->uniq("remi")->getContent());
+        //$bucket->disableSearchIndexing();
+        //$bucket->save();
     }
 }

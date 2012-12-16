@@ -15,6 +15,11 @@ class Data
     protected $key;
     
     /**
+     * @var mixed
+     */
+    protected $content;
+    
+    /**
      * @var \Symfony\Component\HttpFoundation\HeaderBag
      */
     protected $headerBag;
@@ -24,18 +29,13 @@ class Data
      */
     protected $stringContent;
     
-    /**
-     * @var mixed
-     */
-    protected $content;
-    
-    function __construct($key = null, $headerBag = null, $stringContent = null, $content = null)
+    function __construct($key = null, $content = null, $headerBag = null, $stringContent = null)
     {
         $this->setKey($key);
+        $this->setContent($content);
         if (!isset($headerBag)) $headerBag = new HeaderBag();
         $this->setHeaderBag($headerBag);
         $this->setStringContent($stringContent);
-        $this->setContent($content);
     }
     
     /**

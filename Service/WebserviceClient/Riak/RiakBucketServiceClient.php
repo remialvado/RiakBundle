@@ -91,6 +91,7 @@ class RiakBucketServiceClient extends BaseServiceClient
         $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket->getName(), false, false))->put();
         try {
             $request->setBody($this->serializer->serialize($bucket, "json"));
+            $request->setHeader("Content-Type", "application/json");
             $response = $request->send();
             return ($response->getStatusCode() == "204");
         }
@@ -112,8 +113,8 @@ class RiakBucketServiceClient extends BaseServiceClient
         $config["domain"]   = $cluster->getDomain();
         $config["port"]     = $cluster->getPort();
         $config["bucket"]   = $bucketName;
-        $config["keys"]     = (string) $keys;
-        $config["props"]    = $props ? "true" : "false";
+        $config["keys"]     = (is_string($keys)) ? $keys : null;
+        $config["props"]    = $props ? "true" : null;
         return $config;
     }
     
