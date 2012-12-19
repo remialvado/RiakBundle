@@ -226,8 +226,8 @@ class RiakKVServiceClient extends BaseServiceClient
         // $objects is already a Datas instance.
         if ($objects instanceof \Kbrw\RiakBundle\Model\KV\Datas) $objects = $objects->getDatas();
         elseif ($objects instanceof \Kbrw\RiakBundle\Model\KV\Data) $objects = array($objects);
-        elseif (is_scalar($objects) && $objectsAreKeys) $objects = array(new Data($objects));
-        elseif (is_scalar($objects) && !$objectsAreKeys) $objects = array(new Data(null, $objects));
+        elseif (is_string($objects) && $objectsAreKeys) $objects = array(new Data($objects));
+        elseif (is_object($objects) && !$objectsAreKeys) $objects = array(new Data(null, $objects));
         else {
             $tmp = array();
             // $objects is an array<string, mixed>
