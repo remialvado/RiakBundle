@@ -40,7 +40,12 @@ class Cluster
      */
     protected $riakKVServiceClient;
     
-    function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $riakBucketServiceClient = null, $riakKVServiceClient = null)
+    /**
+     * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakSearchServiceClient
+     */
+    protected $riakSearchServiceClient;
+    
+    function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null)
     {
         if (!isset($name))                          $name                          = self::DEFAULT_NAME;
         if (!isset($protocol))                      $protocol                      = self::DEFAULT_PROTOCOL;
@@ -57,6 +62,7 @@ class Cluster
         $this->setGuzzleClientProviderService($guzzleClientProviderService);
         $this->setRiakBucketServiceClient($riakBucketServiceClient);
         $this->setRiakKVServiceClient($riakKVServiceClient);
+        $this->setRiakSearchServiceClient($riakSearchServiceClient);
         $this->buckets = array();
         foreach($bucketConfigs as $bucketName => $bucketConfig) {
             $bucket = new Bucket();
@@ -83,6 +89,7 @@ class Cluster
         }
         $bucket->setRiakBucketServiceClient($this->riakBucketServiceClient);
         $bucket->setRiakKVServiceClient($this->riakKVServiceClient);
+        $bucket->setRiakSearchServiceClient($this->riakSearchServiceClient);
         $bucket->setCluster($this);
         $this->buckets[$bucket->getName()] = $bucket;
         return $bucket;
@@ -207,6 +214,16 @@ class Cluster
     public function setRiakKVServiceClient($riakKVServiceClient)
     {
         $this->riakKVServiceClient = $riakKVServiceClient;
+    }
+    
+    public function getRiakSearchServiceClient()
+    {
+        return $this->riakSearchServiceClient;
+    }
+
+    public function setRiakSearchServiceClient($riakSearchServiceClient)
+    {
+        $this->riakSearchServiceClient = $riakSearchServiceClient;
     }
     
     public function getBuckets()

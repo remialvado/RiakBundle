@@ -84,4 +84,9 @@ class Data
     {
         $this->stringContent = $stringContent;
     }
+    
+    public function isDefined()
+    {        
+        return isset($this->content);
+    }
 }

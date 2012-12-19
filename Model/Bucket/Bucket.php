@@ -48,6 +48,12 @@ class Bucket
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakKVServiceClient
      */
     public $riakKVServiceClient;
+    
+    /**
+     * @Ser\Exclude()
+     * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakSearchServiceClient
+     */
+    public $riakSearchServiceClient;
  
     /**
      * @param string $name
@@ -122,6 +128,11 @@ class Bucket
     public function save()
     {
         return $this->riakBucketServiceClient->save($this->cluster, $this);
+    }
+    
+    public function search($query)
+    {
+        return $this->riakSearchServiceClient->search($this->cluster, $this, $query);
     }
     
     /**
@@ -242,5 +253,15 @@ class Bucket
     public function setRiakKVServiceClient($riakKVServiceClient)
     {
         $this->riakKVServiceClient = $riakKVServiceClient;
+    }
+
+    public function getRiakSearchServiceClient()
+    {
+        return $this->riakSearchServiceClient;
+    }
+
+    public function setRiakSearchServiceClient($riakSearchServiceClient)
+    {
+        $this->riakSearchServiceClient = $riakSearchServiceClient;
     }
 }

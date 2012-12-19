@@ -13,6 +13,9 @@ parameters:
   kbrw.riak.kv.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakKVServiceClient"
   kbrw.riak.kv.route: "{protocol}://{domain}:{port}/riak/{bucket}/{id}{?r,w,dw}"
   
+  kbrw.riak.search.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakSearchServiceClient"
+  kbrw.riak.search.route: "{protocol}://{domain}:{port}/solr/{bucket}/select{?q,start,rows,df,q.op,sort,wt,filter,fl,additionalParameters*}"
+  
 services:
   kbrw.content.type.normalizer:
     class: "%kbrw.content.type.normalizer.class%"
@@ -34,4 +37,11 @@ services:
       - [setRoute,                 [ "%kbrw.riak.kv.route%" ] ]
       - [setLogger,                [ "@logger" ] ]
       - [setContentTypeNormalizer, [ "@kbrw.content.type.normalizer" ] ]
+      - [setSerializer,            [ "@jms_serializer" ] ]
+      
+  kbrw.riak.search:
+    class: "%kbrw.riak.search.class%"
+    calls:
+      - [setRoute,                 [ "%kbrw.riak.search.route%" ] ]
+      - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]

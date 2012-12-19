@@ -30,9 +30,12 @@ class RiakDebugCommand extends ContainerAwareCommand
         $this->cluster = $this->getContainer()->get("riak.cluster.backend");
         $bucket = $this->cluster->getBucket("users", true);
         $bucket->delete($bucket->keys());
-        $bucket->put(array("remi1" => new \Acme\DemoBundle\Model\User("remi", "remi.alvado" . rand(1, 10000) . "@gmail.com")));
-        $bucket->put(array("remi2" => new \Acme\DemoBundle\Model\User("remi", "remi.alvado" . rand(1, 10000) . "@gmail.com")));
+        $bucket->put(array("remi1" => new \Acme\DemoBundle\Model\User("remi1", "remi.alvado" . rand(1, 10000) . "@gmail.com")));
+        $bucket->put(array("remi2" => new \Acme\DemoBundle\Model\User("remi2", "remi.alvado" . rand(1, 10000) . "@gmail.com")));
+        //print_r($bucket->fetch("remi2"));
+        //$bucket->enableSearchIndexing();
         //$bucket->disableSearchIndexing();
         //$bucket->save();
+        print_r($bucket->search(new \Kbrw\RiakBundle\Model\Search\Query("id:rem*", "id")));
     }
 }

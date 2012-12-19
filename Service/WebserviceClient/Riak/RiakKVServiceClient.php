@@ -52,8 +52,8 @@ class RiakKVServiceClient extends BaseServiceClient
         }
         foreach ($requests as $request) {
             if ($request->getState() !== RequestInterface::STATE_COMPLETE ||
-                    $request->getResponse()->getStatusCode() < "200" ||
-                    $request->getResponse()->getStatusCode() >= "300") {
+                    $request->getResponse()->getStatusCode() < 200 ||
+                    $request->getResponse()->getStatusCode() >= 300) {
                 return false;
             }
         }
@@ -149,7 +149,8 @@ class RiakKVServiceClient extends BaseServiceClient
         foreach ($requests as $key => $request) {
             $data = new Data($key);
             try {
-                if ($request->getState() === RequestInterface::STATE_COMPLETE && $request->getResponse()->getStatusCode() == "200") {
+                var_dump($request->getResponse()->getStatusCode());
+                if ($request->getState() === RequestInterface::STATE_COMPLETE && $request->getResponse()->getStatusCode() === 200 ) {
                     $response = $request->getResponse();
                     $data->setStringContent($response->getBody(true));
                     if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($bucket->getFormat())) {
@@ -225,7 +226,8 @@ class RiakKVServiceClient extends BaseServiceClient
         // $objects is already a Datas instance.
         if ($objects instanceof \Kbrw\RiakBundle\Model\KV\Datas) $objects = $objects->getDatas();
         elseif ($objects instanceof \Kbrw\RiakBundle\Model\KV\Data) $objects = array($objects);
-        elseif (!is_array($objects)) $objects = array(new Data(null, $objects));
+        elseif (is_scalar($objects) && $objectsAreKeys) $objects = array(new Data($objects));
+        elseif (is_scalar($objects) && !$objectsAreKeys) $objects = array(new Data(null, $objects));
         else {
             $tmp = array();
             // $objects is an array<string, mixed>
@@ -269,7 +271,7 @@ class RiakKVServiceClient extends BaseServiceClient
             $request = $client->createRequest($method, $data->getKey(), $data->getHeaderBag()->all(), $data->getContent(true));
             $this->logger->debug("[$method] '" . $request->getUrl() . "'");
             $curlMulti->add($request);
-            $requests[] = $request;
+            $requests[$data->getKey()] = $request;
         }
         return $requests;
     }

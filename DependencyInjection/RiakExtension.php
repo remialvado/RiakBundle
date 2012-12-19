@@ -38,8 +38,9 @@ class RiakExtension extends Extension
                 $clusterConfig["max_parallel_calls"],
                 $clusterConfig["buckets"],
                 new Reference($clusterConfig["guzzle_client_provider_service"]),
-                new Reference("kbrw.riak.bucket"), 
-                new Reference("kbrw.riak.kv")
+                new Reference("kbrw.riak.bucket"),
+                new Reference("kbrw.riak.kv"),
+                new Reference("kbrw.riak.search")
             ));
             $container->setDefinition("riak.cluster." . $name, $definition);
         }
