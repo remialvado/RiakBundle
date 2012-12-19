@@ -32,11 +32,12 @@ stored objects instead of on communication APIs. Supported features are :
 - fetch, edit and save bucket properties
 - list and count keys inside a bucket
 - console tasks to list and count keys inside a bucket, delete a single key or an entire bucket
+- support for basic searches
+- support for custom search parameters (used by custom Riak Search compilations)
 
 Roadmap
 -------
 
-- support for Riak search queries
 - support for Secondary indexes insert and fetch operations
 - support for MapReduce queries for both Javascript and Erlang
 - support for extended bucket configuration (n_val, ...)
@@ -274,6 +275,26 @@ $backendCluster = $container->get("riak.cluster.backend");
 echo "'city' bucket contains" . $backendCluster->getBucket("city")->count() . " key(s)."
 ```
 
+### Search items inside a bucket using Riak Search
+
+Riak supports a Solr-like (and -light) search engine. RiakBundle lets you searching for items on every buckets with search feature activated.
+Search can be executed with a simple Solr-Like string query or with a fully qualified [\Kbrw\RiakBundle\Model\Search\Query](RiakBundle/blob/master/Model/Search/Query.php) instance.
+Examples : 
+```php
+
+// with string based query
+$backendCluster = $container->get("riak.cluster.backend");
+$usersBucket = $backendCluster->getBucket("users");
+$response = $usersBucket->search("id:rem*");
+
+// with full Query instance
+$backendCluster = $container->get("riak.cluster.backend");
+$usersBucket = $backendCluster->getBucket("users");
+$query = new \Kbrw\RiakBundle\Model\Search\Query("id:rem*");
+$query->addFieldInList("id"); // only look in "id" field for each object stored in the bucket
+$query->setRows(5); // return only 5 results
+$response = $usersBucket->search($query);
+```
 Advanced Usage
 --------------
 
@@ -289,6 +310,18 @@ $backendCluster = $container->get("riak.cluster.backend");
 $users = $backendCluster->addBucket("users", true); // the second parameter will force RiakBundle to fetch properties for this bucket
 $users->getProps()->setNVal(5);
 $users->save();
+```
+
+### Enable automatic indexation
+
+Riak supports automatic indexation of JSON / XML / Erlang datas from Riak KV to Riak Search. This feature needs to be activated on a per-bucket level. RiakBundle lets you easily do that : 
+
+Example : 
+```php
+$backendCluster = $container->get("riak.cluster.backend");
+$usersBucket = $backendCluster->getBucket("users");
+$usersBucket->enableSearchIndexing();
+$usersBucket->save();
 ```
 
 ### Play with headers
