@@ -35,14 +35,14 @@ stored objects instead of on communication APIs. Supported features are :
 - list and count keys inside a bucket
 - console tasks to list and count keys inside a bucket, delete a single key or an entire bucket
 - support for basic searches
-- support for custom search parameters (used by custom Riak Search compilations)
+- support for custom search parameters (used by custom Riak Search builds)
 
 Roadmap
 -------
 
 - support for Secondary indexes insert and fetch operations
 - support for MapReduce queries for both Javascript and Erlang
-- support for extended bucket configuration (n_val, ...)
+- support for extended bucket settings (n_val, ...) in YAML configuration
 - add some console tasks to handle some other admin operations : 
     - display buckets inside a cluster
     - delete all buckets inside a cluster

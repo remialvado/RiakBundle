@@ -65,7 +65,8 @@ class Cluster
         $this->setRiakSearchServiceClient($riakSearchServiceClient);
         $this->buckets = array();
         foreach($bucketConfigs as $bucketName => $bucketConfig) {
-            $bucket = new Bucket();
+            $class = $bucketConfig["class"];
+            $bucket = new $class();
             $bucket->setName($bucketName);
             $bucket->setFormat($bucketConfig["format"]);
             $bucket->setFullyQualifiedClassName($bucketConfig["fqcn"]);

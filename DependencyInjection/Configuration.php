@@ -42,13 +42,13 @@ class Configuration implements ConfigurationInterface
                                     ->children()
                                         ->scalarNode("fqcn")->defaultNull()->end()
                                         ->scalarNode("format")->defaultNull()->end()
+                                        ->scalarNode("class")->defaultValue("\Kbrw\RiakBundle\Model\Bucket\Bucket")->end()
                                     ->end()
                                 ->end()
                             ->end()
                         ->end()
                     ->end()
                 ->end()
-                ->scalarNode("default_cluster")->defaultNull()->end()
             ->end()
         ;
         return $treeBuilder;
