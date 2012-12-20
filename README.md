@@ -15,8 +15,10 @@ Table Of Content
     - [Delete Data from a Bucket](#delete-data-from-a-bucket)
     - [List keys inside a Bucket](#list-keys-inside-a-bucket)
     - [Count keys inside a Bucket](#count-keys-inside-a-bucket)
+    - [Search items inside a Bucket using Riak Search](#search-items-inside-a-bucket-using-riak-search)
 - [Extended Usage](#extended-usage)
     - [Load and edit Bucket configuration](#load-and-edit-bucket-configuration)
+    - [Enable Automatic Indexation](#enable-automatic-indexation)
     - [Play with Headers](#play-with-headers)
 
 Features

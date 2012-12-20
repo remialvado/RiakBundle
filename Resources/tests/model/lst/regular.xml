@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">2</int>
+  <lst name="params">
+    <str name="indent"><![CDATA[on]]></str>
+    <str name="start"><![CDATA[0]]></str>
+    <str name="q"><![CDATA[id:remi]]></str>
+  </lst>
+</lst>

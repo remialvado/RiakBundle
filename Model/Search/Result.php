@@ -47,6 +47,7 @@ class Result
      * @Ser\Type("array<Kbrw\RiakBundle\Model\Search\Document>") 
      * @Ser\XmlList(inline = true, entry = "doc")
      * @Ser\Since("1")
+     * @var array<\Kbrw\RiakBundle\Model\Search\Document>
      */
     protected $docs = array();
     
@@ -57,6 +58,20 @@ class Result
         $this->setStart($start);
         $this->setMaxScore($maxScore);
         $this->setDocs($docs);
+    }
+    
+    /**
+     * @param string $field
+     * @return array<string>
+     */
+    public function extract($field)
+    {
+        $extract = array();
+        foreach($this->docs as $doc) {
+            $data = $doc->get($field);
+            if (!empty($data)) $extract[] = $data->getValue();
+        }
+        return $extract;
     }
     
     public function getName()
