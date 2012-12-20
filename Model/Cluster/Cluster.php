@@ -65,7 +65,7 @@ class Cluster
         $this->setRiakSearchServiceClient($riakSearchServiceClient);
         $this->buckets = array();
         foreach($bucketConfigs as $bucketName => $bucketConfig) {
-            $class = $bucketConfig["class"];
+            $class = isset($bucketConfig["class"]) ? $bucketConfig["class"] : "\Kbrw\RiakBundle\Model\Bucket\Bucket";
             $bucket = new $class();
             $bucket->setName($bucketName);
             $bucket->setFormat($bucketConfig["format"]);
