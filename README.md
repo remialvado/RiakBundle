@@ -36,6 +36,7 @@ stored objects instead of on communication APIs. Supported features are :
 - console tasks to list and count keys inside a bucket, delete a single key or an entire bucket
 - support for basic searches
 - support for custom search parameters (used by custom Riak Search builds)
+- support for Bucket inheritance to allow you to define custom services
 
 Roadmap
 -------
@@ -343,3 +344,25 @@ $backendCluster->getBucket("users")->put($remi);
 ```
 
 The same mecanism can be used to handle Riak merge issues with the X-Riak-Vclock header.
+
+### Define your own Bucket class
+
+Sometimes, you might want to define you own Bucket class so that you can override some existing methods, add new ones, ... This can easily be done by hacking the condiguration like that : 
+```yaml
+riak:
+  clusters:
+    backend:
+      domain: "127.0.0.1"
+      port: "8098"
+      client_id: "frontend"
+      max_parallel_calls: 100
+      buckets:
+        points_of_interests:
+          fqcn: 'MyCompany\MyBundle\Model\PointOfInterest'
+          format: json
+          class: 'Acme\DemoBundle\Model\AcmeBucket'
+```
+
+With this configuration, the "points_of_interests" bucket will be initialized as a ```Acme\DemoBundle\Model\AcmeBucket``` and not a regular Bucket. You can now implement this class (that you extends ```\Kbrw\RiakBundle\Model\Bucket\Bucket```) to atch your requirements.
+In the same spirit, each time a Bucket is added to a Cluster, an event named "riak.bucket.add" is thrown to the EventDispatcher. This ```\Symfony\Component\EventDispatcher\GenericEvent``` contains the newly created bucket that you can manipulate the way you want.
+For closer details, you can have a look at [this example](https://gist.github.com/4363553).

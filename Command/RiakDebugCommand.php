@@ -36,6 +36,6 @@ class RiakDebugCommand extends ContainerAwareCommand
         //$bucket->enableSearchIndexing();
         //$bucket->disableSearchIndexing();
         //$bucket->save();
-        print_r($bucket->search(new \Kbrw\RiakBundle\Model\Search\Query("id:rem*", "id")));
+        print_r($bucket->sasearch(new \Kbrw\RiakBundle\Model\Search\Query("id:rem*", "id")));
     }
 }

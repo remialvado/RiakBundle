@@ -52,7 +52,8 @@ class BucketTest extends ModelTestCase
         $riakBucketServiceClient = new MockedRiakBucketServiceClient($this->getContainer());
         $guzzleClientProviderTest = new SimpleGuzzleClientProviderTest();
         $guzzleClientProvider = $guzzleClientProviderTest->getGuzzleClientProvider();
-        $this->cluster = new Cluster("backend", "http", "localhost", "1234", "frontend", 50, array(), $guzzleClientProvider, $riakBucketServiceClient, $riakKVServiceClient);
+        $eventDispatcher = $this->getService("event_dispatcher");
+        $this->cluster = new Cluster("backend", "http", "localhost", "1234", "frontend", 50, array(), $guzzleClientProvider, $eventDispatcher, $riakBucketServiceClient, $riakKVServiceClient);
         $this->cluster->addBucket($this->bucket);
         
         // insert fake data into this bucket for test purposes

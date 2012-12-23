@@ -3,6 +3,7 @@
 namespace Kbrw\RiakBundle\Model\Cluster;
 
 use \Kbrw\RiakBundle\Model\Bucket\Bucket;
+use \Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * @author remi
@@ -31,6 +32,11 @@ class Cluster
     protected $buckets;
     
     /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+    
+    /**
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakBucketServiceClient
      */
     protected $riakBucketServiceClient;
@@ -45,7 +51,7 @@ class Cluster
      */
     protected $riakSearchServiceClient;
     
-    function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null)
+    function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $eventDispatcher = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null)
     {
         if (!isset($name))                          $name                          = self::DEFAULT_NAME;
         if (!isset($protocol))                      $protocol                      = self::DEFAULT_PROTOCOL;
@@ -60,6 +66,7 @@ class Cluster
         $this->setClientId($clientId);
         $this->setMaxParallelCalls($maxParallelCalls);
         $this->setGuzzleClientProviderService($guzzleClientProviderService);
+        $this->setEventDispatcher($eventDispatcher);
         $this->setRiakBucketServiceClient($riakBucketServiceClient);
         $this->setRiakKVServiceClient($riakKVServiceClient);
         $this->setRiakSearchServiceClient($riakSearchServiceClient);
@@ -92,6 +99,11 @@ class Cluster
         $bucket->setRiakKVServiceClient($this->riakKVServiceClient);
         $bucket->setRiakSearchServiceClient($this->riakSearchServiceClient);
         $bucket->setCluster($this);
+        if (isset($this->eventDispatcher)) {
+            $event = new GenericEvent("riak.bucket.add");
+            $event->setArgument("bucket", $bucket);
+            $this->eventDispatcher->dispatch("riak.bucket.add", $event);
+        }
         $this->buckets[$bucket->getName()] = $bucket;
         return $bucket;
     }
@@ -185,6 +197,16 @@ class Cluster
     public function setMaxParallelCalls($maxParallelCalls)
     {
         $this->maxParallelCalls = $maxParallelCalls;
+    }
+    
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
+    }
+
+    public function setEventDispatcher($eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function getGuzzleClientProviderService()

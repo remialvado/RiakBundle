@@ -14,7 +14,7 @@ parameters:
   kbrw.riak.kv.route: "{protocol}://{domain}:{port}/riak/{bucket}/{id}{?r,w,dw}"
   
   kbrw.riak.search.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakSearchServiceClient"
-  kbrw.riak.search.route: "{protocol}://{domain}:{port}/solr/{bucket}/select{?q,start,rows,df,q.op,sort,wt,filter,fl,additionalParameters*}"
+  kbrw.riak.search.route: "{protocol}://{domain}:{port}/solr/{bucket}/select{?q,start,rows,df,q.op,sort,wt,filter,fl}"
   
 services:
   kbrw.content.type.normalizer:
