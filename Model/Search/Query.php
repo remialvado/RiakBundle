@@ -12,9 +12,8 @@ class Query
     protected $sort;
     protected $wt;
     protected $filter;
-    protected $additionalParameters;
     
-    function __construct($query = null, $fieldsList = array(), $start = 0, $rows = 10, $defaultField = null, $operation = null, $sort = null, $wt = "xml", $filter = null, $additionalParameters = array())
+    function __construct($query = null, $fieldsList = array(), $start = 0, $rows = 10, $defaultField = null, $operation = null, $sort = null, $wt = "xml", $filter = null)
     {
         $this->setQuery($query);
         if (!is_array($fieldsList)) $fieldsList = array($fieldsList);
@@ -26,7 +25,6 @@ class Query
         $this->setSort($sort);
         $this->setWt($wt);
         $this->setFilter($filter);
-        $this->setAdditionalParameters($additionalParameters);
     }
     
     public function getConfig()
@@ -41,7 +39,6 @@ class Query
         if(!empty($this->wt))           $config["wt"]     = $this->wt;
         if(!empty($this->filter))       $config["filter"] = $this->filter;
         if(count($this->fieldsList) > 0)           $config["fl"]                   = join(",", $this->fieldsList);
-        if(count($this->additionalParameters) > 0) $config["additionalParameters"] = $this->additionalParameters;
         return $config;
     }
     
@@ -138,20 +135,5 @@ class Query
     public function setFilter($filter)
     {
         $this->filter = $filter;
-    }
-
-    public function getAdditionalParameters()
-    {
-        return $this->additionalParameters;
-    }
-
-    public function setAdditionalParameters($additionalParameters)
-    {
-        $this->additionalParameters = $additionalParameters;
-    }
-    
-    public function addAdditionnalParameter($name, $value)
-    {
-        $this->additionalParameters[$name] = $value;
     }
 }

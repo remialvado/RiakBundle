@@ -20,6 +20,7 @@ Table Of Content
     - [Load and edit Bucket configuration](#load-and-edit-bucket-configuration)
     - [Enable Automatic Indexation](#enable-automatic-indexation)
     - [Play with Headers](#play-with-headers)
+    - [Define your own bucket class](#define-your-own-bucket-class)
 
 Features
 --------
