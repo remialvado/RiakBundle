@@ -3,200 +3,200 @@ namespace Kbrw\RiakBundle\Model\Bucket;
 
 use JMS\Serializer\Annotation as Ser;
 
-/** 
- * @Ser\AccessType("public_method") 
+/**
+ * @Ser\AccessType("public_method")
  * @Ser\XmlRoot("props")
  */
-class Props {
-    
-    /** 
+class Props
+{
+    /**
      * @var string
-     * @Ser\Type("string") 
+     * @Ser\Type("string")
      * @Ser\SerializedName("name")
      * @Ser\Since("1")
      */
     protected $name;
-    
-    /**  
+
+    /**
      * @var boolean
-     * @Ser\Type("boolean") 
+     * @Ser\Type("boolean")
      * @Ser\SerializedName("allow_mult")
      * @Ser\Since("1")
      */
     protected $allowMult;
-    
-    /**  
+
+    /**
      * @var boolean
-     * @Ser\Type("boolean") 
+     * @Ser\Type("boolean")
      * @Ser\SerializedName("basic_quorum")
      * @Ser\Since("1")
      */
     protected $basicQuorum;
-    
-    /**  
+
+    /**
      * @var integer
-     * @Ser\Type("integer") 
+     * @Ser\Type("integer")
      * @Ser\SerializedName("big_vclock")
      * @Ser\Since("1")
      */
     protected $bigVclock;
-    
-    /** 
+
+    /**
      * @var \Kbrw\RiakBundle\Model\Bucket\ErlangCall
-     * @Ser\Type("Kbrw\RiakBundle\Model\Bucket\ErlangCall") 
+     * @Ser\Type("Kbrw\RiakBundle\Model\Bucket\ErlangCall")
      * @Ser\SerializedName("chash_keyfun")
      * @Ser\Since("1")
      */
     protected $chashKeyfun;
-    
-    /**  
+
+    /**
      * @var string
-     * @Ser\Type("string") 
+     * @Ser\Type("string")
      * @Ser\SerializedName("dw")
      * @Ser\Since("1")
      */
     protected $dw;
-    
-    /**  
+
+    /**
      * @var boolean
-     * @Ser\Type("boolean") 
+     * @Ser\Type("boolean")
      * @Ser\SerializedName("last_write_wins")
      * @Ser\Since("1")
      */
     protected $lastWriteWins;
-    
-    /** 
+
+    /**
      * @var \Kbrw\RiakBundle\Model\Bucket\ErlangCall
-     * @Ser\Type("Kbrw\RiakBundle\Model\Bucket\ErlangCall") 
+     * @Ser\Type("Kbrw\RiakBundle\Model\Bucket\ErlangCall")
      * @Ser\SerializedName("linkfun")
      * @Ser\Since("1")
      */
     protected $linkfun;
-    
-    /**  
+
+    /**
      * @var integer
-     * @Ser\Type("integer") 
+     * @Ser\Type("integer")
      * @Ser\SerializedName("n_val")
      * @Ser\Since("1")
      */
     protected $nVal;
-    
-    /**  
+
+    /**
      * @var boolean
-     * @Ser\Type("boolean") 
+     * @Ser\Type("boolean")
      * @Ser\SerializedName("notfound_ok")
      * @Ser\Since("1")
      */
     protected $notfoundOk;
-    
-    /**  
+
+    /**
      * @var integer
-     * @Ser\Type("integer") 
+     * @Ser\Type("integer")
      * @Ser\SerializedName("old_vclock")
      * @Ser\Since("1")
      */
     protected $oldVclock;
-    
-    /** 
+
+    /**
      * @var array<\Kbrw\RiakBundle\Model\Bucket\ErlangCall>
-     * @Ser\Type("array<Kbrw\RiakBundle\Model\Bucket\ErlangCall>") 
+     * @Ser\Type("array<Kbrw\RiakBundle\Model\Bucket\ErlangCall>")
      * @Ser\SerializedName("postcommit")
      * @Ser\Since("1")
      */
     protected $postcommit;
-    
-    /**  
+
+    /**
      * @var integer
-     * @Ser\Type("integer") 
+     * @Ser\Type("integer")
      * @Ser\SerializedName("pr")
      * @Ser\Since("1")
      */
     protected $pr;
-    
-    /** 
+
+    /**
      * @var array<\Kbrw\RiakBundle\Model\Bucket\ErlangCall>
-     * @Ser\Type("array<Kbrw\RiakBundle\Model\Bucket\ErlangCall>") 
+     * @Ser\Type("array<Kbrw\RiakBundle\Model\Bucket\ErlangCall>")
      * @Ser\SerializedName("precommit")
      * @Ser\Since("1")
      */
     protected $precommit;
-    
-    /**  
+
+    /**
      * @var integer
-     * @Ser\Type("integer") 
+     * @Ser\Type("integer")
      * @Ser\SerializedName("pw")
      * @Ser\Since("1")
      */
     protected $pw;
-    
-    /**  
+
+    /**
      * @var string
-     * @Ser\Type("string") 
+     * @Ser\Type("string")
      * @Ser\SerializedName("r")
      * @Ser\Since("1")
      */
     protected $r;
-    
-    /**  
+
+    /**
      * @var string
-     * @Ser\Type("string") 
+     * @Ser\Type("string")
      * @Ser\SerializedName("rw")
      * @Ser\Since("1")
      */
     protected $rw;
-    
-    /**  
+
+    /**
      * @var integer
-     * @Ser\Type("integer") 
+     * @Ser\Type("integer")
      * @Ser\SerializedName("small_vclock")
      * @Ser\Since("1")
      */
     protected $smallVclock;
-    
-    /**  
+
+    /**
      * @var string
-     * @Ser\Type("string") 
+     * @Ser\Type("string")
      * @Ser\SerializedName("w")
      * @Ser\Since("1")
      */
     protected $w;
-    
-    /**  
+
+    /**
      * @var integer
-     * @Ser\Type("integer") 
+     * @Ser\Type("integer")
      * @Ser\SerializedName("young_vclock")
      * @Ser\Since("1")
      */
     protected $youngVclock;
-    
+
     /**
-     * 
-     * @param string $name
-     * @param boolean $allowMult
-     * @param boolean $basicQuorum
-     * @param integet $bigVclock
-     * @param \Kbrw\RiakBundle\Model\Bucket\ErlangCall $chashKeyfun
-     * @param string $dw
-     * @param boolean $lastWriteWins
-     * @param \Kbrw\RiakBundle\Model\Bucket\ErlangCall $linkfun
-     * @param integer $nVal
-     * @param boolean $notfoundOk
-     * @param integer $oldVclock
+     *
+     * @param string                                          $name
+     * @param boolean                                         $allowMult
+     * @param boolean                                         $basicQuorum
+     * @param integet                                         $bigVclock
+     * @param \Kbrw\RiakBundle\Model\Bucket\ErlangCall        $chashKeyfun
+     * @param string                                          $dw
+     * @param boolean                                         $lastWriteWins
+     * @param \Kbrw\RiakBundle\Model\Bucket\ErlangCall        $linkfun
+     * @param integer                                         $nVal
+     * @param boolean                                         $notfoundOk
+     * @param integer                                         $oldVclock
      * @param array<\Kbrw\RiakBundle\Model\Bucket\ErlangCall> $postcommit
-     * @param integer $pr
+     * @param integer                                         $pr
      * @param array<\Kbrw\RiakBundle\Model\Bucket\ErlangCall> $precommit
-     * @param integer $pw
-     * @param string $r
-     * @param string $rw
-     * @param integer $smallVclock
-     * @param string $w
-     * @param integer $youngVclock
+     * @param integer                                         $pw
+     * @param string                                          $r
+     * @param string                                          $rw
+     * @param integer                                         $smallVclock
+     * @param string                                          $w
+     * @param integer                                         $youngVclock
      */
-    function __construct($name = null, $allowMult = false, $basicQuorum = false, $bigVclock = 50, $chashKeyfun = null, $dw = "quorum", $lastWriteWins = false, $linkfun = null, $nVal = 3, $notfoundOk = true, $oldVclock = 86400, $postcommit = array(), $pr = 0, $precommit = array(), $pw = 0, $r = "quorum", $rw = "quorum", $smallVclock = 50, $w = "quorum", $youngVclock = 20)
+    public function __construct($name = null, $allowMult = false, $basicQuorum = false, $bigVclock = 50, $chashKeyfun = null, $dw = "quorum", $lastWriteWins = false, $linkfun = null, $nVal = 3, $notfoundOk = true, $oldVclock = 86400, $postcommit = array(), $pr = 0, $precommit = array(), $pw = 0, $r = "quorum", $rw = "quorum", $smallVclock = 50, $w = "quorum", $youngVclock = 20)
     {
         if (!isset($chashKeyfun)) $chashKeyfun = ErlangCall::getDefaultChashKeyFun();
         if (!isset($linkfun))     $linkfun     = ErlangCall::getDefaultLinkFun();
-        
+
         $this->setName($name);
         $this->setAllowMult($allowMult);
         $this->setBasicQuorum($basicQuorum);
@@ -218,16 +218,16 @@ class Props {
         $this->setW($w);
         $this->setYoungVclock($youngVclock);
     }
-    
+
     public function hasCommitHook($erlangCalls, $mod, $fun)
     {
-        foreach($erlangCalls as $erlangCall)
-        {
+        foreach ($erlangCalls as $erlangCall) {
             if ($erlangCall->getMod() === $mod && $erlangCall->getFun() === $fun) return true;
         }
+
         return false;
     }
-    
+
     public function getName()
     {
         return $this->name;
@@ -257,7 +257,7 @@ class Props {
     {
         $this->basicQuorum = $basicQuorum;
     }
-    
+
     public function getBigVclock()
     {
         return $this->bigVclock;
@@ -350,25 +350,23 @@ class Props {
     {
         $this->postcommit = $postcommit;
     }
-    
+
     public function addPostcommit($postcommit)
     {
         $this->postcommit[] = $postcommit;
     }
-    
+
     public function removePostcommit($postcommit)
     {
         $hooks = array();
-        foreach($this->postcommit as $erlangCall)
-        {
-            if ($erlangCall->equalTo($postcommit))
-            {
+        foreach ($this->postcommit as $erlangCall) {
+            if ($erlangCall->equalTo($postcommit)) {
                 $hooks[] = $postcommit;
             }
         }
         $this->postcommit = $hooks;
     }
-    
+
     public function hasPostCommitHook($erlangCall)
     {
         return $this->hasCommitHook($this->postcommit, $erlangCall->getMod(), $erlangCall->getFun());
@@ -396,23 +394,23 @@ class Props {
     {
         $this->precommit = $precommit;
     }
-    
+
     public function addPrecommit($precommit)
     {
         $this->precommit[] = $precommit;
     }
-    
+
     public function removePrecommit($precommit)
     {
         $hooks = array();
-        foreach($this->precommit as $erlangCall) {
+        foreach ($this->precommit as $erlangCall) {
             if ($erlangCall->equalTo($precommit)) {
                 $hooks[] = $precommit;
             }
         }
         $this->precommit = $hooks;
     }
-    
+
     public function hasPreCommitHook($erlangCall)
     {
         return $this->hasCommitHook($this->precommit, $erlangCall->getMod(), $erlangCall->getFun());
@@ -476,5 +474,5 @@ class Props {
     public function setYoungVclock($youngVclock)
     {
         $this->youngVclock = $youngVclock;
-    }    
+    }
 }

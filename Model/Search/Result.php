@@ -3,55 +3,54 @@ namespace Kbrw\RiakBundle\Model\Search;
 
 use JMS\Serializer\Annotation as Ser;
 
-/**  
+/**
  * @Ser\AccessType("public_method")
  * @Ser\XmlRoot("result")
  */
 class Result
 {
-    
-    /** 
-     * @Ser\Type("string") 
+
+    /**
+     * @Ser\Type("string")
      * @Ser\XmlAttribute
      * @Ser\SerializedName("name")
      * @Ser\Since("1")
      */
     protected $name = null;
-    
-    /** 
-     * @Ser\Type("integer") 
+
+    /**
+     * @Ser\Type("integer")
      * @Ser\XmlAttribute
      * @Ser\SerializedName("numFound")
      * @Ser\Since("1")
      */
     protected $numFound = null;
-    
-    /** 
-     * @Ser\Type("integer") 
+
+    /**
+     * @Ser\Type("integer")
      * @Ser\XmlAttribute
      * @Ser\SerializedName("start")
      * @Ser\Since("1")
      */
     protected $start = null;
-    
-    /** 
-     * @Ser\Type("double") 
+
+    /**
+     * @Ser\Type("double")
      * @Ser\XmlAttribute
      * @Ser\SerializedName("maxScore")
      * @Ser\Since("1")
      */
     protected $maxScore = null;
-    
-    
-    /** 
-     * @Ser\Type("array<Kbrw\RiakBundle\Model\Search\Document>") 
+
+    /**
+     * @Ser\Type("array<Kbrw\RiakBundle\Model\Search\Document>")
      * @Ser\XmlList(inline = true, entry = "doc")
      * @Ser\Since("1")
      * @var array<\Kbrw\RiakBundle\Model\Search\Document>
      */
     protected $docs = array();
-    
-    function __construct($name = null, $numFound = null, $start = null, $maxScore = null, $docs = null)
+
+    public function __construct($name = null, $numFound = null, $start = null, $maxScore = null, $docs = null)
     {
         $this->setName($name);
         $this->setNumFound($numFound);
@@ -59,21 +58,22 @@ class Result
         $this->setMaxScore($maxScore);
         $this->setDocs($docs);
     }
-    
+
     /**
-     * @param string $field
+     * @param  string        $field
      * @return array<string>
      */
     public function extract($field)
     {
         $extract = array();
-        foreach($this->docs as $doc) {
+        foreach ($this->docs as $doc) {
             $data = $doc->get($field);
             if (!empty($data)) $extract[] = $data->getValue();
         }
+
         return $extract;
     }
-    
+
     public function getName()
     {
         return $this->name;

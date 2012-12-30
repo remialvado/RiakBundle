@@ -10,8 +10,8 @@ abstract class GuzzleClientProviderTestAbstract extends \PHPUnit_Framework_TestC
     /**
      * @return \Kbrw\RiakBundle\Service\WebserviceClient\Guzzle\GuzzleClientProviderInterface
      */
-    abstract function getGuzzleClientProvider();
-    
+    abstract public function getGuzzleClientProvider();
+
     /**
      * @test
      */

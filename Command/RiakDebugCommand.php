@@ -7,12 +7,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RiakDebugCommand extends ContainerAwareCommand
 {
-    
+
     /**
      * @var \Kbrw\RiakBundle\Model\Cluster\Cluster
      */
     protected $cluster;
-    
+
     protected function configure()
     {
         $this
@@ -22,7 +22,7 @@ class RiakDebugCommand extends ContainerAwareCommand
             //->addOption("list", "l", InputOption::VALUE_NONE, "List keys as well")
         ;
     }
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->cluster = $this->getContainer()->get("riak.cluster.backend");

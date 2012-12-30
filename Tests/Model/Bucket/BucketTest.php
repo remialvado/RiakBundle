@@ -21,31 +21,31 @@ class BucketTest extends ModelTestCase
     protected $serializarionMethod          = "json";
     protected $systemUnderTestFullClassName = "Kbrw\RiakBundle\Model\Bucket\Bucket";
     protected $testedModels                 = array("regular");
-    
+
     protected function getTestFileBasePath()
     {
         return dirname(__FILE__) . "/../../../Resources/tests/model/bucket";
     }
-    
+
     /**
      * @var \Kbrw\RiakBundle\Model\Bucket\Bucket
      */
     protected $bucket;
-    
+
     /**
      * @var \Kbrw\RiakBundle\Model\Cluster\Cluster
      */
     protected $cluster;
-    
+
     public function setup()
     {
         parent::setup();
-        
+
         // create bucket
         $this->bucket = new Bucket("some_classes");
         $this->bucket->setFormat("json");
         $this->bucket->setFullyQualifiedClassName("Kbrw\RiakBundle\Tests\Model\Bucket\SomeClass");
-        
+
         // insert bucket into a cluster
         $riakKVServiceClient = new MockedRiakKVServiceClient($this->getContainer());
         $riakBucketServiceClient = new MockedRiakBucketServiceClient($this->getContainer());
@@ -54,12 +54,12 @@ class BucketTest extends ModelTestCase
         $eventDispatcher = $this->getService("event_dispatcher");
         $this->cluster = new Cluster("backend", "http", "localhost", "1234", "frontend", 50, array(), $guzzleClientProvider, $eventDispatcher, $riakBucketServiceClient, $riakKVServiceClient);
         $this->cluster->addBucket($this->bucket);
-        
+
         // insert fake data into this bucket for test purposes
         $this->insertData("foo1", new SomeClass("bar1"));
         $this->insertData("foo2", new SomeClass("bar2"));
     }
-    
+
     /**
      * @test
      */
@@ -69,12 +69,12 @@ class BucketTest extends ModelTestCase
         $this->assertNotNull($datas);
         $this->assertContainData($datas, "foo1", new SomeClass("bar1"));
         $this->assertContainData($datas, "foo2", new SomeClass("bar2"));
-        
+
         $datas = $this->bucket->fetch("foo2");
         $this->assertNotNull($datas);
         $this->assertContainData($datas, "foo2", new SomeClass("bar2"));
     }
-    
+
     /**
      * @test
      */
@@ -84,12 +84,12 @@ class BucketTest extends ModelTestCase
         $this->assertNotNull($datas);
         $this->assertContainData($datas, "foo1", new SomeClass("bar1"));
         $this->assertNotContainData($datas, "foo3");
-        
+
         $datas = $this->bucket->fetch("foo3");
         $this->assertNotNull($datas);
         $this->assertNotContainData($datas, "foo3");
     }
-    
+
     /**
      * @test
      */
@@ -100,7 +100,7 @@ class BucketTest extends ModelTestCase
         $this->assertEquals($data->getKey(), "foo1");
         $this->assertEquals($data->getContent(), new SomeClass("bar1"));
     }
-    
+
     /**
      * @test
      */
@@ -111,7 +111,7 @@ class BucketTest extends ModelTestCase
         $this->assertEquals($data->getKey(), "foo3");
         $this->assertEquals($data->getContent(), null);
     }
-    
+
     /**
      * @test
      */
@@ -125,7 +125,7 @@ class BucketTest extends ModelTestCase
         $this->assertContainData($this->bucket->fetch("foo3"), "foo3", new SomeClass("bar3"));
         $this->assertContainData($this->bucket->fetch("foo4"), "foo4", new SomeClass("bar4"));
     }
-    
+
     /**
      * @test
      */
@@ -139,7 +139,7 @@ class BucketTest extends ModelTestCase
         $this->assertContainData($this->bucket->fetch("foo1"), "foo1", new SomeClass("bar3"));
         $this->assertContainData($this->bucket->fetch("foo2"), "foo2", new SomeClass("bar4"));
     }
-    
+
     /**
      * @test
      */
@@ -151,7 +151,7 @@ class BucketTest extends ModelTestCase
         $this->assertNotContainData($datas, "foo1");
         $this->assertNotContainData($datas, "foo2");
     }
-    
+
     /**
      * @test
      */
@@ -164,7 +164,7 @@ class BucketTest extends ModelTestCase
         $this->assertNotContainData($datas, "foo2");
         $this->assertNotContainData($datas, "foo3");
     }
-    
+
     /**
      * @test
      */
@@ -174,7 +174,7 @@ class BucketTest extends ModelTestCase
         $this->assertContains("foo1", $this->bucket->keys());
         $this->assertContains("foo2", $this->bucket->keys());
     }
-    
+
     /**
      * @test
      */
@@ -182,7 +182,7 @@ class BucketTest extends ModelTestCase
     {
         $this->assertEquals(2, $this->bucket->count());
     }
-    
+
     /**
      * @test
      */
@@ -192,10 +192,10 @@ class BucketTest extends ModelTestCase
         $this->assertTrue($this->bucket->save());
         $this->assertEquals(5, $this->cluster->bucketProperties($this->bucket->getName())->getProps()->getNVal());
     }
-    
+
     /**
-     * @param string $key
-     * @param mixed $data
+     * @param string                               $key
+     * @param mixed                                $data
      * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
      */
     protected function insertData($key, $data)
@@ -204,38 +204,39 @@ class BucketTest extends ModelTestCase
         $this->bucket->riakBucketServiceClient->content[$key] = $serializedContent;
         $this->bucket->riakKVServiceClient->content[$key]     = $serializedContent;
     }
-    
+
     protected function assertContainData($datas, $key, $content)
     {
         $this->assertNotNull($datas);
         $datas = $datas->getDatas();
         $this->assertNotNull($datas);
-        foreach($datas as $data) {
+        foreach ($datas as $data) {
             if ($data->getKey() === $key) {
                 $this->assertEquals($data->getContent(), $content);
+
                 return;
             }
         }
         $this->fail("can't find key '$key' in datas structure.");
     }
-    
+
     protected function assertNotContainData($datas, $key)
     {
         $this->assertContainData($datas, $key, null);
     }
 }
 
-/** 
+/**
  * @Ser\XmlRoot("some_class")
  */
 class SomeClass
 {
-    /** 
-     * @Ser\Type("string") 
+    /**
+     * @Ser\Type("string")
      * @Ser\SerializedName("id")
      */
     public $id;
-    
+
     public function __construct($id)
     {
         $this->id = $id;

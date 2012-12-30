@@ -12,8 +12,8 @@ class Query
     protected $sort;
     protected $wt;
     protected $filter;
-    
-    function __construct($query = null, $fieldsList = array(), $start = 0, $rows = 10, $defaultField = null, $operation = null, $sort = null, $wt = "xml", $filter = null)
+
+    public function __construct($query = null, $fieldsList = array(), $start = 0, $rows = 10, $defaultField = null, $operation = null, $sort = null, $wt = "xml", $filter = null)
     {
         $this->setQuery($query);
         if (!is_array($fieldsList)) $fieldsList = array($fieldsList);
@@ -26,7 +26,7 @@ class Query
         $this->setWt($wt);
         $this->setFilter($filter);
     }
-    
+
     public function getConfig()
     {
         $config = array();
@@ -39,9 +39,10 @@ class Query
         if(!empty($this->wt))           $config["wt"]     = $this->wt;
         if(!empty($this->filter))       $config["filter"] = $this->filter;
         if(count($this->fieldsList) > 0)           $config["fl"]                   = join(",", $this->fieldsList);
+
         return $config;
     }
-    
+
     public function getQuery()
     {
         return $this->query;
@@ -51,7 +52,7 @@ class Query
     {
         $this->query = $query;
     }
-    
+
     public function getFieldsList()
     {
         return $this->fieldsList;
@@ -61,12 +62,12 @@ class Query
     {
         $this->fieldsList = $fieldsList;
     }
-    
+
     public function addFieldInList($fl)
     {
         return $this->fieldsList[] = $fl;
     }
-    
+
     public function getDefaultField()
     {
         return $this->defaultField;
