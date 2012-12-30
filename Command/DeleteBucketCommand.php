@@ -8,11 +8,11 @@ use Symfony\Component\Console\Input\InputOption;
 
 class DeleteBucketCommand extends ContainerAwareCommand
 {
-    
+
     const OPTION_BUCKET   = "bucket";
     const OPTION_CLUSTER  = "cluster";
     const OPTION_NO_CHECK = "yes";
-    
+
     protected function configure()
     {
         $this
@@ -23,11 +23,11 @@ class DeleteBucketCommand extends ContainerAwareCommand
             ->addOption(self::OPTION_NO_CHECK, "y", InputOption::VALUE_NONE,     "Automatically answer to all questions. Be aware that bucket will be deleted without the option to stop the command.")
         ;
     }
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dialog = $this->getHelperSet()->get('dialog');
-        
+
         $bucketName = $input->getOption(self::OPTION_BUCKET);
         while (empty($bucketName)) {
             $bucketName = $dialog->ask($output, 'Name of the bucket you want to delete : ', null);
@@ -38,6 +38,7 @@ class DeleteBucketCommand extends ContainerAwareCommand
         }
         if (!$this->getContainer()->has("riak.cluster.$clusterName")) {
             $output->writeln("<error>Cluster '$clusterName' does not exist.</error>");
+
             return 1;
         }
         $cluster = $this->getContainer()->get("riak.cluster.$clusterName");
@@ -48,9 +49,11 @@ class DeleteBucketCommand extends ContainerAwareCommand
         $keys = $bucket->keys();
         if (!$bucket->delete($keys)) {
             $output->writeln("<error>Unable to delete all " . count($keys) . " keys from '$bucketName' bucket. Some keys might have been deleted though.</error>");
+
             return 2;
         }
         $output->writeln("<info>" . count($keys) . " keys have been deleted in '$bucketName' bucket.</info>");
+
         return 0;
     }
 }

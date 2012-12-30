@@ -7,29 +7,29 @@ use Symfony\Component\HttpFoundation\HeaderBag;
 /**
  * @author remi
  */
-class Data 
+class Data
 {
     /**
-     * @var string 
+     * @var string
      */
     protected $key;
-    
+
     /**
      * @var mixed
      */
     protected $content;
-    
+
     /**
      * @var \Symfony\Component\HttpFoundation\HeaderBag
      */
     protected $headerBag;
-    
+
     /**
      * @var string
      */
     protected $stringContent;
-    
-    function __construct($key = null, $content = null, $headerBag = null, $stringContent = null)
+
+    public function __construct($key = null, $content = null, $headerBag = null, $stringContent = null)
     {
         $this->setKey($key);
         $this->setContent($content);
@@ -37,7 +37,7 @@ class Data
         $this->setHeaderBag($headerBag);
         $this->setStringContent($stringContent);
     }
-    
+
     /**
      * @return string
      */
@@ -53,7 +53,7 @@ class Data
     {
         $this->key = $key;
     }
-    
+
     /**
      * @return \Symfony\Component\HttpFoundation\HeaderBag
      */
@@ -74,7 +74,7 @@ class Data
     {
         return (!$asString && isset($this->content)) ? $this->content : $this->stringContent;
     }
-    
+
     public function setContent($content)
     {
         $this->content = $content;
@@ -84,9 +84,9 @@ class Data
     {
         $this->stringContent = $stringContent;
     }
-    
+
     public function isDefined()
-    {        
+    {
         return isset($this->content);
     }
 }

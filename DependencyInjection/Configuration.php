@@ -13,8 +13,7 @@ use Kbrw\RiakBundle\Model\Cluster\Cluster;
  */
 class Configuration implements ConfigurationInterface
 {
-    
-    
+
     /**
      * {@inheritDoc}
      */
@@ -50,6 +49,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
+
         return $treeBuilder;
     }
 }

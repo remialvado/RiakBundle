@@ -9,13 +9,13 @@ use Kbrw\RiakBundle\Model\KV\Datas;
 
 class MockedRiakKVServiceClient extends RiakKVServiceClient
 {
- 
+
     public $content = array();
-    
+
     /**
-     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
-     * @param array<string, mixed> $objects
+     * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param  \Kbrw\RiakBundle\Model\Bucket\Bucket   $bucket
+     * @param  array<string, mixed>                   $objects
      * @return boolean
      */
     public function put($cluster, $bucket, $objects)
@@ -26,49 +26,52 @@ class MockedRiakKVServiceClient extends RiakKVServiceClient
         if (count($objects) > $cluster->getMaxParallelCalls()) {
             $chunks = array_chunk($objects, $cluster->getMaxParallelCalls(), true);
             $result = true;
-            foreach($chunks as $chunk) {
+            foreach ($chunks as $chunk) {
                 $tmpResult = $this->put($cluster, $bucket, $chunk);
                 $result = $result && $tmpResult;
             }
+
             return $result;
         }
 
         foreach ($objects as $key => $object) {
-            // Prepare Key 
+            // Prepare Key
             if ($object instanceof \Kbrw\RiakBundle\Model\KV\Data) {
                 $key = $object->getKey();
             }
             $key = trim($key);
-            
+
             // Prepare Body
             $content = $object;
             if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($bucket->getFormat())) {
                 $content = $this->getSerializer()->serialize($object, $bucket->getFormat());
             }
-            
+
             $this->content[$key] = $content;
         }
+
         return true;
     }
 
     /**
-     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
-     * @param array<string> $keys
+     * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param  \Kbrw\RiakBundle\Model\Bucket\Bucket   $bucket
+     * @param  array<string>                          $keys
      * @return boolean
      */
     public function delete($cluster, $bucket, $keys)
     {
         if (!is_array($keys)) $keys = array($keys);
-        
+
         // Split work in smaller pieces to avoid exception caused by too many opened connections
         if (count($keys) > $cluster->getMaxParallelCalls()) {
             $chunks = array_chunk($keys, $cluster->getMaxParallelCalls());
             $result = true;
-            foreach($chunks as $chunk) {
+            foreach ($chunks as $chunk) {
                 $tmpResult = $this->delete($cluster, $bucket, $chunk);
                 $result = $result && $tmpResult;
             }
+
             return $result;
         }
 
@@ -77,35 +80,35 @@ class MockedRiakKVServiceClient extends RiakKVServiceClient
             $key = trim($key);
             if (isset($this->content[$key])) {
                 unset($this->content[$key]);
-            }
-            else {
+            } else {
                 $done = false;
             }
         }
+
         return $done;
     }
 
     /**
-     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
-     * @param array<string> $keys
+     * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param  \Kbrw\RiakBundle\Model\Bucket\Bucket   $bucket
+     * @param  array<string>                          $keys
      * @return \Kbrw\RiakBundle\Model\KV\Datas
      */
     public function fetch($cluster, $bucket, $keys)
     {
         if (!is_array($keys)) $keys = array($keys);
         $datas = new Datas();
-        
+
         // Split work in smaller pieces to avoid exception caused by too many opened connections
         if (count($keys) > $cluster->getMaxParallelCalls()) {
             $chunks = array_chunk($keys, $cluster->getMaxParallelCalls());
-            foreach($chunks as $chunk) {
+            foreach ($chunks as $chunk) {
                 $datas->addAll($this->fetch($cluster, $bucket, $chunk));
             }
+
             return $datas;
         }
-        
-        
+
         foreach ($keys as $key) {
             $key = trim($key);
             $data = new Data($key);
@@ -127,10 +130,11 @@ class MockedRiakKVServiceClient extends RiakKVServiceClient
             }
             $datas->add($data);
         }
+
         return $datas;
     }
-    
-    function __construct($container)
+
+    public function __construct($container)
     {
         $this->contentTypeNormalizer = $container->get("kbrw.content.type.normalizer");
         $this->serializer = $container->get("jms_serializer");

@@ -12,12 +12,12 @@ class ResultTest extends ModelTestCase
     protected $serializarionMethod          = "xml";
     protected $systemUnderTestFullClassName = "Kbrw\RiakBundle\Model\Search\Result";
     protected $testedModels                 = array("regular");
-    
+
     protected function getTestFileBasePath()
     {
         return dirname(__FILE__) . "/../../../Resources/tests/model/result";
     }
-    
+
     /**
      * @test
      */

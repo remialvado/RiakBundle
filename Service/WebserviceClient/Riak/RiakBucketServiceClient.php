@@ -5,10 +5,10 @@ namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 
 class RiakBucketServiceClient extends BaseServiceClient
-{   
+{
     /**
-     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param  \Kbrw\RiakBundle\Model\Bucket\Bucket   $bucket
      * @return array<string>
      */
     public function keys($cluster, $bucket)
@@ -18,25 +18,26 @@ class RiakBucketServiceClient extends BaseServiceClient
         $request->getCurlOptions()->set(CURLOPT_WRITEFUNCTION, function($ch, $data) use (&$keys) {
             $content = json_decode($data, true);
             if (is_array($content) && array_key_exists("keys", $content)) {
-                foreach($content["keys"] as $key) {
+                foreach ($content["keys"] as $key) {
                     $keys[] = $key;
                 }
             }
+
             return strlen($data);
         });
         $this->logger->debug("[GET] '" . $request->getUrl() . "'");
         try {
-            $request->send();            
-        }
-        catch(\Exception $e) {
+            $request->send();
+        } catch (\Exception $e) {
             $this->logger->err("Error while getting keys" . $e->getMessage());
         }
+
         return $keys;
     }
-    
+
     /**
-     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param  \Kbrw\RiakBundle\Model\Bucket\Bucket   $bucket
      * @return integer
      */
     public function count($cluster, $bucket)
@@ -48,21 +49,22 @@ class RiakBucketServiceClient extends BaseServiceClient
             if (is_array($content) && array_key_exists("keys", $content)) {
                 $keys += count($content["keys"]);
             }
+
             return strlen($data);
         });
         $this->logger->debug("[GET] '" . $request->getUrl() . "'");
         try {
-            $request->send();            
-        }
-        catch(\Exception $e) {
+            $request->send();
+        } catch (\Exception $e) {
             $this->logger->err("Error while getting keys" . $e->getMessage());
         }
+
         return $keys;
     }
-    
+
     /**
-     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
-     * @param string $bucketName
+     * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param  string                                 $bucketName
      * @return \Kbrw\RiakBundle\Model\Bucket\Bucket
      */
     public function properties($cluster, $bucketName)
@@ -74,16 +76,16 @@ class RiakBucketServiceClient extends BaseServiceClient
             if ($response->getStatusCode() == "200") {
                 $bucket = $this->serializer->deserialize($response->getBody(true), "Kbrw\RiakBundle\Model\Bucket\Bucket", "json");
             }
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->err("Error while getting properties on bucket '" . $bucketName . "'. Full message is : " . $e->getMessage());
         }
+
         return $bucket;
     }
-    
+
     /**
-     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param  \Kbrw\RiakBundle\Model\Bucket\Bucket   $bucket
      * @return boolean
      */
     public function save($cluster, $bucket)
@@ -93,17 +95,18 @@ class RiakBucketServiceClient extends BaseServiceClient
             $request->setBody($this->serializer->serialize($bucket, "json"));
             $request->setHeader("Content-Type", "application/json");
             $response = $request->send();
+
             return ($response->getStatusCode() == "204");
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->err("Error while setting properties on bucket '" . $bucket->getName() . "'. Full message is : " . $e->getMessage());
         }
+
         return false;
     }
-    
+
     /**
-     * @param \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
-     * @param \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
+     * @param  \Kbrw\RiakBundle\Model\Bucket\Bucket   $bucket
      * @return array<string,string>
      */
     public function getConfig($cluster, $bucketName, $keys = "stream", $props = false)
@@ -115,9 +118,10 @@ class RiakBucketServiceClient extends BaseServiceClient
         $config["bucket"]   = $bucketName;
         $config["keys"]     = $keys;
         $config["props"]    = $props ? "true" : null;
+
         return $config;
     }
-    
+
     public function getSerializer()
     {
         return $this->serializer;
@@ -127,7 +131,7 @@ class RiakBucketServiceClient extends BaseServiceClient
     {
         $this->serializer = $serializer;
     }
-    
+
     /**
      * @var \JMS\Serializer\Serializer
      */

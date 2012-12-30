@@ -10,25 +10,25 @@ use Kbrw\RiakBundle\Tests\BaseTestCase;
 
 class BucketTest extends BaseTestCase
 {
-    
+
     /**
      * @var \Kbrw\RiakBundle\Model\Bucket\Bucket
      */
     protected $bucket;
-    
+
     /**
      * @var \Kbrw\RiakBundle\Model\Cluster\Cluster
      */
     protected $cluster;
-    
+
     public function setup()
     {
         parent::setup();
-        
+
         // create bucket
         $this->bucket = new Bucket("foo");
         $this->bucket->getProps()->setNVal(5);
-        
+
         // insert bucket into a cluster
         $riakKVServiceClient = new MockedRiakKVServiceClient($this->getContainer());
         $riakBucketServiceClient = new MockedRiakBucketServiceClient($this->getContainer());
@@ -38,7 +38,7 @@ class BucketTest extends BaseTestCase
         $this->cluster = new Cluster("backend", "http", "localhost", "1234", "frontend", 50, array(), $guzzleClientProvider, $eventDispatcher, $riakBucketServiceClient, $riakKVServiceClient);
         $this->cluster->addBucket($this->bucket);
     }
-    
+
     /**
      * @test
      */
@@ -49,7 +49,7 @@ class BucketTest extends BaseTestCase
         $this->assertEquals("localhost", $cluster->getDomain());
         $this->assertEquals("8098", $cluster->getPort());
     }
-    
+
     /**
      * @test
      */
@@ -71,7 +71,7 @@ class BucketTest extends BaseTestCase
         $this->assertEquals("MyCompanyBundle\Model\City", $cluster->getBucket("cities")->getFullyQualifiedClassName());
         $this->assertEquals("xml", $cluster->getBucket("cities")->getFormat());
     }
-    
+
     /**
      * @test
      */
@@ -79,7 +79,7 @@ class BucketTest extends BaseTestCase
     {
         $this->assertTrue($this->cluster->hasBucket("foo"));
     }
-    
+
     /**
      * @test
      */
@@ -87,7 +87,7 @@ class BucketTest extends BaseTestCase
     {
         $this->assertTrue($this->cluster->hasBucket(new Bucket("foo")));
     }
-    
+
     /**
      * @test
      */
@@ -100,7 +100,7 @@ class BucketTest extends BaseTestCase
         $this->assertEquals($this->cluster->getRiakBucketServiceClient(), $bucket->getRiakBucketServiceClient());
         $this->assertEquals($this->cluster->getRiakKVServiceClient(), $bucket->getRiakKVServiceClient());
     }
-    
+
     /**
      * @test
      */
@@ -113,7 +113,7 @@ class BucketTest extends BaseTestCase
         $this->assertEquals($this->cluster->getRiakBucketServiceClient(), $bucket->getRiakBucketServiceClient());
         $this->assertEquals($this->cluster->getRiakKVServiceClient(), $bucket->getRiakKVServiceClient());
     }
-    
+
     /**
      * @test
      */
@@ -122,7 +122,7 @@ class BucketTest extends BaseTestCase
         $this->assertEquals($this->bucket, $this->cluster->getBucket("foo"));
         $this->assertEquals($this->bucket, $this->cluster->getBucket(new Bucket("foo")));
     }
-    
+
     /**
      * @test
      */
