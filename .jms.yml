@@ -6,3 +6,12 @@ filter:
     # Patterns must match the entire path to apply; "src/" will not match "src/foo".
     paths:                [] # Example: [src/*, tests/*]
     excluded_paths:       [vendor/*, Resources/tests/*] # Example: [tests/*/Fixture/*]
+
+default_config:
+    composer_config_check:  
+        enabled:              true 
+        publish_checks:       true 
+        level:                error # Allowed Values: "error", "warning"
+    fabpot_cs_fixer:      
+        enabled:              true
+        level:                all # Allowed Values: "PSR-1", "PSR-2", "all"
