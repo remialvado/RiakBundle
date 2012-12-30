@@ -3,7 +3,7 @@
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
 use Guzzle\Http\Message\RequestInterface;
-use Kbrw\RiakBundle\Model\Transmutable;
+use Kbrw\RiakBundle\Model\KV\Transmutable;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 use Kbrw\RiakBundle\Model\KV\Data;
 use Kbrw\RiakBundle\Model\KV\Datas;

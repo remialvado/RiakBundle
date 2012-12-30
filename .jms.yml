@@ -1,0 +1,8 @@
+# .jms.yml
+
+# Allows you to filter which files are included in the review; by default, all files.
+filter:               
+
+    # Patterns must match the entire path to apply; "src/" will not match "src/foo".
+    paths:                [] # Example: [src/*, tests/*]
+    excluded_paths:       [vendor/*, Resources/tests/*] # Example: [tests/*/Fixture/*]

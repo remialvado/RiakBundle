@@ -89,6 +89,8 @@ abstract class ModelTestCase extends BaseTestCase
         return $this->getSourceFeedFromFile($file . ".transmuted.php");
     }
     
+    abstract protected function getTestFileBasePath();
+    
     /*****************
      * DATA PROVIDERS
      *****************/

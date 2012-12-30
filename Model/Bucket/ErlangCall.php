@@ -90,7 +90,7 @@ class ErlangCall
      */
     public function equalTo($erlangCall) {
         return isset($erlangCall) && 
-               $erlangCall instanceof Kbrw\RiakBundle\Model\Bucket\ErlangCall &&
+               $erlangCall instanceof ErlangCall &&
                $erlangCall->getMod() === $this->getMod() &&
                $erlangCall->getFun() === $this->getFun();
     }

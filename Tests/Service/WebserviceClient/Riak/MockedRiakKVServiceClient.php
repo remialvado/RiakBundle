@@ -2,7 +2,7 @@
 
 namespace Kbrw\RiakBundle\Tests\Service\WebserviceClient\Riak;
 
-use Kbrw\RiakBundle\Model\Transmutable;
+use Kbrw\RiakBundle\Model\KV\Transmutable;
 use Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakKVServiceClient;
 use Kbrw\RiakBundle\Model\KV\Data;
 use Kbrw\RiakBundle\Model\KV\Datas;

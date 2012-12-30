@@ -22,7 +22,7 @@ class Datas
      */
     public function getContents($asString = false) {
         $objects = array();
-        array_walk($this->datas, function($data) use (&$objects) {
+        array_walk($this->datas, function($data) use (&$objects, $asString) {
             if (isset($data))
             {
                 $objects[] = $data->getContent($asString);

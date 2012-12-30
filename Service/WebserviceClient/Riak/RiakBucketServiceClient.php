@@ -14,7 +14,7 @@ class RiakBucketServiceClient extends BaseServiceClient
     public function keys($cluster, $bucket)
     {
         $keys = array();
-        $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket->getName(), "stream", false))->get();
+        $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket->getName(), "stream"))->get();
         $request->getCurlOptions()->set(CURLOPT_WRITEFUNCTION, function($ch, $data) use (&$keys) {
             $content = json_decode($data, true);
             if (is_array($content) && array_key_exists("keys", $content)) {
@@ -42,7 +42,7 @@ class RiakBucketServiceClient extends BaseServiceClient
     public function count($cluster, $bucket)
     {
         $keys = 0;
-        $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket->getName(), "stream", false))->get();
+        $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket->getName(), "stream"))->get();
         $request->getCurlOptions()->set(CURLOPT_WRITEFUNCTION, function($ch, $data) use (&$keys) {
             $content = json_decode($data, true);
             if (is_array($content) && array_key_exists("keys", $content)) {
@@ -68,7 +68,7 @@ class RiakBucketServiceClient extends BaseServiceClient
     public function properties($cluster, $bucketName)
     {
         $bucket = null;
-        $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucketName, false, true))->get();
+        $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucketName, null, true))->get();
         try {
             $response = $request->send();
             if ($response->getStatusCode() == "200") {
@@ -88,7 +88,7 @@ class RiakBucketServiceClient extends BaseServiceClient
      */
     public function save($cluster, $bucket)
     {
-        $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket->getName(), false, false))->put();
+        $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket->getName(), null))->put();
         try {
             $request->setBody($this->serializer->serialize($bucket, "json"));
             $request->setHeader("Content-Type", "application/json");
@@ -113,7 +113,7 @@ class RiakBucketServiceClient extends BaseServiceClient
         $config["domain"]   = $cluster->getDomain();
         $config["port"]     = $cluster->getPort();
         $config["bucket"]   = $bucketName;
-        $config["keys"]     = (is_string($keys)) ? $keys : null;
+        $config["keys"]     = $keys;
         $config["props"]    = $props ? "true" : null;
         return $config;
     }
