@@ -23,11 +23,11 @@ class RiakExtension extends Extension
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-        
+
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        
-        foreach($config["clusters"] as $name => $clusterConfig) {
+
+        foreach ($config["clusters"] as $name => $clusterConfig) {
             $clusterConfig["name"] = $name;
             $definition = new Definition('Kbrw\RiakBundle\Model\Cluster\Cluster', array(
                 $clusterConfig["name"],

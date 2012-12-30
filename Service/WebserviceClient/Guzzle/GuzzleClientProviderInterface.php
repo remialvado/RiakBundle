@@ -7,9 +7,9 @@ namespace Kbrw\RiakBundle\Service\WebserviceClient\Guzzle;
  */
 interface GuzzleClientProviderInterface
 {
-    
+
     /**
-     * @return \Guzzle\Service\Client 
+     * @return \Guzzle\Service\Client
      */
     public function getClient($baseUrl = null, $config = null);
 }

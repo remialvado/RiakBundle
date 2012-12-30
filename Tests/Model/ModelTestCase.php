@@ -6,7 +6,7 @@ use Kbrw\RiakBundle\Tests\BaseTestCase;
 
 abstract class ModelTestCase extends BaseTestCase
 {
-    
+
     protected $serializarionMethod          = "xml";
     protected $systemUnderTestFullClassName = null;
     protected $testedModels                 = array();
@@ -14,13 +14,13 @@ abstract class ModelTestCase extends BaseTestCase
     protected $isUnserializationTestable    = true;
     protected $isTransmutationTestable      = true;
     protected $serializer;
-    
+
     public function setup()
     {
         parent::setup();
         $this->serializer = $this->getService("jms_serializer");
     }
-    
+
     /**
      * @test
      * @dataProvider getObjectsAndFeedsAndTransmutedObjects
@@ -31,7 +31,7 @@ abstract class ModelTestCase extends BaseTestCase
             $this->assertEquals($this->serializer->serialize($object, $this->serializarionMethod), $expectedFeed);
         }
     }
-    
+
     /**
      * @test
      * @dataProvider getObjectsAndFeedsAndTransmutedObjects
@@ -45,7 +45,7 @@ abstract class ModelTestCase extends BaseTestCase
             $this->assertEquals($unserializedObject, $expectedObject);
         }
     }
-    
+
     /**
      * @test
      * @dataProvider getObjectsAndFeedsAndTransmutedObjects
@@ -56,7 +56,7 @@ abstract class ModelTestCase extends BaseTestCase
             $this->assertEquals($expectedObject->transmute(), $expectedTransmutedObject);
         }
     }
-    
+
     protected function getTextFeedFromFile($file)
     {
         $path = $this->getTestFileBasePath();
@@ -66,13 +66,14 @@ abstract class ModelTestCase extends BaseTestCase
         }
         throw new \RuntimeException($this->serializarionMethod . " File not found : $fileName");
     }
-    
+
     protected function getSourceFeedFromFile($file, $throwException = true)
     {
         $path = $this->getTestFileBasePath();
         $fileName = $path . "/" . $file;
         if (is_file($fileName)) {
             include($fileName);
+
             return $object;
         }
         if ($throwException) throw new \RuntimeException("PHP file not found : $fileName");
@@ -88,13 +89,13 @@ abstract class ModelTestCase extends BaseTestCase
     {
         return $this->getSourceFeedFromFile($file . ".transmuted.php");
     }
-    
+
     abstract protected function getTestFileBasePath();
-    
+
     /*****************
      * DATA PROVIDERS
      *****************/
-    
+
     public function getObjectsAndFeedsAndTransmutedObjects()
     {
         $objectsAndJsonFeeds = array();
@@ -106,6 +107,7 @@ abstract class ModelTestCase extends BaseTestCase
                 ($object instanceof Transmutable) ? $this->getTransmutedPhpVarFromFile($testedModel) : null
             );
         }
+
         return $objectsAndJsonFeeds;
     }
 }

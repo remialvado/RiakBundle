@@ -12,7 +12,7 @@ class ContentTypeNormalizerTest extends \PHPUnit_Framework_TestCase
      * @var \Kbrw\RiakBundle\Service\Content\ContentTypeNormalizer
      */
     protected $contentTypeNormalizer;
-    
+
     public function setup()
     {
         $this->contentTypeNormalizer = new ContentTypeNormalizer(array(
@@ -20,7 +20,7 @@ class ContentTypeNormalizerTest extends \PHPUnit_Framework_TestCase
             "application/json" => array("json")
         ));
     }
-    
+
     /**
      * @test
      */
@@ -29,7 +29,7 @@ class ContentTypeNormalizerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->contentTypeNormalizer->getNormalizedContentType("application/json"), "json");
         $this->assertEquals($this->contentTypeNormalizer->getNormalizedContentType("application/xml"), "xml");
     }
-    
+
     /**
      * @test
      */
@@ -38,7 +38,7 @@ class ContentTypeNormalizerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->contentTypeNormalizer->getNormalizedContentType("foo/bar", null));
         $this->assertNull($this->contentTypeNormalizer->getNormalizedContentType("foo/bar"));
     }
-    
+
     /**
      * @test
      */
@@ -48,7 +48,7 @@ class ContentTypeNormalizerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->contentTypeNormalizer->getContentType("xml"),  "application/xml");
         $this->assertEquals($this->contentTypeNormalizer->getContentType("xsd"),  "application/xml");
     }
-    
+
     /**
      * @test
      */

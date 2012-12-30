@@ -19,7 +19,7 @@ class RiakKVServiceClientTest extends BaseTestCase
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakKVServiceClient
      */
     protected $riakKVServiceClient;
-    
+
     public function setup()
     {
         parent::setup();
@@ -28,7 +28,7 @@ class RiakKVServiceClientTest extends BaseTestCase
         $this->riakKVServiceClient->serializer = $this->getService("jms_serializer");
         $this->riakKVServiceClient->logger = $this->getService("logger");
     }
-    
+
     /**
      * @test
      */
@@ -36,12 +36,12 @@ class RiakKVServiceClientTest extends BaseTestCase
     {
         // prepare expectation
         $expectedDatas = $this->getExpectationsForNormalizeDatasTests();
-        
+
         // Run test
         $objects = array("foo1" => new SomeClass("bar1"));
         $this->assertEquals($expectedDatas, $this->riakKVServiceClient->normalizeDatas($objects, "json", "test"));
     }
-    
+
     /**
      * @test
      */
@@ -49,12 +49,12 @@ class RiakKVServiceClientTest extends BaseTestCase
     {
         // prepare expectation
         $expectedDatas = $this->getExpectationsForNormalizeDatasTests();
-        
+
         // Run test
         $objects = new Data("foo1", new SomeClass("bar1"));
         $this->assertEquals($expectedDatas, $this->riakKVServiceClient->normalizeDatas($objects, "json", "test"));
     }
-    
+
     /**
      * @test
      */
@@ -62,12 +62,12 @@ class RiakKVServiceClientTest extends BaseTestCase
     {
         // prepare expectation
         $expectedDatas = $this->getExpectationsForNormalizeDatasTests();
-        
+
         // Run test
         $objects = array(new Data("foo1", new SomeClass("bar1")));
         $this->assertEquals($expectedDatas, $this->riakKVServiceClient->normalizeDatas($objects, "json", "test"));
     }
-    
+
     /**
      * @test
      */
@@ -75,12 +75,12 @@ class RiakKVServiceClientTest extends BaseTestCase
     {
         // prepare expectation
         $expectedDatas = $this->getExpectationsForNormalizeDatasTests();
-        
+
         // Run test
         $objects = new Datas(array(new Data("foo1", new SomeClass("bar1"))));
         $this->assertEquals($expectedDatas, $this->riakKVServiceClient->normalizeDatas($objects, "json", "test"));
     }
-    
+
     /**
      * @test
      */
@@ -89,12 +89,12 @@ class RiakKVServiceClientTest extends BaseTestCase
         // prepare expectation
         $expectedDatas = $this->getExpectationsForNormalizeDatasTests();
         $expectedDatas->first()->setKey(null); // in this configuration, no key is defined.
-        
+
         // Run test
         $objects = new SomeClass("bar1");
         $this->assertEquals($expectedDatas, $this->riakKVServiceClient->normalizeDatas($objects, "json", "test"));
     }
-    
+
     /**
      * @test
      */
@@ -103,12 +103,12 @@ class RiakKVServiceClientTest extends BaseTestCase
         // prepare expectation
         $commonHeaderBag = new HeaderBag(array("Content-Type" => "application/json", "X-Riak-ClientId" => "test"));
         $expectedDatas = new Datas(array(new Data("foo1", null, $commonHeaderBag), new Data("foo2", null, $commonHeaderBag)));
-        
+
         // Run test
         $objects = array("foo1", "foo2");
         $this->assertEquals($expectedDatas, $this->riakKVServiceClient->normalizeDatas($objects, "json", "test", true));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\KV\Datas
      */
@@ -116,17 +116,17 @@ class RiakKVServiceClientTest extends BaseTestCase
     {
         return new Datas(array(
             new Data(
-                    "foo1", 
+                    "foo1",
                     new SomeClass("bar1"),
                     new HeaderBag(array(
                         "Content-Type"    => "application/json",
                         "X-Riak-ClientId" => "test"
-                    )), 
+                    )),
                     '{"id":"bar1"}'
             )
         ));
     }
-    
+
     /**
      * @test
      */
@@ -147,7 +147,7 @@ class RiakKVServiceClientTest extends BaseTestCase
                   ->with($this->equalTo($request));
         $this->riakKVServiceClient->prepareRequests("PUT", $datas, $curlMulti, $client);
     }
-    
+
     /**
      * @test
      */
@@ -169,7 +169,7 @@ class RiakKVServiceClientTest extends BaseTestCase
         // the 5 delete requests will be done using THREE curl_multi requests
         $riakKVServiceClient->delete($cluster, $bucket, array("foo1", "foo2", "foo3", "foo4", "foo5"));
     }
-    
+
     /**
      * @test
      */
@@ -197,7 +197,7 @@ class RiakKVServiceClientTest extends BaseTestCase
             "foo5" => new SomeClass("bar5"),
         ));
     }
-    
+
     /**
      * @test
      */

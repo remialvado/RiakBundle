@@ -3,18 +3,18 @@ namespace Kbrw\RiakBundle\Service\WebserviceClient;
 
 use Guzzle\Http\Message\Response;
 
-abstract class BaseServiceClient 
-{   
+abstract class BaseServiceClient
+{
     /**
-     * @return \Guzzle\Service\Client 
+     * @return \Guzzle\Service\Client
      */
     public function getClient($guzzleClientProvider, $config)
     {
         return $guzzleClientProvider->getClient($this->route, $config);
     }
-    
+
     /**
-     * Post requests are really slow using Guzzle. I don't know why but using curl 
+     * Post requests are really slow using Guzzle. I don't know why but using curl
      * directly is the only solution we found so far.
      * @return \Guzzle\Http\Message\Response
      */
@@ -31,9 +31,10 @@ abstract class BaseServiceClient
         $result = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+
         return new Response($httpCode, null, $result);
     }
-    
+
     public function getRoute()
     {
         return $this->route;
@@ -53,16 +54,16 @@ abstract class BaseServiceClient
     {
         $this->logger = $logger;
     }
-    
+
     /**
      * All dependencies needs to be injected by services.{xml|yml} or by an annotation on child class
      */
-    
+
     /**
      * @var string
      */
     public $route;
-    
+
     /**
      * @var \Symfony\Component\HttpKernel\Log\LoggerInterface
      */
