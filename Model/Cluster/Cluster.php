@@ -17,7 +17,7 @@ class Cluster
     const DEFAULT_CLIENT_ID                      = "demo";
     const DEFAULT_MAX_PARALLEL_CALLS             = 50;
     const DEFAULT_GUZZLE_CLIENT_PROVIDER_SERVICE = "kbrw.guzzle.client.provider";
-    
+
     protected $name;
     protected $protocol;
     protected $domain;
@@ -25,33 +25,33 @@ class Cluster
     protected $clientId;
     protected $maxParallelCalls;
     protected $guzzleClientProviderService;
-    
+
     /**
      * @var array<string, \Kbrw\RiakBundle\Model\Bucket\Bucket>
      */
     protected $buckets;
-    
+
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     protected $eventDispatcher;
-    
+
     /**
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakBucketServiceClient
      */
     protected $riakBucketServiceClient;
-    
+
     /**
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakKVServiceClient
      */
     protected $riakKVServiceClient;
-    
+
     /**
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakSearchServiceClient
      */
     protected $riakSearchServiceClient;
-    
-    function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $eventDispatcher = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null)
+
+    public function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $eventDispatcher = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null)
     {
         if (!isset($name))                          $name                          = self::DEFAULT_NAME;
         if (!isset($protocol))                      $protocol                      = self::DEFAULT_PROTOCOL;
@@ -71,7 +71,7 @@ class Cluster
         $this->setRiakKVServiceClient($riakKVServiceClient);
         $this->setRiakSearchServiceClient($riakSearchServiceClient);
         $this->buckets = array();
-        foreach($bucketConfigs as $bucketName => $bucketConfig) {
+        foreach ($bucketConfigs as $bucketName => $bucketConfig) {
             $class = isset($bucketConfig["class"]) ? $bucketConfig["class"] : "\Kbrw\RiakBundle\Model\Bucket\Bucket";
             $bucket = new $class();
             $bucket->setName($bucketName);
@@ -80,10 +80,10 @@ class Cluster
             $this->addBucket($bucket);
         }
     }
-    
+
     /**
-     * @param string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
-     * @param boolean $buildFromCluster
+     * @param  string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @param  boolean                                       $buildFromCluster
      * @return \Kbrw\RiakBundle\Model\Bucket\Bucket
      */
     public function addBucket(&$bucket, $buildFromCluster = false)
@@ -105,20 +105,22 @@ class Cluster
             $this->eventDispatcher->dispatch("riak.bucket.add", $event);
         }
         $this->buckets[$bucket->getName()] = $bucket;
+
         return $bucket;
     }
-    
+
     /**
      * @param string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
      */
     public function hasBucket($bucket)
     {
         $bucketName = ($bucket instanceof \Kbrw\RiakBundle\Model\Bucket\Bucket) ? $bucket->getName() : $bucket;
+
         return isset($this->buckets[$bucketName]);
     }
-    
+
     /**
-     * @param string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
+     * @param  string | \Kbrw\RiakBundle\Model\Bucket\Bucket $bucket
      * @return \Kbrw\RiakBundle\Model\Bucket\Bucket
      */
     public function getBucket($bucket, $buildFromCluster = false)
@@ -127,18 +129,19 @@ class Cluster
         if (!$this->hasBucket($bucketName)) {
             $this->addBucket($bucket, $buildFromCluster);
         }
+
         return $this->buckets[$bucketName];
     }
-    
+
     /**
-     * @param string $bucketName
+     * @param  string                               $bucketName
      * @return \Kbrw\RiakBundle\Model\Bucket\Bucket
      */
     public function bucketProperties($bucketName)
     {
         return $this->riakBucketServiceClient->properties($this, $bucketName);
     }
-    
+
     public function getName()
     {
         return $this->name;
@@ -148,7 +151,7 @@ class Cluster
     {
         $this->name = $name;
     }
-    
+
     public function getProtocol()
     {
         return $this->protocol;
@@ -198,7 +201,7 @@ class Cluster
     {
         $this->maxParallelCalls = $maxParallelCalls;
     }
-    
+
     public function getEventDispatcher()
     {
         return $this->eventDispatcher;
@@ -218,7 +221,7 @@ class Cluster
     {
         $this->guzzleClientProviderService = $guzzleClientProviderService;
     }
-    
+
     public function getRiakBucketServiceClient()
     {
         return $this->riakBucketServiceClient;
@@ -238,7 +241,7 @@ class Cluster
     {
         $this->riakKVServiceClient = $riakKVServiceClient;
     }
-    
+
     public function getRiakSearchServiceClient()
     {
         return $this->riakSearchServiceClient;
@@ -248,7 +251,7 @@ class Cluster
     {
         $this->riakSearchServiceClient = $riakSearchServiceClient;
     }
-    
+
     public function getBuckets()
     {
         return $this->buckets;

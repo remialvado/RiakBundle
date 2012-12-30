@@ -4,106 +4,106 @@ namespace Kbrw\RiakBundle\Model\Bucket;
 
 use JMS\Serializer\Annotation as Ser;
 
-/** 
- * @Ser\AccessType("public_method") 
+/**
+ * @Ser\AccessType("public_method")
  * @Ser\XmlRoot("bucket")
  */
 class Bucket
 {
-    
-    /** 
+
+    /**
      * @var \Kbrw\RiakBundle\Model\Bucket\Props
-     * @Ser\Type("Kbrw\RiakBundle\Model\Bucket\Props") 
+     * @Ser\Type("Kbrw\RiakBundle\Model\Bucket\Props")
      * @Ser\SerializedName("props")
      * @Ser\Since("1")
      */
     protected $props;
-    
+
     /**
      * @Ser\Exclude()
      * @var string
      */
     protected $fullyQualifiedClassName;
-    
+
     /**
      * @Ser\Exclude()
      * @var string
      */
     protected $format;
-    
+
     /**
      * @Ser\Exclude()
      * @var \Kbrw\RiakBundle\Model\Cluster\Cluster
      */
     protected $cluster;
-    
+
     /**
      * @Ser\Exclude()
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakBucketServiceClient
      */
     public $riakBucketServiceClient;
-    
+
     /**
      * @Ser\Exclude()
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakKVServiceClient
      */
     public $riakKVServiceClient;
-    
+
     /**
      * @Ser\Exclude()
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakSearchServiceClient
      */
     public $riakSearchServiceClient;
- 
+
     /**
-     * @param string $name
+     * @param string                              $name
      * @param \Kbrw\RiakBundle\Model\Bucket\Props $props
      */
-    function __construct($name = null, $props = null)
+    public function __construct($name = null, $props = null)
     {
         if (!isset($props)) $props = new Props();
         $props->setName($name);
         $this->setProps($props);
     }
-    
+
     /**
-     * @param array<string> | string $keys
+     * @param  array<string> | string          $keys
      * @return \Kbrw\RiakBundle\Model\KV\Datas
      */
     public function fetch($keys)
     {
         return $this->riakKVServiceClient->fetch($this->cluster, $this, $keys);
     }
-    
+
     /**
-     * @param string $keys
+     * @param  string                         $keys
      * @return \Kbrw\RiakBundle\Model\KV\Data
      */
     public function uniq($key)
     {
         return $this->riakKVServiceClient->uniq($this->cluster, $this, $key);
     }
-    
+
     /**
-     * @param array<string, mixed> $objects
+     * @param  array<string, mixed> $objects
      * @return boolean
      */
     public function put($objects)
     {
         return $this->riakKVServiceClient->put($this->cluster, $this, $objects);
     }
-    
+
     /**
-     * @param array<string> $keys
+     * @param  array<string> $keys
      * @return boolean
      */
     public function delete($keys)
     {
         return $this->riakKVServiceClient->delete($this->cluster, $this, $keys);
     }
-    
+
     /**
-     * WARNING : this function may be slow and not suited to production uses. 
+     * WARNING : this function may be slow and not suited to production uses.
      * See Riak documentation for closer details.
      * @return array<string>
      */
@@ -111,9 +111,9 @@ class Bucket
     {
         return $this->riakBucketServiceClient->keys($this->cluster, $this);
     }
-    
+
     /**
-     * WARNING : this function may be slow and not suited to production uses. 
+     * WARNING : this function may be slow and not suited to production uses.
      * See Riak documentation for closer details.
      * @return integer
      */
@@ -121,7 +121,7 @@ class Bucket
     {
         return $this->riakBucketServiceClient->count($this->cluster, $this);
     }
-    
+
     /**
      * @return boolean
      */
@@ -129,12 +129,12 @@ class Bucket
     {
         return $this->riakBucketServiceClient->save($this->cluster, $this);
     }
-    
+
     public function search($query)
     {
         return $this->riakSearchServiceClient->search($this->cluster, $this, $query);
     }
-    
+
     /**
      * @return string
      */
@@ -150,7 +150,7 @@ class Bucket
     {
         $this->props->setName($name);
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\Bucket\Props
      */
@@ -166,26 +166,24 @@ class Bucket
     {
         $this->props = $props;
     }
-    
+
     public function enableSearchIndexing()
     {
         $searchIndexingHook = ErlangCall::getErlangCallUsedToIndexData();
-        if (!$this->props->hasPreCommitHook($searchIndexingHook))
-        {
+        if (!$this->props->hasPreCommitHook($searchIndexingHook)) {
             $this->props->addPrecommit($searchIndexingHook);
         }
     }
-    
+
     public function disableSearchIndexing()
     {
         $searchIndexingHook = ErlangCall::getErlangCallUsedToIndexData();
-        if ($this->props->hasPreCommitHook($searchIndexingHook))
-        {
+        if ($this->props->hasPreCommitHook($searchIndexingHook)) {
             $this->props->removePrecommit($searchIndexingHook);
         }
-        
+
     }
-    
+
     /**
      * @return boolean
      */
@@ -193,7 +191,7 @@ class Bucket
     {
         return $this->props->hasPreCommitHook(ErlangCall::getErlangCallUsedToIndexData());
     }
-    
+
     /**
      * @return string
      */
@@ -201,7 +199,7 @@ class Bucket
     {
         return $this->getName();
     }
-    
+
     public function getFullyQualifiedClassName()
     {
         return $this->fullyQualifiedClassName;
@@ -221,7 +219,7 @@ class Bucket
     {
         $this->format = $format;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\Cluster\Cluster
      */
@@ -234,7 +232,7 @@ class Bucket
     {
         $this->cluster = $cluster;
     }
-    
+
     public function getRiakBucketServiceClient()
     {
         return $this->riakBucketServiceClient;

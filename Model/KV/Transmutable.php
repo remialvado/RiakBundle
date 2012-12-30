@@ -7,6 +7,6 @@ namespace Kbrw\RiakBundle\Model\KV;
  */
 interface Transmutable
 {
-    
+
     public function transmute();
 }
