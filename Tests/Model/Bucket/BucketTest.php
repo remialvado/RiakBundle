@@ -7,7 +7,6 @@ use Kbrw\RiakBundle\Tests\Service\WebserviceClient\Riak\MockedRiakBucketServiceC
 use Kbrw\RiakBundle\Tests\Service\WebserviceClient\Guzzle\SimpleGuzzleClientProviderTest;
 use Kbrw\RiakBundle\Model\Cluster\Cluster;
 use Kbrw\RiakBundle\Model\Bucket\Bucket;
-
 use JMS\Serializer\Annotation as Ser;
 
 /**

@@ -3,7 +3,6 @@
 namespace Kbrw\RiakBundle\Tests\Service\WebserviceClient\Riak;
 
 use Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakBucketServiceClient;
-use Kbrw\RiakBundle\Model\Bucket\Props;
 
 class MockedRiakBucketServiceClient extends RiakBucketServiceClient
 {
