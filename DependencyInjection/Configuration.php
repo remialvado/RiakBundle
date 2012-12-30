@@ -4,7 +4,6 @@ namespace Kbrw\RiakBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-
 use Kbrw\RiakBundle\Model\Cluster\Cluster;
 
 /**
