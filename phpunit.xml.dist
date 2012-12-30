@@ -17,13 +17,13 @@
             <directory>./Tests</directory>
         </testsuite>
     </testsuites>
-    
-    <groups>
-        <exclude>
-            <group>performance</group>
-        </exclude>
-    </groups>
-
+   
+    <filter>
+      <blacklist>
+        <directory suffix=".php">vendor</directory>
+      </blacklist>
+    </filter>
+ 
     <php>
         <server name="KERNEL_DIR" value="./Resources/tests/app/" />
     </php>
