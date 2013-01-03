@@ -86,13 +86,13 @@ class Cluster
             $this->addBucket($bucket);
         }
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Query
      */
     public function mapReduce()
     {
-        
+
     }
 
     /**
@@ -265,7 +265,7 @@ class Cluster
     {
         $this->riakSearchServiceClient = $riakSearchServiceClient;
     }
-    
+
     public function getRiakMapReduceServiceClient()
     {
         return $this->riakMapReduceServiceClient;

@@ -16,7 +16,7 @@ class InputTest extends BaseTestCase
         $this->assertEquals(1, count($inputArray));
         $this->assertEquals("invoices", $inputArray[0]);
     }
-    
+
     /**
      * @test
      */
@@ -28,7 +28,7 @@ class InputTest extends BaseTestCase
         $this->assertEquals("invoices", $inputArray[0]);
         $this->assertEquals("p1", $inputArray[1]);
     }
-    
+
     /**
      * @test
      */

@@ -13,12 +13,12 @@ abstract class PhaseContainer
      * @Ser\Exclude
      */
     protected $type;
-    
-    function __construct($type = null, $phase = null)
+
+    public function __construct($type = null, $phase = null)
     {
         $this->setPhase($phase);
     }
-   
+
     public function getType()
     {
         return $this->type;
@@ -28,7 +28,7 @@ abstract class PhaseContainer
     {
         $this->type = $type;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Phase
      */

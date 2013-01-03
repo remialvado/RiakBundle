@@ -13,7 +13,7 @@ class MapPhaseContainer extends PhaseContainer
      * @Ser\SerializedName("map")
      */
     protected $phase;
-    
+
     public function __construct($phase = null)
     {
         parent::__construct("map", $phase);
