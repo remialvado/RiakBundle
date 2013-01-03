@@ -8,49 +8,49 @@ use JMS\Serializer\Annotation as Ser;
  * @Ser\XmlRoot("input")
  */
 class Inputs
-{   
+{
     /**
      * @Ser\Type("string")
      * @Ser\SerializedName("bucket")
      * @var string
      */
     protected $bucket;
-    
+
     /**
      * @Ser\Type("array<mixed>")
      * @Ser\SerializedName("key_filters")
      * @var \Kbrw\RiakBundle\Model\MapReduce\Operator\Operator
-     * As a matter of fact, keyFilters is an Operator (Root, And, Or or Not) but 
-     * is replaced by an array before serialization and reverted to its original 
+     * As a matter of fact, keyFilters is an Operator (Root, And, Or or Not) but
+     * is replaced by an array before serialization and reverted to its original
      * value after serialization.
      */
     protected $keyFilters;
-    
+
     /**
      * @Ser\Exclude
      * @var \Kbrw\RiakBundle\Model\MapReduce\InputList
      */
     protected $inputList;
-    
+
     /**
      * @Ser\Exclude
      * @var \Kbrw\RiakBundle\Model\MapReduce\Operator\Operator
      */
     protected $currentElement;
-    
+
     /**
      * @Ser\Exclude
-     * @var \Kbrw\RiakBundle\Model\MapReduce\Query 
+     * @var \Kbrw\RiakBundle\Model\MapReduce\Query
      */
     protected $query;
-    
-    function __construct($query = null)
+
+    public function __construct($query = null)
     {
         $this->setQuery($query);
         $this->inputList = new InputList();
         $this->keyFilters = $this->currentElement = new Operator\Root();
     }
-    
+
     /**
      * @Ser\PreSerialize
      */
@@ -59,7 +59,7 @@ class Inputs
         $this->keyFiltersBackup = clone $this->keyFilters;
         $this->keyFilters = $this->keyFilters->toArray();
     }
-    
+
     /**
      * @Ser\PostSerialize
      */
@@ -67,29 +67,30 @@ class Inputs
     {
         $this->keyFilters = $this->keyFiltersBackup;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
     public function on($input)
     {
         $this->inputList->addInput($input);
+
         return $this;
     }
-    
+
     public function isKeySelectionUsed()
     {
         return $this->inputList->isDefined();
     }
-    
+
     public function getKeySelectionArray()
     {
         return $this->inputList->toArray();
     }
-    
+
     /**
-     * @param \Kbrw\RiakBundle\Model\MapReduce\KeyFilter $keyFilter
-     * @param boolean $defineAsCurrent
+     * @param  \Kbrw\RiakBundle\Model\MapReduce\KeyFilter $keyFilter
+     * @param  boolean                                    $defineAsCurrent
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
     protected function addKeyFilter($keyFilter, $defineAsCurrent = false)
@@ -98,9 +99,10 @@ class Inputs
         if ($defineAsCurrent) {
             $this->currentElement = $keyFilter;
         }
+
         return $this;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -108,7 +110,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Transformer\IntToString($this->currentElement));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -116,7 +118,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Transformer\StringToInt($this->currentElement));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -124,7 +126,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Transformer\FloatToString($this->currentElement));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -132,7 +134,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Transformer\StringToFloat($this->currentElement));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -140,7 +142,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Transformer\ToUpper($this->currentElement));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -148,7 +150,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Transformer\ToLower($this->currentElement));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -156,7 +158,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Transformer\Tokenize($this->currentElement, $separator, $position));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -164,7 +166,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Transformer\UrlDecode($this->currentElement));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -172,7 +174,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\GreaterThan($this->currentElement, $value));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -180,7 +182,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\LessThan($this->currentElement, $value));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -188,7 +190,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\GreaterThanEq($this->currentElement, $value));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -196,7 +198,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\LessThanEq($this->currentElement, $value));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -204,7 +206,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\Between($this->currentElement, $min, $max, $inclusive));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -212,7 +214,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\Matches($this->currentElement, $value));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -220,7 +222,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\NotEquals($this->currentElement, $value));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -228,7 +230,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\Equals($this->currentElement, $value));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -236,7 +238,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\MemberOf($this->currentElement, $set));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -244,7 +246,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\SimilarTo($this->currentElement, $value, $distance));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -252,7 +254,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\StartsWith($this->currentElement, $value));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -260,7 +262,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Predicate\EndsWith($this->currentElement, $value));
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -268,7 +270,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Operator\LogicalAnd($this->currentElement), true);
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -276,7 +278,7 @@ class Inputs
     {
         return $this->addKeyFilter(new Operator\LogicalOr($this->currentElement), true);
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -284,18 +286,19 @@ class Inputs
     {
         return $this->addKeyFilter(new Operator\Not($this->currentElement), true);
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
     public function end()
     {
         $this->currentElement = $this->currentElement->getParent();
+
         return $this;
     }
-    
+
     /**
-     * @return \Kbrw\RiakBundle\Model\MapReduce\Query 
+     * @return \Kbrw\RiakBundle\Model\MapReduce\Query
      */
     public function done()
     {
@@ -310,9 +313,10 @@ class Inputs
     public function setKeyFilters($keyFilters)
     {
         $this->keyFilters = $keyFilters;
+
         return $this;
     }
-    
+
     public function getCurrentElement()
     {
         return $this->currentElement;
@@ -321,9 +325,10 @@ class Inputs
     public function setCurrentElement($currentElement)
     {
         $this->currentElement = $currentElement;
+
         return $this;
     }
-    
+
     public function getQuery()
     {
         return $this->query;
@@ -332,9 +337,10 @@ class Inputs
     public function setQuery($query)
     {
         $this->query = $query;
+
         return $this;
     }
-    
+
     public function getBucket()
     {
         return $this->bucket;
@@ -343,6 +349,7 @@ class Inputs
     public function setBucket($bucket)
     {
         $this->bucket = $bucket;
+
         return $this;
     }
 
@@ -354,6 +361,7 @@ class Inputs
     public function setInputList(\Kbrw\RiakBundle\Model\MapReduce\InputList $inputList)
     {
         $this->inputList = $inputList;
+
         return $this;
     }
 }

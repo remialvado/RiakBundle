@@ -7,12 +7,14 @@ class Root extends Operator
     {
         if (count($this->children) === 1 && $this->children[0] instanceof Operator) {
             $keyFilter = $this->children[0];
+
             return $keyFilter->toArray();
         }
         $content = array();
-        foreach($this->children as $keyFilter) {
+        foreach ($this->children as $keyFilter) {
             $content[] = $keyFilter->toArray();
         }
+
         return $content;
     }
 }

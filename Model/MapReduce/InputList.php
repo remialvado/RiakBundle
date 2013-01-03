@@ -7,12 +7,12 @@ class InputList
      * @var array<\Kbrw\RiakBundle\Model\MapReduce\Input>
      */
     protected $inputs;
-    
-    function __construct($inputs = array())
+
+    public function __construct($inputs = array())
     {
         $this->setInputs($inputs);
     }
-    
+
     public function getInputs()
     {
         return $this->inputs;
@@ -22,21 +22,22 @@ class InputList
     {
         $this->inputs = $inputs;
     }
-    
+
     public function addInput($input)
     {
         $this->inputs[] = $input;
     }
-    
+
     public function toArray()
     {
         $content = array();
-        foreach($this->inputs as $input) {
+        foreach ($this->inputs as $input) {
             $content[] = $input->toArray();
         }
+
         return $content;
     }
-    
+
     public function isDefined()
     {
         return count($this->inputs) > 0;

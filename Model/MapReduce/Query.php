@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as Ser;
  */
 class Query
 {
-    
+
     const PHASE_MAP    = "map";
     const PHASE_REDUCE = "reduce";
     const PHASE_LINK   = "link";
@@ -32,13 +32,13 @@ class Query
      */
     protected $timeout;
 
-    function __construct()
+    public function __construct()
     {
         $inputs = new Inputs($this);
         $this->setInputs($inputs);
         $this->setPhases(array());
     }
-    
+
     /**
      * @Ser\PreSerialize
      */
@@ -49,33 +49,33 @@ class Query
             $this->inputs = $this->inputs->getKeySelectionArray();
         }
     }
-    
+
     /**
      * @Ser\PostSerialize
      */
     public function postSerialize()
     {
-        if (isset($this->inputsBackup))
-        {
+        if (isset($this->inputsBackup)) {
             $this->inputs = $this->inputsBackup;
             $this->inputsBackup = null;
         }
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
     public function on($bucket, $key = null, $data = null)
     {
         $this->inputs->on(new Input($bucket, $key, $data));
+
         return $this;
     }
-    
+
     public function filter($bucket)
     {
         return $this->inputs->setBucket($bucket);
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\MapReducePhase
      */
@@ -90,7 +90,7 @@ class Query
         if (!empty($source)) $phase->setSource($source);
         return $phase;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\MapReducePhase
      */
@@ -105,7 +105,7 @@ class Query
         if (!empty($source)) $phase->setSource($source);
         return $phase;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\LinkPhase
      */
@@ -119,21 +119,22 @@ class Query
         }
         return $phase;
     }
-    
+
     /**
-     * @param string $key
+     * @param  string                                 $key
      * @return \Kbrw\RiakBundle\Model\MapReduce\Phase
      */
     public function getPhase($key)
     {
-        foreach($this->phases as $phaseContainer) {
+        foreach ($this->phases as $phaseContainer) {
             if ($phaseContainer->getType() === $key) {
                 return $phaseContainer->getPhase();
             }
         }
+
         return null;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Inputs
      */
@@ -162,7 +163,7 @@ class Query
     {
         $this->phases = $phases;
     }
-    
+
     public function getTimeout()
     {
         return $this->timeout;
@@ -174,6 +175,7 @@ class Query
     public function setTimeout($timeout)
     {
         $this->timeout = $timeout;
+
         return $this;
     }
 }
