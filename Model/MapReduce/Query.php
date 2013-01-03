@@ -109,7 +109,7 @@ class Query
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\LinkPhase
      */
-    public function link($source = null)
+    public function link()
     {
         $phase = $this->getPhase(self::PHASE_LINK);
         if (!isset($phase)) {
@@ -117,7 +117,6 @@ class Query
             $phase->setQuery($this);
             $this->phases[] = new PhaseContainer\LinkPhaseContainer($phase);
         }
-        if (!empty($source)) $phase->setSource($source);
         return $phase;
     }
     

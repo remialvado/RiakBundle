@@ -8,7 +8,7 @@ class StartsWithTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["starts_with","basho"]]', new StartsWith(null, "basho")),
         );
     }

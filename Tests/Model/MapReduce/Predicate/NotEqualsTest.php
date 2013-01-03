@@ -8,7 +8,7 @@ class NotEqualsTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["neq","foo"]]', new NotEquals(null, "foo")),
         );
     }

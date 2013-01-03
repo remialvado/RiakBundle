@@ -8,7 +8,7 @@ class SimilarToTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["similar_to","newyork",3]]', new SimilarTo(null, "newyork", 3)),
         );
     }

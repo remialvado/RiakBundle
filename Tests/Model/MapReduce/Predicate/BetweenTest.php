@@ -8,7 +8,7 @@ class BetweenTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["between",10,20,false]]', new Between(null, 10, 20, false)),
         );
     }

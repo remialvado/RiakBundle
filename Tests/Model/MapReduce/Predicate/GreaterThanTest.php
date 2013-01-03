@@ -8,7 +8,7 @@ class GreaterThanTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["greater_than",50]]', new GreaterThan(null, 50)),
         );
     }

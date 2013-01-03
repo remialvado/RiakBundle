@@ -8,7 +8,7 @@ class MatchesTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["matches","solutions"]]', new Matches(null, "solutions")),
         );
     }

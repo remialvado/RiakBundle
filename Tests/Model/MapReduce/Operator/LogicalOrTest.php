@@ -10,7 +10,7 @@ class LogicalOrTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('["or",[["ends_with","0603"]],[["starts_with","basho"]]]', new LogicalOr(null, array(new EndsWith(null, "0603"), new StartsWith(null, "basho")))),
         );
     }

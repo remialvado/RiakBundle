@@ -8,7 +8,7 @@ class GreaterThanOrEqualsTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["greater_than_eq",2000]]', new GreaterThanOrEquals(null, 2000)),
         );
     }

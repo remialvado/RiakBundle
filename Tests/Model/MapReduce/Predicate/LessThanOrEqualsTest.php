@@ -8,7 +8,7 @@ class LessThanOrEqualsTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["less_than_eq",-2]]', new LessThanOrEquals(null, -2)),
         );
     }

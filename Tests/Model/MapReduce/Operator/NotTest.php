@@ -9,7 +9,7 @@ class NotTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('["not",[["matches","solution"]]]', new Not(null, array(new Matches(null, "solution")))),
         );
     }

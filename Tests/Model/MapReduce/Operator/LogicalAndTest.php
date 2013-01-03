@@ -10,7 +10,7 @@ class LogicalAndTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('["and",[["ends_with","0603"]],[["starts_with","basho"]]]', new LogicalAnd(null, array(new EndsWith(null, "0603"), new StartsWith(null, "basho")))),
         );
     }

@@ -8,7 +8,7 @@ class MemberOfTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["set_member","basho","google","yahoo"]]', new MemberOf(null, array("basho", "google", "yahoo"))),
         );
     }
