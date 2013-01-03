@@ -10,7 +10,7 @@ abstract class Phase
      * @var \Kbrw\RiakBundle\Model\MapReduce\Query
      */
     protected $query;
-    
+
     public function getQuery()
     {
         return $this->query;
@@ -20,9 +20,9 @@ abstract class Phase
     {
         $this->query = $query;
     }
-    
+
     /**
-     * @return \Kbrw\RiakBundle\Model\MapReduce\Query 
+     * @return \Kbrw\RiakBundle\Model\MapReduce\Query
      */
     public function done()
     {

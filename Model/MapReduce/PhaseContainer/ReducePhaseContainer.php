@@ -13,7 +13,7 @@ class ReducePhaseContainer extends PhaseContainer
      * @Ser\SerializedName("reduce")
      */
     protected $phase;
-    
+
     public function __construct($phase = null)
     {
         parent::__construct("reduce", $phase);

@@ -5,5 +5,5 @@ use Kbrw\RiakBundle\Model\MapReduce\BaseKeyFilter;
 
 class Predicate extends BaseKeyFilter
 {
-    
+
 }

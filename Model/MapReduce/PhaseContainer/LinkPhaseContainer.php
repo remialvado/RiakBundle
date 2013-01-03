@@ -13,7 +13,7 @@ class LinkPhaseContainer extends PhaseContainer
      * @Ser\SerializedName("link")
      */
     protected $phase;
-    
+
     public function __construct($phase = null)
     {
         parent::__construct("link", $phase);

@@ -15,64 +15,64 @@ class MapReducePhase extends Phase
      * @Ser\SerializedName("language")
      */
     protected $language;
-    
+
     /**
      * @var string
      * @Ser\Type("string")
      * @Ser\SerializedName("source")
      */
     protected $source;
-    
+
     /**
      * @var string
      * @Ser\Type("boolean")
      * @Ser\SerializedName("keep")
      */
     protected $keep;
-    
+
     /**
      * @var string
      * @Ser\Type("string")
      * @Ser\SerializedName("bucket")
      */
     protected $bucket;
-    
+
     /**
      * @var string
      * @Ser\Type("string")
      * @Ser\SerializedName("key")
      */
     protected $key;
-    
+
     /**
      * @var string
      * @Ser\Type("string")
      * @Ser\SerializedName("name")
      */
     protected $name;
-    
+
     /**
      * @var string
      * @Ser\Type("string")
      * @Ser\SerializedName("module")
      */
     protected $module;
-    
+
     /**
      * @var string
      * @Ser\Type("string")
      * @Ser\SerializedName("function")
      */
     protected $function;
-    
+
     /**
      * @var string
      * @Ser\Type("string")
      * @Ser\SerializedName("arg")
      */
     protected $arg;
-    
-    function __construct($language = "javascript", $source = null, $keep = null, $bucket = null, $key = null, $name = null, $module = null, $function = null, $arg = null)
+
+    public function __construct($language = "javascript", $source = null, $keep = null, $bucket = null, $key = null, $name = null, $module = null, $function = null, $arg = null)
     {
         $this->setLanguage($language);
         $this->setSource($source);
@@ -85,7 +85,6 @@ class MapReducePhase extends Phase
         $this->setArg($arg);
     }
 
-    
     public function getLanguage()
     {
         return $this->language;
@@ -97,6 +96,7 @@ class MapReducePhase extends Phase
     public function setLanguage($language)
     {
         $this->language = $language;
+
         return $this;
     }
 
@@ -111,6 +111,7 @@ class MapReducePhase extends Phase
     public function setSource($source)
     {
         $this->source = $source;
+
         return $this;
     }
 
@@ -125,6 +126,7 @@ class MapReducePhase extends Phase
     public function setKeep($keep)
     {
         $this->keep = $keep;
+
         return $this;
     }
 
@@ -139,6 +141,7 @@ class MapReducePhase extends Phase
     public function setBucket($bucket)
     {
         $this->bucket = $bucket;
+
         return $this;
     }
 
@@ -153,6 +156,7 @@ class MapReducePhase extends Phase
     public function setKey($key)
     {
         $this->key = $key;
+
         return $this;
     }
 
@@ -167,6 +171,7 @@ class MapReducePhase extends Phase
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -181,6 +186,7 @@ class MapReducePhase extends Phase
     public function setModule($module)
     {
         $this->module = $module;
+
         return $this;
     }
 
@@ -195,9 +201,10 @@ class MapReducePhase extends Phase
     public function setFunction($function)
     {
         $this->function = $function;
+
         return $this;
     }
-    
+
     public function getArg()
     {
         return $this->arg;
