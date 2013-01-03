@@ -7,18 +7,18 @@ class AbstractKeyFilter implements KeyFilter
      * @var \Kbrw\RiakBundle\Model\MapReduce\KeyFilter
      */
     protected $parent;
-    
+
     /**
      * @var string
      */
     protected $name;
-    
-    function __construct($parent = null, $name = null)
+
+    public function __construct($parent = null, $name = null)
     {
         $this->setParent($parent);
         $this->setName($name);
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\KeyFilter
      */
@@ -31,7 +31,7 @@ class AbstractKeyFilter implements KeyFilter
     {
         $this->parent = $parent;
     }
-    
+
     public function getName()
     {
         return $this->name;

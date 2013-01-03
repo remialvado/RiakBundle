@@ -14,7 +14,7 @@ class ErlangCallTest extends ModelTestCase
     {
         return dirname(__FILE__) . "/../../../Resources/tests/model/erlangCall";
     }
-    
+
     /**
      * @test
      */
