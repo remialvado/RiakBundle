@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as Ser;
 abstract class PhaseContainer
 {
     protected $phase;
-    
+
     /**
      * @Ser\Exclude
      */

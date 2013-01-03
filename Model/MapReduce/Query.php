@@ -117,6 +117,7 @@ class Query
             $phase->setQuery($this);
             $this->phases[] = new PhaseContainer\LinkPhaseContainer($phase);
         }
+
         return $phase;
     }
 
