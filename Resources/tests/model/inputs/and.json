@@ -1,0 +1,1 @@
+{"bucket":"invoices","key_filters":["and",[["ends_with","0603"]],[["starts_with","basho"]]]}

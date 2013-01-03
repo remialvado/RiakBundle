@@ -51,7 +51,12 @@ class Cluster
      */
     protected $riakSearchServiceClient;
 
-    public function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $eventDispatcher = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null)
+    /**
+     * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakMapReduceServiceClient
+     */
+    protected $riakMapReduceServiceClient;
+
+    public function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $eventDispatcher = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null, $riakMapReduceServiceClient = null)
     {
         if (!isset($name))                          $name                          = self::DEFAULT_NAME;
         if (!isset($protocol))                      $protocol                      = self::DEFAULT_PROTOCOL;
@@ -70,6 +75,7 @@ class Cluster
         $this->setRiakBucketServiceClient($riakBucketServiceClient);
         $this->setRiakKVServiceClient($riakKVServiceClient);
         $this->setRiakSearchServiceClient($riakSearchServiceClient);
+        $this->setRiakMapReduceServiceClient($riakMapReduceServiceClient);
         $this->buckets = array();
         foreach ($bucketConfigs as $bucketName => $bucketConfig) {
             $class = isset($bucketConfig["class"]) ? $bucketConfig["class"] : "\Kbrw\RiakBundle\Model\Bucket\Bucket";
@@ -79,6 +85,14 @@ class Cluster
             $bucket->setFullyQualifiedClassName($bucketConfig["fqcn"]);
             $this->addBucket($bucket);
         }
+    }
+    
+    /**
+     * @return \Kbrw\RiakBundle\Model\MapReduce\Query
+     */
+    public function mapReduce()
+    {
+        
     }
 
     /**
@@ -250,6 +264,16 @@ class Cluster
     public function setRiakSearchServiceClient($riakSearchServiceClient)
     {
         $this->riakSearchServiceClient = $riakSearchServiceClient;
+    }
+    
+    public function getRiakMapReduceServiceClient()
+    {
+        return $this->riakMapReduceServiceClient;
+    }
+
+    public function setRiakMapReduceServiceClient($riakMapReduceServiceClient)
+    {
+        $this->riakMapReduceServiceClient = $riakMapReduceServiceClient;
     }
 
     public function getBuckets()

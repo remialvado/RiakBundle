@@ -28,7 +28,7 @@ abstract class ModelTestCase extends BaseTestCase
     public function serialization($object, $expectedFeed, $expectedTransmutedObject)
     {
         if ($this->isSerializationTestable) {
-            $this->assertEquals($this->serializer->serialize($object, $this->serializarionMethod), $expectedFeed);
+            $this->assertEquals($expectedFeed, $this->serializer->serialize($object, $this->serializarionMethod));
         }
     }
 
@@ -42,7 +42,7 @@ abstract class ModelTestCase extends BaseTestCase
             $unserializedObject = $this->serializer->deserialize($feed, $this->systemUnderTestFullClassName, $this->serializarionMethod);
             $this->assertNotNull($unserializedObject);
             $this->assertTrue($unserializedObject instanceof $this->systemUnderTestFullClassName);
-            $this->assertEquals($unserializedObject, $expectedObject);
+            $this->assertEquals($expectedObject, $unserializedObject);
         }
     }
 
@@ -53,7 +53,7 @@ abstract class ModelTestCase extends BaseTestCase
     public function transmute($expectedObject, $feed, $expectedTransmutedObject)
     {
         if ($this->isTransmutationTestable && $expectedObject instanceof Transmutable) {
-            $this->assertEquals($expectedObject->transmute(), $expectedTransmutedObject);
+            $this->assertEquals($expectedTransmutedObject, $expectedObject->transmute());
         }
     }
 

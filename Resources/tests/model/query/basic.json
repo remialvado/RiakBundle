@@ -1,0 +1,1 @@
+{"inputs":[["invoices"]],"query":[{"map":{"language":"javascript","source":"function(v){return [v];}"}},{"reduce":{"language":"javascript","source":"function() {return [[v]];}","keep":true}}]}

@@ -1,0 +1,1 @@
+{"bucket":"invoices","key_filters":[["starts_with","foo"]]}

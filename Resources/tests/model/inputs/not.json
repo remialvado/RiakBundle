@@ -1,0 +1,1 @@
+{"bucket":"invoices","key_filters":["not",[["ends_with","0603"]]]}

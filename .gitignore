@@ -19,4 +19,4 @@ composer.lock
 
 # Misc
 nbproject/*
-clover
+clover*

@@ -8,7 +8,7 @@ use Kbrw\RiakBundle\Tests\Service\WebserviceClient\Guzzle\SimpleGuzzleClientProv
 use Kbrw\RiakBundle\Model\Bucket\Bucket;
 use Kbrw\RiakBundle\Tests\BaseTestCase;
 
-class BucketTest extends BaseTestCase
+class ClusterTest extends BaseTestCase
 {
 
     /**
