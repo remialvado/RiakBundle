@@ -31,13 +31,13 @@ class Query
      * @Ser\SerializedName("timeout")
      */
     protected $timeout;
-    
+
     /**
      * @Ser\Exclude
      * @var string
      */
     protected $responseFullyQualifiedClassName;
-    
+
     /**
      * @Ser\Exclude
      * @var \Kbrw\RiakBundle\Model\Cluster\Cluster
@@ -60,8 +60,7 @@ class Query
         if ($this->inputs->isOnAFullBucket()) {
             $this->inputsBackup = $this->inputs;
             $this->inputs = $this->inputs->getMainBucket();
-        }
-        else if ($this->inputs->isKeySelectionUsed()) {
+        } elseif ($this->inputs->isKeySelectionUsed()) {
             $this->inputsBackup = $this->inputs;
             $this->inputs = $this->inputs->getKeySelectionArray();
         }
@@ -99,10 +98,10 @@ class Query
     public function map($source, $keep = null)
     {
         $this->configureMapPhase()->setSource($source)->setKeep($keep);
-        
+
         return $this;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\MapReducePhase
      */
@@ -114,7 +113,7 @@ class Query
             $phase->setQuery($this);
             $this->phases[] = new PhaseContainer\MapPhaseContainer($phase);
         }
-        
+
         return $phase;
     }
 
@@ -124,10 +123,10 @@ class Query
     public function reduce($source, $keep = null)
     {
         $this->configureReducePhase()->setSource($source)->setKeep($keep);
-        
+
         return $this;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\MapReducePhase
      */
@@ -139,7 +138,7 @@ class Query
             $phase->setQuery($this);
             $this->phases[] = new PhaseContainer\ReducePhaseContainer($phase);
         }
-        
+
         return $phase;
     }
 
@@ -152,7 +151,7 @@ class Query
 
         return $this;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\LinkPhase
      */
@@ -164,10 +163,10 @@ class Query
             $phase->setQuery($this);
             $this->phases[] = new PhaseContainer\LinkPhaseContainer($phase);
         }
-        
+
         return $phase;
     }
-    
+
     /**
      * @return mixed
      */
@@ -224,12 +223,12 @@ class Query
     {
         return $this->timeout;
     }
-    
+
     public function setTimeout($timeout)
     {
         $this->timeout = $timeout;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Query
      */
@@ -239,7 +238,7 @@ class Query
 
         return $this;
     }
-    
+
     public function getResponseFullyQualifiedClassName()
     {
         return $this->responseFullyQualifiedClassName;
@@ -249,17 +248,17 @@ class Query
     {
         $this->responseFullyQualifiedClassName = $responseFullyQualifiedClassName;
     }
-    
+
     /**
      * @return \Kbrw\RiakBundle\Model\MapReduce\Query
      */
     public function responseShouldBe($responseFullyQualifiedClassName)
     {
         $this->setResponseFullyQualifiedClassName($responseFullyQualifiedClassName);
-        
+
         return $this;
     }
-    
+
     public function getCluster()
     {
         return $this->cluster;

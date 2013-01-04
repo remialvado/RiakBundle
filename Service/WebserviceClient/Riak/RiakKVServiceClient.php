@@ -260,8 +260,7 @@ class RiakKVServiceClient extends BaseServiceClient
             // prepare string representation
             if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($format)) {
                 $data->setStringContent($this->serializer->serialize($data->getContent(), $format));
-            }
-            else if ($data->getContent() !== null) {
+            } elseif ($data->getContent() !== null) {
                 echo "setting string content";
                 $data->setStringContent($data->getContent());
             }

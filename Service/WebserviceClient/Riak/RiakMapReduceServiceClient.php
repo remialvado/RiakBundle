@@ -25,6 +25,7 @@ class RiakMapReduceServiceClient extends BaseServiceClient
                 if (!empty($fqcn)) {
                     return $this->getSerializer()->deserialize($response->getBody(true), $fqcn, "json");
                 }
+
                 return $response->getBody(true);
             }
         } catch (\Exception $e) {
