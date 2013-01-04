@@ -27,7 +27,7 @@ class RiakTestCommand extends ContainerAwareCommand
         //$this->search();
         $this->mapreduce();
     }
-    
+
     protected function injectData()
     {
         $bucket = $this->cluster->getBucket("test_users", true);
@@ -35,14 +35,14 @@ class RiakTestCommand extends ContainerAwareCommand
         $bucket->put(array("remi1" => new \Acme\DemoBundle\Model\User("remi1", "remi.alvado" . rand(1, 10000) . "@gmail.com")));
         $bucket->put(array("remi2" => new \Acme\DemoBundle\Model\User("remi2", "remi.alvado" . rand(1, 10000) . "@gmail.com")));
     }
-    
+
     protected function search()
     {
         $this->injectData();
         $bucket = $this->cluster->getBucket("test_users", true);
         print_r($bucket->sasearch(new \Kbrw\RiakBundle\Model\Search\Query("id:rem*", "id")));
     }
-    
+
     protected function mapreduce()
     {
         $bucket = $this->cluster->getBucket("test_training", true);
@@ -54,10 +54,11 @@ class RiakTestCommand extends ContainerAwareCommand
         $result = $this->cluster->mapReduce()
           ->on("test_training")
           ->map('
-              function(riakObject) {   
+              function(riakObject) {
                   var m =  riakObject.values[0].data.match("pizza");
+
                   return  [[riakObject.key, (m ? m.length : 0 )]];
-              }    
+              }
           ')
           ->send();
         var_dump($result);
