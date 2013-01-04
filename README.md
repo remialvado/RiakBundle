@@ -29,7 +29,7 @@ Table Of Content
     - [List keys inside a bucket](#list-keys-inside-a-bucket)
     - [Count keys inside a bucket](#count-keys-inside-a-bucket)
     - [Delete all keys inside a bucket](#delete-all-keys-inside-a-bucket)
-    - [Delete one key inside a bucket](#Delete-one-key-inside-a-bucket)
+    - [Delete one key inside a bucket](#delete-one-key-inside-a-bucket)
 
 Features
 --------
