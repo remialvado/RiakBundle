@@ -41,7 +41,8 @@ class RiakExtension extends Extension
                 new Reference("event_dispatcher"),
                 new Reference("kbrw.riak.bucket"),
                 new Reference("kbrw.riak.kv"),
-                new Reference("kbrw.riak.search")
+                new Reference("kbrw.riak.search"),
+                new Reference("kbrw.riak.mapreduce")
             ));
             $container->setDefinition("riak.cluster." . $name, $definition);
         }

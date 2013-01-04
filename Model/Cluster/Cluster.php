@@ -4,6 +4,7 @@ namespace Kbrw\RiakBundle\Model\Cluster;
 
 use \Kbrw\RiakBundle\Model\Bucket\Bucket;
 use \Symfony\Component\EventDispatcher\GenericEvent;
+use \Kbrw\RiakBundle\Model\MapReduce\Query;
 
 /**
  * @author remi
@@ -92,7 +93,9 @@ class Cluster
      */
     public function mapReduce()
     {
-
+        $query = new Query($this);
+        
+        return $query;
     }
 
     /**

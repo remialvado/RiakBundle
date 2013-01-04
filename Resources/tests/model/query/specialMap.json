@@ -1,0 +1,1 @@
+{"inputs":"invoices","query":[{"map":{"language":"erlang","module":"riak_mapreduce","function":"map_object_value"}}],"timeout":10000}

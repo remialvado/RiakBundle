@@ -37,9 +37,19 @@ class InputList
 
         return $content;
     }
+    
+    public function getMainBucket()
+    {
+        return reset($this->inputs)->getBucket();
+    }
 
     public function isDefined()
     {
         return count($this->inputs) > 0;
+    }
+
+    public function onlyOneBucketSelected()
+    {
+        return count($this->inputs) === 1 && reset($this->inputs)->onlyBucketIsDefined();
     }
 }

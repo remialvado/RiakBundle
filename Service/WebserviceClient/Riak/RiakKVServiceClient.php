@@ -258,8 +258,12 @@ class RiakKVServiceClient extends BaseServiceClient
             $data->getHeaderBag()->set("Content-Type",    $this->contentTypeNormalizer->getContentType($format));
 
             // prepare string representation
-            if ($data->getContent() !== null && $this->contentTypeNormalizer->isFormatSupportedForSerialization($format)) {
+            if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($format)) {
                 $data->setStringContent($this->serializer->serialize($data->getContent(), $format));
+            }
+            else if ($data->getContent() !== null) {
+                echo "setting string content";
+                $data->setStringContent($data->getContent());
             }
 
             $datas->add($data);

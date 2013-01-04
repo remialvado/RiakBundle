@@ -101,12 +101,12 @@ class RiakKVServiceClientTest extends BaseTestCase
     public function normalizeDatas_arrayOfKeys()
     {
         // prepare expectation
-        $commonHeaderBag = new HeaderBag(array("Content-Type" => "application/json", "X-Riak-ClientId" => "test"));
-        $expectedDatas = new Datas(array(new Data("foo1", null, $commonHeaderBag), new Data("foo2", null, $commonHeaderBag)));
+        $commonHeaderBag = new HeaderBag(array("Content-Type" => "text/plain", "X-Riak-ClientId" => "test"));
+        $expectedDatas = new Datas(array(new Data("foo1", null, $commonHeaderBag, null), new Data("foo2", null, $commonHeaderBag, null)));
 
         // Run test
         $objects = array("foo1", "foo2");
-        $this->assertEquals($expectedDatas, $this->riakKVServiceClient->normalizeDatas($objects, "json", "test", true));
+        $this->assertEquals($expectedDatas, $this->riakKVServiceClient->normalizeDatas($objects, null, "test", true));
     }
 
     /**

@@ -83,9 +83,19 @@ class Inputs
         return $this->inputList->isDefined();
     }
 
+    public function isOnAFullBucket()
+    {
+        return $this->inputList->onlyOneBucketSelected();
+    }
+
     public function getKeySelectionArray()
     {
         return $this->inputList->toArray();
+    }
+
+    public function getMainBucket()
+    {
+        return $this->inputList->getMainBucket();
     }
 
     /**

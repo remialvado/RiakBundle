@@ -7,7 +7,7 @@ class QueryTest extends ModelTestCase
 {
     protected $serializarionMethod          = "json";
     protected $systemUnderTestFullClassName = "Kbrw\RiakBundle\Model\MapReduce\Query";
-    protected $testedModels                 = array("basic", "keyFilter");
+    protected $testedModels                 = array("basic", "keyFilter", "specialMap");
     protected $isUnserializationTestable    = false; // no need to support that
 
     protected function getTestFileBasePath()

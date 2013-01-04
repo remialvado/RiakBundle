@@ -1,1 +1,1 @@
-{"inputs":{"bucket":"invoices","key_filters":[["ends_with","0603"]]},"query":[{"map":{"language":"javascript","source":"function(v){return [v];}"}},{"reduce":{"language":"javascript","source":"function() {return [[v]];}","keep":true}}]}
+{"inputs":{"bucket":"invoices","key_filters":[["ends_with","0603"]]},"query":[{"map":{"language":"javascript","source":"function(v){return [v];}"}},{"reduce":{"language":"javascript","source":"function() {return [[v]];}"}}]}
