@@ -22,6 +22,14 @@ Table Of Content
     - [Enable Automatic Indexation](#enable-automatic-indexation)
     - [Play with Headers](#play-with-headers)
     - [Define your own bucket class](#define-your-own-bucket-class)
+- [Admin Tasks](#admin-tasks)
+    - [Common Options](#common-options)
+    - [List existing buckets](#list-existing-buckets)
+    - [Delete all buckets](#delete-all-buckets)
+    - [List keys inside a bucket](#list-keys-inside-a-bucket)
+    - [Count keys inside a bucket](#count-keys-inside-a-bucket)
+    - [Delete all keys inside a bucket](#delete-all-keys-inside-a-bucket)
+    - [Delete one key inside a bucket](#Delete-one-key-inside-a-bucket)
 
 Features
 --------
@@ -453,7 +461,7 @@ For closer details, you can have a look at [this example](https://gist.github.co
 Admin Tasks
 -----------
 
-### Common parameters
+### Common Options
 
 All tasks working on a cluster (so... all tasks) support the following option :
 - ```-c``` or ```--cluster``` : the cluster name. If not provided, it will be asked on the command line
