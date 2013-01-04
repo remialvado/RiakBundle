@@ -37,7 +37,7 @@ class InputList
 
         return $content;
     }
-    
+
     public function getMainBucket()
     {
         return reset($this->inputs)->getBucket();

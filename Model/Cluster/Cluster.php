@@ -94,7 +94,7 @@ class Cluster
     public function mapReduce()
     {
         $query = new Query($this);
-        
+
         return $query;
     }
 
