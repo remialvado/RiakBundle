@@ -20,7 +20,7 @@ class RiakClusterServiceClient extends BaseServiceClient
             if ($response->getStatusCode() === 200) {
                 $content = json_decode($response->getBody(true));
                 if (isset($content)) {
-                    foreach($content->{"buckets"} as $bucketName) {
+                    foreach ($content->{"buckets"} as $bucketName) {
                         if (!fnmatch($ignore, $bucketName)) {
                             $bucketNames[] = $bucketName;
                         }
