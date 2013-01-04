@@ -51,7 +51,7 @@ class Input
     {
         $this->data = $data;
     }
-    
+
     public function onlyBucketIsDefined()
     {
         return !isset($this->key) && !isset($this->data);
