@@ -8,7 +8,7 @@ class StringToFloatTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["string_to_float"]]', new StringToFloat()),
         );
     }

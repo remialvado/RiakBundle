@@ -8,7 +8,7 @@ class ToLowerTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["to_lower"]]', new ToLower()),
         );
     }

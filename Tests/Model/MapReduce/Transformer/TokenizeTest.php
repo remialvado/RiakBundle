@@ -8,7 +8,7 @@ class TokenizeTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["tokenize","\/",4]]', new Tokenize(null, "/", 4)),
         );
     }

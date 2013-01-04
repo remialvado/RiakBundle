@@ -8,7 +8,7 @@ class UrlDecodeTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["urldecode"]]', new UrlDecode()),
         );
     }

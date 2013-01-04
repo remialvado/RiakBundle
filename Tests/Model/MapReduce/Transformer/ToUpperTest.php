@@ -8,7 +8,7 @@ class ToUpperTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["to_upper"]]', new ToUpper()),
         );
     }

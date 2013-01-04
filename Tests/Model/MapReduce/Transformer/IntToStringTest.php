@@ -8,7 +8,7 @@ class IntToStringTest extends KeyFilterTestCase
 {
     public function getExpectations()
     {
-        return $this->values = array(
+        return array(
             array('[["int_to_string"]]', new IntToString()),
         );
     }
