@@ -16,6 +16,7 @@ Table Of Content
     - [List keys inside a Bucket](#list-keys-inside-a-bucket)
     - [Count keys inside a Bucket](#count-keys-inside-a-bucket)
     - [Search items inside a Bucket using Riak Search](#search-items-inside-a-bucket-using-riak-search)
+    - [Perform MapReduce request on a Cluster](#perform-mapreduce-request-on-a-cluster)
 - [Extended Usage](#extended-usage)
     - [Load and edit Bucket configuration](#load-and-edit-bucket-configuration)
     - [Enable Automatic Indexation](#enable-automatic-indexation)
@@ -301,7 +302,7 @@ $query->setRows(5); // return only 5 results
 $response = $usersBucket->search($query);
 ```
 
-### Perform mapreduce request on a cluster
+### Perform MapReduce request on a cluster
 
 Riak allows developers to execute mapreduce operations an entire cluster. RiakBundle offers the same possibility through a fluent interface.
 Mapreduce operations are made of two main parts : 
@@ -344,12 +345,6 @@ Key filter example :
 ```php
 // count how many times 'pizza' are served, meal by meal only on winter and autumn
 // Apply a specific timeout (10sec) as well
-$bucket = $this->cluster->getBucket("meals", true);
-$bucket->delete($bucket->keys());
-$bucket->put(array("summer-1" => "pizza salad pasta meat sushi"));
-$bucket->put(array("summer-2" => "pizza pizza pizza pizza pizza"));
-$bucket->put(array("winter-1" => "cheese cheese patatoes meat vegetables"));
-$bucket->put(array("autumn-1" => "pizza pizza pizza mushroom meat"));
 $result = $this->cluster->mapReduce()
   ->filter("meals")
     ->tokenize("-", 1)
@@ -372,12 +367,6 @@ $result = $this->cluster->mapReduce()
 Key filter example : 
 ```php
 // use an erlang function to execute something on meals
-$bucket = $this->cluster->getBucket("meals", true);
-$bucket->delete($bucket->keys());
-$bucket->put(array("summer-1" => "pizza salad pasta meat sushi"));
-$bucket->put(array("summer-2" => "pizza pizza pizza pizza pizza"));
-$bucket->put(array("winter-1" => "cheese cheese patatoes meat vegetables"));
-$bucket->put(array("autumn-1" => "pizza pizza pizza mushroom meat"));
 $result = $this->cluster->mapReduce()
   ->on("meals")
   ->configureMapPhase()
