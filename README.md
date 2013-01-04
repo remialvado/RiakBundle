@@ -34,10 +34,11 @@ stored objects instead of on communication APIs. Supported features are :
 - insert, delete and fetch objects into a bucket with support for parallel calls (curl_multi) 
 - fetch, edit and save bucket properties
 - list and count keys inside a bucket
+- search on a bucket
+- perform mapreduce operations through a fluid interface
 - console tasks to list and count keys inside a bucket, delete a single key or an entire bucket
-- support for basic searches
 - support for custom search parameters (used by custom Riak Search builds)
-- support for Bucket inheritance to allow you to define custom services
+- support for Bucket inheritance to allow you to define custom services on a bucket
 
 Roadmap
 -------
@@ -299,6 +300,97 @@ $query->addFieldInList("id"); // only look in "id" field for each object stored 
 $query->setRows(5); // return only 5 results
 $response = $usersBucket->search($query);
 ```
+
+### Perform mapreduce request on a cluster
+
+Riak allows developers to execute mapreduce operations an entire cluster. RiakBundle offers the same possibility through a fluent interface.
+Mapreduce operations are made of two main parts : 
+- select keys the map phase will be executed against. Developers can choose to execute the mapreduce operation against a full bucket, a predefined subset of keys or a filterable set of keys. The three possibilities will be described below.
+- define map and reduce phases using javascript functions, erlang module, ... Some possibilities will be defined below but you can dive into the source code or the API to find more.
+
+Generic example : 
+```php
+$result = $this->cluster->mapReduce()
+  ->on("meals")
+  ->map('function(riakObject) {...}')
+  ->link('meals', 'menu_') // to follow links pointing to any key matching "menu*" on "meals" bucket
+  ->reduce('function(riakObject) {...}')
+  ->responseShouldBe("\Some\JMS\Serializable\Type")
+  ->send();
+```
+
+Basic example : 
+```php
+// count how many times 'pizza' are served, meal by meal on all seasons
+$bucket = $this->cluster->getBucket("meals", true);
+$bucket->delete($bucket->keys());
+$bucket->put(array("summer-1" => "pizza salad pasta meat sushi"));
+$bucket->put(array("summer-2" => "pizza pizza pizza pizza pizza"));
+$bucket->put(array("winter-1" => "cheese cheese patatoes meat vegetables"));
+$bucket->put(array("autumn-1" => "pizza pizza pizza mushroom meat"));
+$result = $this->cluster->mapReduce()
+  ->on("meals")
+  ->map('
+      function(riakObject) {   
+          var m =  riakObject.values[0].data.match("pizza");
+          return  [[riakObject.key, (m ? m.length : 0 )]];
+      }    
+  ')
+  ->responseShouldBe("array<string, string>")
+  ->send();
+```
+
+Key filter example : 
+```php
+// count how many times 'pizza' are served, meal by meal only on winter and autumn
+// Apply a specific timeout (10sec) as well
+$bucket = $this->cluster->getBucket("meals", true);
+$bucket->delete($bucket->keys());
+$bucket->put(array("summer-1" => "pizza salad pasta meat sushi"));
+$bucket->put(array("summer-2" => "pizza pizza pizza pizza pizza"));
+$bucket->put(array("winter-1" => "cheese cheese patatoes meat vegetables"));
+$bucket->put(array("autumn-1" => "pizza pizza pizza mushroom meat"));
+$result = $this->cluster->mapReduce()
+  ->filter("meals")
+    ->tokenize("-", 1)
+    ->or()
+      ->eq("winter")
+      ->eq("autumn")
+    ->end()
+  ->done()
+  ->map('
+      function(riakObject) {   
+          var m =  riakObject.values[0].data.match("pizza");
+          return  [[riakObject.key, (m ? m.length : 0 )]];
+      }    
+  ')
+  ->timeout(10000)
+  ->responseShouldBe("array<string, string>")
+  ->send();
+```
+
+Key filter example : 
+```php
+// use an erlang function to execute something on meals
+$bucket = $this->cluster->getBucket("meals", true);
+$bucket->delete($bucket->keys());
+$bucket->put(array("summer-1" => "pizza salad pasta meat sushi"));
+$bucket->put(array("summer-2" => "pizza pizza pizza pizza pizza"));
+$bucket->put(array("winter-1" => "cheese cheese patatoes meat vegetables"));
+$bucket->put(array("autumn-1" => "pizza pizza pizza mushroom meat"));
+$result = $this->cluster->mapReduce()
+  ->on("meals")
+  ->configureMapPhase()
+    ->setLanguage("erlang")
+    ->setModule("riak_mapreduce")
+    ->setFunction("map_object_value")
+  ->done()
+  ->responseShouldBe("array<Acme\DemoBundle\Model\Meal>")
+  ->send();
+```
+
+
+
 Advanced Usage
 --------------
 

@@ -45,12 +45,12 @@ class RiakTestCommand extends ContainerAwareCommand
     
     protected function mapreduce()
     {
-        $bucket = $this->cluster->getBucket("test_training", true);
+        $bucket = $this->cluster->getBucket("meals", true);
         $bucket->delete($bucket->keys());
-        $bucket->put(array("foo" => "pizza data goes here"));
-        $bucket->put(array("bar" => "pizza pizza pizza pizza"));
-        $bucket->put(array("baz" => "nothing to see here"));
-        $bucket->put(array("bam" => "pizza pizza pizza"));
+        $bucket->put(array("summer-1" => "pizza data goes here"));
+        $bucket->put(array("summer-2" => "pizza pizza pizza pizza"));
+        $bucket->put(array("winter-1" => "nothing to see here"));
+        $bucket->put(array("autumn-1" => "pizza pizza pizza"));
         $result = $this->cluster->mapReduce()
           ->on("test_training")
           ->map('
