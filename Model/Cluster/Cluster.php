@@ -252,7 +252,7 @@ class Cluster
     {
         $this->guzzleClientProviderService = $guzzleClientProviderService;
     }
-    
+
     public function getRiakClusterServiceClient()
     {
         return $this->riakClusterServiceClient;
