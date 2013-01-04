@@ -38,6 +38,11 @@ class Cluster
     protected $eventDispatcher;
 
     /**
+     * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakClusterServiceClient
+     */
+    protected $riakClusterServiceClient;
+
+    /**
      * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakBucketServiceClient
      */
     protected $riakBucketServiceClient;
@@ -57,7 +62,7 @@ class Cluster
      */
     protected $riakMapReduceServiceClient;
 
-    public function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $eventDispatcher = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null, $riakMapReduceServiceClient = null)
+    public function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $eventDispatcher = null, $riakClusterServiceClient = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null, $riakMapReduceServiceClient = null)
     {
         if (!isset($name))                          $name                          = self::DEFAULT_NAME;
         if (!isset($protocol))                      $protocol                      = self::DEFAULT_PROTOCOL;
@@ -73,6 +78,7 @@ class Cluster
         $this->setMaxParallelCalls($maxParallelCalls);
         $this->setGuzzleClientProviderService($guzzleClientProviderService);
         $this->setEventDispatcher($eventDispatcher);
+        $this->setRiakClusterServiceClient($riakClusterServiceClient);
         $this->setRiakBucketServiceClient($riakBucketServiceClient);
         $this->setRiakKVServiceClient($riakKVServiceClient);
         $this->setRiakSearchServiceClient($riakSearchServiceClient);
@@ -96,6 +102,14 @@ class Cluster
         $query = new Query($this);
 
         return $query;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function bucketNames()
+    {
+        return $this->riakClusterServiceClient->buckets($this);
     }
 
     /**
@@ -237,6 +251,16 @@ class Cluster
     public function setGuzzleClientProviderService($guzzleClientProviderService)
     {
         $this->guzzleClientProviderService = $guzzleClientProviderService;
+    }
+    
+    public function getRiakClusterServiceClient()
+    {
+        return $this->riakClusterServiceClient;
+    }
+
+    public function setRiakClusterServiceClient($riakClusterServiceClient)
+    {
+        $this->riakClusterServiceClient = $riakClusterServiceClient;
     }
 
     public function getRiakBucketServiceClient()

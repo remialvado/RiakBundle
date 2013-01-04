@@ -39,6 +39,7 @@ class RiakExtension extends Extension
                 $clusterConfig["buckets"],
                 new Reference($clusterConfig["guzzle_client_provider_service"]),
                 new Reference("event_dispatcher"),
+                new Reference("kbrw.riak.cluster"),
                 new Reference("kbrw.riak.bucket"),
                 new Reference("kbrw.riak.kv"),
                 new Reference("kbrw.riak.search"),

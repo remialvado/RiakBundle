@@ -6,21 +6,19 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class ListKeysCommand extends ContainerAwareCommand
+class ListBucketsCommand extends ContainerAwareCommand
 {
 
-    const OPTION_BUCKET  = "bucket";
-    const OPTION_CLUSTER = "cluster";
+    const OPTION_CLUSTER  = "cluster";
     const OPTION_RAW     = "raw";
 
     protected function configure()
     {
         $this
-            ->setName('riak:bucket:list')
-            ->setDescription('List all keys inside a bucket.')
-            ->addOption(self::OPTION_BUCKET,  "b", InputOption::VALUE_REQUIRED, "Bucket name")
+            ->setName('riak:cluster:list')
+            ->setDescription('List all buckets inside a bucket.')
             ->addOption(self::OPTION_CLUSTER, "c", InputOption::VALUE_REQUIRED, "Cluster name")
-            ->addOption(self::OPTION_RAW,     "r", InputOption::VALUE_NONE,     "Display keys without style.")
+            ->addOption(self::OPTION_RAW,     "r", InputOption::VALUE_NONE,     "Display buckets without style.")
         ;
     }
 
@@ -28,10 +26,6 @@ class ListKeysCommand extends ContainerAwareCommand
     {
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $bucketName = $input->getOption(self::OPTION_BUCKET);
-        while (empty($bucketName)) {
-            $bucketName = $dialog->ask($output, 'Bucket name : ', null);
-        }
         $clusterName = $input->getOption(self::OPTION_CLUSTER);
         while (empty($clusterName)) {
             $clusterName = $dialog->ask($output, 'Cluster name : ', null);
@@ -41,15 +35,15 @@ class ListKeysCommand extends ContainerAwareCommand
 
             return 1;
         }
-        $keys = $this->getContainer()->get("riak.cluster.$clusterName")->getBucket($bucketName)->keys();
+        $bucketNames = $this->getContainer()->get("riak.cluster.$clusterName")->bucketNames();
         if ($input->hasOption(self::OPTION_RAW) && $input->getOption(self::OPTION_RAW)) {
-            echo implode(" ", $keys);
-        } else if (count($keys) > 0) {
-            $output->writeln("<info>Key(s) for '$bucketName' bucket : </info>");
-            echo " - " . implode("\n - ", $keys) . "\n";
+            echo implode(" ", $bucketNames);
+        } else if (count($bucketNames) > 0) {
+            $output->writeln("<info>Bucket(s) in '$clusterName' cluster : </info>");
+            echo " - " . implode("\n - ", $bucketNames) . "\n";
         }
         else {
-            $output->writeln("<error>Bucket '$bucketName' is empty.</error>");
+            $output->writeln("<error>Cluster '$clusterName' is empty. </error>");
         }
 
         return 0;

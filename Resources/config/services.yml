@@ -7,6 +7,9 @@ parameters:
   
   kbrw.guzzle.client.provider.class: "Kbrw\RiakBundle\Service\WebserviceClient\Guzzle\SimpleGuzzleClientProvider"
   
+  kbrw.riak.cluster.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakClusterServiceClient"
+  kbrw.riak.cluster.route: "{protocol}://{domain}:{port}/riak/{?buckets}"
+  
   kbrw.riak.bucket.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakBucketServiceClient"
   kbrw.riak.bucket.route: "{protocol}://{domain}:{port}/riak/{bucket}{?keys,props}"
   
@@ -26,6 +29,13 @@ services:
     
   kbrw.guzzle.client.provider:
     class: "%kbrw.guzzle.client.provider.class%"
+      
+  kbrw.riak.cluster:
+    class: "%kbrw.riak.cluster.class%"
+    calls:
+      - [setRoute,                 [ "%kbrw.riak.cluster.route%" ] ]
+      - [setLogger,                [ "@logger" ] ]
+      - [setSerializer,            [ "@jms_serializer" ] ]
       
   kbrw.riak.bucket:
     class: "%kbrw.riak.bucket.class%"

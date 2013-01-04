@@ -45,12 +45,7 @@ Roadmap
 -------
 
 - support for Secondary indexes insert and fetch operations
-- support for MapReduce queries for both Javascript and Erlang
 - support for extended bucket settings (n_val, ...) in YAML configuration
-- add some console tasks to handle some other admin operations : 
-    - display buckets inside a cluster
-    - delete all buckets inside a cluster
-    - ...
 - performance dashboard added to Symfony Debug Toolbar
 
 Dependencies
@@ -281,6 +276,14 @@ $backendCluster = $container->get("riak.cluster.backend");
 echo "'city' bucket contains" . $backendCluster->getBucket("city")->count() . " key(s)."
 ```
 
+### List buckets inside a cluster
+
+If you need to list all buckets inside a cluster, you can use the following example : 
+```php
+$backendCluster = $container->get("riak.cluster.backend");
+print_r(backendCluster->bucketNames());
+```
+
 ### Search items inside a bucket using Riak Search
 
 Riak supports a Solr-like (and -light) search engine. RiakBundle lets you searching for items on every buckets with search feature activated.
@@ -378,8 +381,6 @@ $result = $this->cluster->mapReduce()
   ->send();
 ```
 
-
-
 Advanced Usage
 --------------
 
@@ -448,3 +449,56 @@ riak:
 With this configuration, the "points_of_interests" bucket will be initialized as a ```Acme\DemoBundle\Model\AcmeBucket``` and not a regular Bucket. You can now implement this class (that you extends ```\Kbrw\RiakBundle\Model\Bucket\Bucket```) to atch your requirements.
 In the same spirit, each time a Bucket is added to a Cluster, an event named "riak.bucket.add" is thrown to the EventDispatcher. This ```\Symfony\Component\EventDispatcher\GenericEvent``` contains the newly created bucket that you can manipulate the way you want.
 For closer details, you can have a look at [this example](https://gist.github.com/4363553).
+
+Admin Tasks
+-----------
+
+### Common parameters
+
+All tasks working on a cluster (so... all tasks) support the following option :
+- ```-c``` or ```--cluster``` : the cluster name. If not provided, it will be asked on the command line
+
+All tasks working on a bucket support the following option : 
+- ```-b``` or ```--bucket``` : the bucket name. If not provided, it will be asked on the command line
+
+All tasks which list or count items support the following option : 
+- ```-r``` or ```--raw``` : if provided, a raw output format will be used. Mainly used for bash scripting.
+
+All tasks which delete items support the following option : 
+- ```-y``` or ```--yes``` : if provided, all yes/no questions will be skipped. mainly used for bash scripting.
+
+### List existing buckets
+
+```bash
+php app/console riak:cluster:list -c backend
+```
+
+### Delete all buckets
+
+```bash
+php app/console riak:cluster:deleteAll -c backend
+```
+
+### List keys inside a bucket
+
+```bash
+php app/console riak:bucket:list -c backend -b meals
+```
+
+### Count keys inside a bucket
+
+```bash
+php app/console riak:bucket:count -c backend -b meals
+```
+
+### Delete all keys inside a bucket
+
+```bash
+php app/console riak:bucket:deleteAll -c backend -b meals
+```
+
+### Delete one key inside a bucket
+
+```bash
+php app/console riak:bucket:delete -c backend -b meals -k summer-2
+```
