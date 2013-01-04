@@ -44,11 +44,10 @@ class ListKeysCommand extends ContainerAwareCommand
         $keys = $this->getContainer()->get("riak.cluster.$clusterName")->getBucket($bucketName)->keys();
         if ($input->hasOption(self::OPTION_RAW) && $input->getOption(self::OPTION_RAW)) {
             echo implode(" ", $keys);
-        } else if (count($keys) > 0) {
+        } elseif (count($keys) > 0) {
             $output->writeln("<info>Key(s) for '$bucketName' bucket : </info>");
             echo " - " . implode("\n - ", $keys) . "\n";
-        }
-        else {
+        } else {
             $output->writeln("<error>Bucket '$bucketName' is empty.</error>");
         }
 

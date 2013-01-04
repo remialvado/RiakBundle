@@ -38,11 +38,10 @@ class ListBucketsCommand extends ContainerAwareCommand
         $bucketNames = $this->getContainer()->get("riak.cluster.$clusterName")->bucketNames();
         if ($input->hasOption(self::OPTION_RAW) && $input->getOption(self::OPTION_RAW)) {
             echo implode(" ", $bucketNames);
-        } else if (count($bucketNames) > 0) {
+        } elseif (count($bucketNames) > 0) {
             $output->writeln("<info>Bucket(s) in '$clusterName' cluster : </info>");
             echo " - " . implode("\n - ", $bucketNames) . "\n";
-        }
-        else {
+        } else {
             $output->writeln("<error>Cluster '$clusterName' is empty. </error>");
         }
 
