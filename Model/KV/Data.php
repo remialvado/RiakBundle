@@ -80,6 +80,11 @@ class Data
         $this->content = $content;
     }
 
+    public function hasContent()
+    {
+        return isset($this->content);
+    }
+
     public function setStringContent($stringContent)
     {
         $this->stringContent = $stringContent;
