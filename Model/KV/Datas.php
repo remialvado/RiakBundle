@@ -24,7 +24,7 @@ class Datas
     {
         $objects = array();
         array_walk($this->datas, function($data) use (&$objects, $asString) {
-            if (isset($data) && $data->hasContent() )  {
+            if (isset($data) && $data->hasContent() ) {
                 $objects[] = $data->getContent($asString);
             }
         });
