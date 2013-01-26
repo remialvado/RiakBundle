@@ -69,10 +69,10 @@ Installation
 Only installation using composer is supported at the moment but source code could be easily tweaked to be used outside it.
 In order to install RiakBundle in a classic symfony project, just update your composer.json and add or edit this lines :  
 ```javascript
-"jms/security-extra-bundle": "1.*",
-"jms/di-extra-bundle": "1.*",
-"kbrw/riak-bundle": "dev-master"
+"kbrw/riak-bundle": "1.0.*"
 ```
+
+You may also need to adjust the "minimum-stability" to "dev" in your composer.json to make this work.
 
 Then, you just need to add some bundle into your app/AppKernel.php : 
 ```php
