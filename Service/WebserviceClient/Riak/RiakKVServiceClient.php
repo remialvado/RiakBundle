@@ -156,7 +156,6 @@ class RiakKVServiceClient extends BaseServiceClient
         foreach ($requests as $key => $request) {
             $data = new Data($key);
             try {
-                var_dump($request->getResponse()->getStatusCode());
                 if ($request->getState() === RequestInterface::STATE_COMPLETE && $request->getResponse()->getStatusCode() === 200 ) {
                     $response = $request->getResponse();
                     $data->setStringContent($response->getBody(true));
