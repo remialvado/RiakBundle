@@ -20,3 +20,4 @@ composer.lock
 # Misc
 nbproject/*
 clover*
+.idea
