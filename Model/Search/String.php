@@ -43,7 +43,7 @@ class String implements SimpleType
 
     public function getValue()
     {
-        return $this->value;
+        return $this->trim(value);
     }
 
     public function setValue($value)
