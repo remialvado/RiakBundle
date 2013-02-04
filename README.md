@@ -8,7 +8,7 @@ Table Of Content
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Basic Usage](#basic-usage)
-    - [Accessing a Cluster](#accessing-a-cluster) 
+    - [Accessing a Cluster](#accessing-a-cluster)
     - [Defining Bucket content](#defining-bucket-content)
     - [Insert or Update Data into a Bucket](#insert-or-update-data-into-a-bucket)
     - [Fetch Data from a Bucket](#fetch-data-from-a-bucket)
@@ -35,12 +35,12 @@ Features
 --------
 
 RiakBundle is designed to ease interaction with [Riak](http://basho.com/products/riak-overview/) database. It allows developers to focus on
-stored objects instead of on communication APIs. Supported features are : 
+stored objects instead of on communication APIs. Supported features are :
 
 - support for multi-clustering
 - configure clusters : protocol, domain, port, maximum supported connections in parallel, buckets list, ...
 - allow developers to plus directly some code into Guzzle to : use proxy, log or count all calls, ...
-- insert, delete and fetch objects into a bucket with support for parallel calls (curl_multi) 
+- insert, delete and fetch objects into a bucket with support for parallel calls (curl_multi)
 - fetch, edit and save bucket properties
 - list and count keys inside a bucket
 - search on a bucket
@@ -48,6 +48,7 @@ stored objects instead of on communication APIs. Supported features are :
 - console tasks to list and count keys inside a bucket, delete a single key or an entire bucket
 - support for custom search parameters (used by custom Riak Search builds)
 - support for Bucket inheritance to allow you to define custom services on a bucket
+- Symfony2 session storage handler
 
 Roadmap
 -------
@@ -59,7 +60,7 @@ Roadmap
 Dependencies
 ------------
 
-RiakBundles requires some other bundles / libraries to work : 
+RiakBundles requires some other bundles / libraries to work :
 - Guzzle : to handle HTTP requests thru curl
 - JMSSerializer : to handle serialization operations
 
@@ -67,14 +68,14 @@ Installation
 ------------
 
 Only installation using composer is supported at the moment but source code could be easily tweaked to be used outside it.
-In order to install RiakBundle in a classic symfony project, just update your composer.json and add or edit this lines :  
+In order to install RiakBundle in a classic symfony project, just update your composer.json and add or edit this lines :
 ```javascript
 "kbrw/riak-bundle": "1.0.*"
 ```
 
 You may also need to adjust the "minimum-stability" to "dev" in your composer.json to make this work.
 
-Then, you just need to add some bundle into your app/AppKernel.php : 
+Then, you just need to add some bundle into your app/AppKernel.php :
 ```php
 new JMS\SerializerBundle\JMSSerializerBundle(),
 new Kbrw\RiakBundle\RiakBundle(),
@@ -88,7 +89,7 @@ The backend cluster contains two pre-defined buckets. One to store some users in
 On the log cluster, you create a new bucket every day(I know it's strange but why not...) so you can't pre-configured buckets in this cluster.
 Moreover, you have conducted robustness campaigns and you know that backend cluster is able to support up to 500 parallels connection where your Frontend is never hitted by more than 5 connections in parallels. So you know that you can send 100 backend requests in parallels per frontend requests but no more. If you try to store or fetch or delete more than 100 objects at once, only the first 100 will be processed. Others will have to wait for a slot to opened. RiakBundle will handle this slot mecanism for you.
 
-All configuration can be made on config.yml file under a new ```riak``` namespace. With that in mind, you should define the following configuration : 
+All configuration can be made on config.yml file under a new ```riak``` namespace. With that in mind, you should define the following configuration :
 
 Example :
 ```yaml
@@ -117,7 +118,7 @@ Basic Usage
 
 ### Accessing a cluster
 
-Each cluster becomes a service called "riak.cluster.<clusterName>". In our example, you can access your two clusters using : 
+Each cluster becomes a service called "riak.cluster.<clusterName>". In our example, you can access your two clusters using :
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
 $logCluster = $container->get("riak.cluster.log");
@@ -125,8 +126,8 @@ $logCluster = $container->get("riak.cluster.log");
 
 ### Defining bucket content
 
-Riak stores text-based objects so you need to provide a text-based version of your objects. The best practice we recommand is to create an annotated object which represent your model. 
-For example, an User class could be implemented this way : 
+Riak stores text-based objects so you need to provide a text-based version of your objects. The best practice we recommand is to create an annotated object which represent your model.
+For example, an User class could be implemented this way :
 ```php
 <?php
 
@@ -134,32 +135,32 @@ namespace MyCompany\MyBundle\Model;
 
 use JMS\Serializer\Annotation as Ser;
 
-/** 
- * @Ser\AccessType("public_method") 
+/**
+ * @Ser\AccessType("public_method")
  * @Ser\XmlRoot("user")
  */
 class User
 {
     /**
-     * @Ser\Type("string") 
+     * @Ser\Type("string")
      * @Ser\SerializedName("id")
      * @var string
      */
     protected $id;
-    
+
     /**
-     * @Ser\Type("string") 
+     * @Ser\Type("string")
      * @Ser\SerializedName("email")
      * @var string
      */
     protected $email;
-    
+
     function __construct($id = null, $email = null)
     {
         $this->setId($id);
         $this->setEmail($email);
     }
-    
+
     public function getId()
     {
         return $this->id;
@@ -169,7 +170,7 @@ class User
     {
         $this->id = $id;
     }
-    
+
     public function getEmail()
     {
         return $this->email;
@@ -183,7 +184,7 @@ class User
 ```
 
 RiakBundle can automatically take care of serialization / deserialization so that you will always work with User instance and never with its text-based (JSON, XML or YAML) reprensentation.
-Your model class and the serialization method can be defined into configuration like described above or you can specify it on a bucket instance like this : 
+Your model class and the serialization method can be defined into configuration like described above or you can specify it on a bucket instance like this :
 ```php
 $logCluster = $container->get("riak.cluster.log");
 $bucket = $logCluster->getBucket("log_" . date('Y-m-d'));
@@ -200,7 +201,7 @@ $user = new \MyCompany\MyBundle\Model\User("remi", "remi.alvado@yahoo.fr");
 $backendCluster->getBucket("user")->put(array("remi" => $user));
 ```
 
-You can even write multiple users at the same time using parallel calls to Riak : 
+You can even write multiple users at the same time using parallel calls to Riak :
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
 $grenoble = new \MyCompany\MyBundle\Model\City("38000", "Grenoble");
@@ -213,7 +214,7 @@ $backendCluster->getBucket("city")->put(
 );
 ```
 
-The same mecanism can be used to update a data : 
+The same mecanism can be used to update a data :
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
 $paris = $backendCluster->getBucket("city")->uniq("paris");
@@ -224,13 +225,13 @@ $backendCluster->getBucket("city")->put(array("75000" => $paris));
 ### Fetch data from a bucket
 
 Once you have some data into your bucket, you can start fetching them. As a matter of fact, you can even have no data and start fetching :)
-The Bucket class provides two ways to fetch data depending on your needs : 
+The Bucket class provides two ways to fetch data depending on your needs :
 - get one single data with the ```uniq($key)``` function
 - get a list of data with the ```fetch($keys)``` function
 Internally, this two methods are doing the same thing but "uniq" will provide you a [\Kbrw\RiakBundle\Model\KV\Data](RiakBundle/blob/master/Model/KV/Data.php) instance while "fetch" will provide you a [\Kbrw\RiakBundle\Model\KV\Datas](RiakBundle/blob/master/Model/KV/Datas.php) one.
 [\Kbrw\RiakBundle\Model\KV\Data](RiakBundle/blob/master/Model/KV/Data.php) class lets you access the actual object (User, City, ...) but also the Response headers like VClock, Last-Modified, ...
 
-Example : 
+Example :
 ```php
 // Using fetch to get multiple objects
 $backendCluster = $container->get("riak.cluster.backend");
@@ -250,7 +251,7 @@ $city = $backendCluster->getBucket("city")->uniq("paris"); // $city will be a \M
 ### Delete data from a bucket
 
 You just have to supply a list of keys that have to been deleted.
-Example : 
+Example :
 ```php
 // delete a list of key/value pairs
 $backendCluster = $container->get("riak.cluster.backend");
@@ -265,7 +266,7 @@ $backendCluster->getBucket("city")->delete("paris");
 
 Riak does not provide an easy way like SQL databases to list all keys inside a bucket. To do so, it has to run over all keys in the cluster. So, this operation can be really long on a big cluster even if you query against a very small bucket.
 Moreover, even if RiakBundle uses the "keys=stream" parameter to stream keys from Riak instead of asking Riak to return them all in one response, please keep in mind that PHP might not work well with a multi-million values array.
-To display all keys inside a bucket : 
+To display all keys inside a bucket :
 ```php
 // delete a list of key/value pairs
 $backendCluster = $container->get("riak.cluster.backend");
@@ -277,7 +278,7 @@ foreach($backendCluster->getBucket("city")->keys() as $key) {
 ### Count keys inside a bucket
 
 Sometimes, there are too many keys inside a bucket to get them but you might want to count them.
-To count all keys inside a bucket : 
+To count all keys inside a bucket :
 ```php
 // delete a list of key/value pairs
 $backendCluster = $container->get("riak.cluster.backend");
@@ -286,7 +287,7 @@ echo "'city' bucket contains" . $backendCluster->getBucket("city")->count() . " 
 
 ### List buckets inside a cluster
 
-If you need to list all buckets inside a cluster, you can use the following example : 
+If you need to list all buckets inside a cluster, you can use the following example :
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
 print_r(backendCluster->bucketNames());
@@ -296,7 +297,7 @@ print_r(backendCluster->bucketNames());
 
 Riak supports a Solr-like (and -light) search engine. RiakBundle lets you searching for items on every buckets with search feature activated.
 Search can be executed with a simple Solr-Like string query or with a fully qualified [\Kbrw\RiakBundle\Model\Search\Query](RiakBundle/blob/master/Model/Search/Query.php) instance.
-Examples : 
+Examples :
 ```php
 
 // with string based query
@@ -316,11 +317,11 @@ $response = $usersBucket->search($query);
 ### Perform MapReduce request on a cluster
 
 Riak allows developers to execute mapreduce operations an entire cluster. RiakBundle offers the same possibility through a fluent interface.
-Mapreduce operations are made of two main parts : 
+Mapreduce operations are made of two main parts :
 - select keys the map phase will be executed against. Developers can choose to execute the mapreduce operation against a full bucket, a predefined subset of keys or a filterable set of keys. The three possibilities will be described below.
 - define map and reduce phases using javascript functions, erlang module, ... Some possibilities will be defined below but you can dive into the source code or the API to find more.
 
-Generic example : 
+Generic example :
 ```php
 $result = $this->cluster->mapReduce()
   ->on("meals")
@@ -331,7 +332,7 @@ $result = $this->cluster->mapReduce()
   ->send();
 ```
 
-Basic example : 
+Basic example :
 ```php
 // count how many times 'pizza' are served, meal by meal on all seasons
 $bucket = $this->cluster->getBucket("meals", true);
@@ -343,16 +344,16 @@ $bucket->put(array("autumn-1" => "pizza pizza pizza mushroom meat"));
 $result = $this->cluster->mapReduce()
   ->on("meals")
   ->map('
-      function(riakObject) {   
+      function(riakObject) {
           var m =  riakObject.values[0].data.match("pizza");
           return  [[riakObject.key, (m ? m.length : 0 )]];
-      }    
+      }
   ')
   ->responseShouldBe("array<string, string>")
   ->send();
 ```
 
-Key filter example : 
+Key filter example :
 ```php
 // count how many times 'pizza' are served, meal by meal only on winter and autumn
 // Apply a specific timeout (10sec) as well
@@ -365,17 +366,17 @@ $result = $this->cluster->mapReduce()
     ->end()
   ->done()
   ->map('
-      function(riakObject) {   
+      function(riakObject) {
           var m =  riakObject.values[0].data.match("pizza");
           return  [[riakObject.key, (m ? m.length : 0 )]];
-      }    
+      }
   ')
   ->timeout(10000)
   ->responseShouldBe("array<string, string>")
   ->send();
 ```
 
-Key filter example : 
+Key filter example :
 ```php
 // use an erlang function to execute something on meals
 $result = $this->cluster->mapReduce()
@@ -398,7 +399,7 @@ Riak allows developers to customize some bucket configuration like _nval_, the n
 Please have a look at Riak documentation for closer details.
 
 Using RiakBundle, you can easily update bucket configuration. The [\Kbrw\RiakBundle\Model\Bucket\Bucket](RiakBundle/blob/master/Model/Bucket/Bucket.php) class is not only the place used to execute operations on a bucket, it also contains bucket properties that you can manage.
-Example : 
+Example :
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
 $users = $backendCluster->addBucket("users", true); // the second parameter will force RiakBundle to fetch properties for this bucket
@@ -408,9 +409,9 @@ $users->save();
 
 ### Enable automatic indexation
 
-Riak supports automatic indexation of JSON / XML / Erlang datas from Riak KV to Riak Search. This feature needs to be activated on a per-bucket level. RiakBundle lets you easily do that : 
+Riak supports automatic indexation of JSON / XML / Erlang datas from Riak KV to Riak Search. This feature needs to be activated on a per-bucket level. RiakBundle lets you easily do that :
 
-Example : 
+Example :
 ```php
 $backendCluster = $container->get("riak.cluster.backend");
 $usersBucket = $backendCluster->getBucket("users");
@@ -423,7 +424,7 @@ $usersBucket->save();
 Riak does not only associate an object to a key but also some headers. Some are pre-defined (Last-Modified, X-Riak-Vclock, ...) but you can also put your own custom headers.
 As explained above, the ```put($objects)``` method takes an associated array of objects. Thoses objects can either be your own simple representation of the data you want to store in Riak or a [\Kbrw\RiakBundle\Model\KV\Data](RiakBundle/blob/master/Model/KV/Data.php) instance (the same one returned by the fetch and uniq methods).
 On this object, you can define your own custom headers by using the headerBag property which is a [\Symfony\Component\HttpFoundation\HeaderBag](../symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/HeaderBag.php).
-Example : 
+Example :
 ```php
 $remi = new \MyCompany\MyBundle\Model\User("remi", "remi.alvado@yahoo.fr");
 $data = new \Kbrw\RiakBundle\Model\KV\Data("remi");
@@ -438,7 +439,7 @@ The same mecanism can be used to handle Riak merge issues with the X-Riak-Vclock
 
 ### Define your own Bucket class
 
-Sometimes, you might want to define you own Bucket class so that you can override some existing methods, add new ones, ... This can easily be done by hacking the condiguration like that : 
+Sometimes, you might want to define you own Bucket class so that you can override some existing methods, add new ones, ... This can easily be done by hacking the condiguration like that :
 ```yaml
 riak:
   clusters:
@@ -458,6 +459,28 @@ With this configuration, the "points_of_interests" bucket will be initialized as
 In the same spirit, each time a Bucket is added to a Cluster, an event named "riak.bucket.add" is thrown to the EventDispatcher. This ```\Symfony\Component\EventDispatcher\GenericEvent``` contains the newly created bucket that you can manipulate the way you want.
 For closer details, you can have a look at [this example](https://gist.github.com/4363553).
 
+### Symfony2 Session Storage Handler
+
+The default session storage of Symfony2 uses files to store session information. To use Riak buckets, you need to change the storage-id in your configuration:
+
+```xml
+    <framework:config>
+        <framework:session handler-id="kbrw.riak.session.handler.riak"/>
+        ...
+    </framework:config>
+```
+
+For session garbage collection, enable automatic expiration, such as:
+
+```
+    {bitcask, [
+        ...,
+        {expiry_secs, 86400},      %% purge data automatically after 1 day
+        {expiry_grace_time, 3600}, %% limit rate of expiry merging to once per hour
+        ...
+    ]}
+```
+
 Admin Tasks
 -----------
 
@@ -466,13 +489,13 @@ Admin Tasks
 All tasks working on a cluster (so... all tasks) support the following option :
 - ```-c``` or ```--cluster``` : the cluster name. If not provided, it will be asked on the command line
 
-All tasks working on a bucket support the following option : 
+All tasks working on a bucket support the following option :
 - ```-b``` or ```--bucket``` : the bucket name. If not provided, it will be asked on the command line
 
-All tasks which list or count items support the following option : 
+All tasks which list or count items support the following option :
 - ```-r``` or ```--raw``` : if provided, a raw output format will be used. Mainly used for bash scripting.
 
-All tasks which delete items support the following option : 
+All tasks which delete items support the following option :
 - ```-y``` or ```--yes``` : if provided, all yes/no questions will be skipped. mainly used for bash scripting.
 
 ### List existing buckets
