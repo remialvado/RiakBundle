@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as Ser;
  * @Ser\AccessType("public_method")
  * @Ser\XmlRoot("bucket")
  */
-class Bucket
+class Bucket implements BucketInterface
 {
 
     /**
