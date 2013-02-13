@@ -459,9 +459,9 @@ With this configuration, the "points_of_interests" bucket will be initialized as
 In the same spirit, each time a Bucket is added to a Cluster, an event named "riak.bucket.add" is thrown to the EventDispatcher. This ```\Symfony\Component\EventDispatcher\GenericEvent``` contains the newly created bucket that you can manipulate the way you want.
 For closer details, you can have a look at [this example](https://gist.github.com/4363553).
 
-### Symfony2 Session Storage Handler
+### Symfony2.1 Session Storage Handler
 
-The default session storage of Symfony2 uses files to store session information. To use Riak buckets, you need to change the storage-id in your configuration:
+The default session storage of Symfony2 uses files to store session information. To use Riak buckets, you need to change the handler-id in your application configuration:
 
 ```xml
     <framework:config>
@@ -470,7 +470,27 @@ The default session storage of Symfony2 uses files to store session information.
     </framework:config>
 ```
 
-For session garbage collection, enable automatic expiration, such as:
+If your session bucket is configured as:
+
+```yaml
+riak:
+  clusters:
+    sessions:
+      domain: "127.0.0.1"
+      port: "8098"
+      client_id: "frontend"
+      buckets:
+        sessions:
+```
+
+Then in parameters.ini, you'd set:
+
+```
+kbrw.riak.session.cluster.service.id = "riak.cluster.sessions"
+kbrw.riak.session.bucket.name        = "sessions"
+```
+
+For session garbage collection, configure automatic expiration, such as:
 
 ```
     {bitcask, [
@@ -479,6 +499,14 @@ For session garbage collection, enable automatic expiration, such as:
         {expiry_grace_time, 3600}, %% limit rate of expiry merging to once per hour
         ...
     ]}
+```
+
+And set the bucket's backend property, e.g.,
+
+```
+    curl -XPUT http://riaknode:8098/riak/sessions \
+      -H "Content-Type: application/json" \
+      -d '{"props":{"backend":"bitcask"}}'
 ```
 
 Admin Tasks
