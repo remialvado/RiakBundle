@@ -4,46 +4,50 @@ parameters:
     "application/xml": [xml, xsd, xslt]
     "application/json": [json]
     "text/plain": [txt]
-  
+
   kbrw.guzzle.client.provider.class: "Kbrw\RiakBundle\Service\WebserviceClient\Guzzle\SimpleGuzzleClientProvider"
-  
+
   kbrw.riak.cluster.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakClusterServiceClient"
   kbrw.riak.cluster.route: "{protocol}://{domain}:{port}/riak/{?buckets}"
-  
+
   kbrw.riak.bucket.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakBucketServiceClient"
   kbrw.riak.bucket.route: "{protocol}://{domain}:{port}/riak/{bucket}{?keys,props}"
-  
+
   kbrw.riak.kv.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakKVServiceClient"
   kbrw.riak.kv.route: "{protocol}://{domain}:{port}/riak/{bucket}/{id}{?r,w,dw}"
-  
+
   kbrw.riak.search.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakSearchServiceClient"
   kbrw.riak.search.route: "{protocol}://{domain}:{port}/solr/{bucket}/select{?q,start,rows,df,q.op,sort,wt,filter,fl}"
-  
+
   kbrw.riak.mapreduce.class: "Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakMapReduceServiceClient"
   kbrw.riak.mapreduce.route: "{protocol}://{domain}:{port}/mapred"
-  
+
+  kbrw.riak.session.handler.riak.class: "Kbrw\RiakBundle\Session\Storage\Handler\RiakSessionHandler"
+  kbrw.riak.session.cluster.service.id: "sessions"
+  kbrw.riak.session.bucket.name: "sessions"
+
 services:
   kbrw.content.type.normalizer:
     class: "%kbrw.content.type.normalizer.class%"
     arguments: [%kbrw.content.type.normalizer.types%]
-    
+
   kbrw.guzzle.client.provider:
     class: "%kbrw.guzzle.client.provider.class%"
-      
+
   kbrw.riak.cluster:
     class: "%kbrw.riak.cluster.class%"
     calls:
       - [setRoute,                 [ "%kbrw.riak.cluster.route%" ] ]
       - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
-      
+
   kbrw.riak.bucket:
     class: "%kbrw.riak.bucket.class%"
     calls:
       - [setRoute,                 [ "%kbrw.riak.bucket.route%" ] ]
       - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
-      
+
   kbrw.riak.kv:
     class: "%kbrw.riak.kv.class%"
     calls:
@@ -51,17 +55,24 @@ services:
       - [setLogger,                [ "@logger" ] ]
       - [setContentTypeNormalizer, [ "@kbrw.content.type.normalizer" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
-      
+
   kbrw.riak.search:
     class: "%kbrw.riak.search.class%"
     calls:
       - [setRoute,                 [ "%kbrw.riak.search.route%" ] ]
       - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
-      
+
   kbrw.riak.mapreduce:
     class: "%kbrw.riak.mapreduce.class%"
     calls:
       - [setRoute,                 [ "%kbrw.riak.mapreduce.route%" ] ]
       - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
+
+  kbrw.riak.session.handler.riak:
+    class: "%kbrw.riak.session.handler.riak.class%"
+    arguments: [ "@service_container" ]
+    calls:
+      - [setClusterServiceId,      [ "%kbrw.riak.session.cluster.service.id%" ] ]
+      - [setBucketName,            [ "%kbrw.riak.session.bucket.name%" ] ]
