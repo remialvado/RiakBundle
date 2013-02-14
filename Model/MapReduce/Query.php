@@ -109,10 +109,20 @@ class Query
     {
         $phase = $this->getPhase(self::PHASE_MAP);
         if (!isset($phase)) {
-            $phase = new MapReducePhase();
-            $phase->setQuery($this);
-            $this->phases[] = new PhaseContainer\MapPhaseContainer($phase);
+            $phase = $this->addNewMapPhase();
         }
+
+        return $phase;
+    }
+    
+    /**
+     * @return \Kbrw\RiakBundle\Model\MapReduce\MapReducePhase
+     */
+    public function addNewMapPhase()
+    {
+        $phase = new MapReducePhase();
+        $phase->setQuery($this);
+        $this->phases[] = new PhaseContainer\MapPhaseContainer($phase);
 
         return $phase;
     }
@@ -134,10 +144,20 @@ class Query
     {
         $phase = $this->getPhase(self::PHASE_REDUCE);
         if (!isset($phase)) {
-            $phase = new MapReducePhase();
-            $phase->setQuery($this);
-            $this->phases[] = new PhaseContainer\ReducePhaseContainer($phase);
+           $phase = $this->addNewReducePhase();
         }
+
+        return $phase;
+    }
+    
+    /**
+     * @return \Kbrw\RiakBundle\Model\MapReduce\MapReducePhase
+     */
+    public function addNewReducePhase()
+    {
+        $phase = new MapReducePhase();
+        $phase->setQuery($this);
+        $this->phases[] = new PhaseContainer\ReducePhaseContainer($phase);
 
         return $phase;
     }

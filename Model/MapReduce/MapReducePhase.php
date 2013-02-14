@@ -216,5 +216,7 @@ class MapReducePhase extends Phase
     public function setArg($arg)
     {
         $this->arg = $arg;
+        
+        return $this;
     }
 }
