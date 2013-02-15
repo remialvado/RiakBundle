@@ -70,8 +70,9 @@ class InMemoryBucket implements BucketInterface
 
     /**
      * @param array<string, mixed> $objects
+     * @param array<string, mixed> $headers Optional headers (not implemented)
      */
-    public function put($objects)
+    public function put($objects, $headers = null)
     {
         $this->content = array_merge($this->content, $objects);
         return true;

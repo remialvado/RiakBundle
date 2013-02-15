@@ -18,9 +18,10 @@ interface BucketInterface
 
     /**
      * @param  array<string, mixed> $objects
+     * @param  array<string, mixed> $headers
      * @return boolean
      */
-    public function put($objects);
+    public function put($objects, $headers = null);
 
     /**
      * @param  array<string> $keys

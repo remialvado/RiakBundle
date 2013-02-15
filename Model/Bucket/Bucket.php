@@ -86,11 +86,12 @@ class Bucket implements BucketInterface
 
     /**
      * @param  array<string, mixed> $objects
+     * @param  array<string, mixed> $headers
      * @return boolean
      */
-    public function put($objects)
+    public function put($objects, $headers = null)
     {
-        return $this->riakKVServiceClient->put($this->cluster, $this, $objects);
+        return $this->riakKVServiceClient->put($this->cluster, $this, $objects, $headers);
     }
 
     /**

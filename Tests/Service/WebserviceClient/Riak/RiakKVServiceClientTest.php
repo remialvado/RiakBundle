@@ -195,7 +195,7 @@ class RiakKVServiceClientTest extends BaseTestCase
             "foo3" => new SomeClass("bar3"),
             "foo4" => new SomeClass("bar4"),
             "foo5" => new SomeClass("bar5"),
-        ));
+        ), null);
     }
 
     /**
