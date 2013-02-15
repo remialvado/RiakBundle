@@ -43,7 +43,8 @@ class RiakExtension extends Extension
                 new Reference("kbrw.riak.bucket"),
                 new Reference("kbrw.riak.kv"),
                 new Reference("kbrw.riak.search"),
-                new Reference("kbrw.riak.mapreduce")
+                new Reference("kbrw.riak.mapreduce"),
+                new Reference("kbrw.riak.status"),
             ));
             $container->setDefinition("riak.cluster." . $name, $definition);
         }
