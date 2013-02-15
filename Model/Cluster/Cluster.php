@@ -62,7 +62,12 @@ class Cluster
      */
     protected $riakMapReduceServiceClient;
 
-    public function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $eventDispatcher = null, $riakClusterServiceClient = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null, $riakMapReduceServiceClient = null)
+    /**
+     * @var \Kbrw\RiakBundle\Service\WebserviceClient\Riak\RiakStatusServiceClient
+     */
+    protected $riakStatusServiceClient;
+
+    public function __construct($name = null, $protocol = null, $domain = null, $port = null, $clientId = null, $maxParallelCalls = null, $bucketConfigs = array(), $guzzleClientProviderService = null, $eventDispatcher = null, $riakClusterServiceClient = null, $riakBucketServiceClient = null, $riakKVServiceClient = null, $riakSearchServiceClient = null, $riakMapReduceServiceClient = null, $riakStatusServiceClient = null)
     {
         if (!isset($name))                          $name                          = self::DEFAULT_NAME;
         if (!isset($protocol))                      $protocol                      = self::DEFAULT_PROTOCOL;
@@ -83,6 +88,7 @@ class Cluster
         $this->setRiakKVServiceClient($riakKVServiceClient);
         $this->setRiakSearchServiceClient($riakSearchServiceClient);
         $this->setRiakMapReduceServiceClient($riakMapReduceServiceClient);
+        $this->setRiakStatusServiceClient($riakStatusServiceClient);
         $this->buckets = array();
         foreach ($bucketConfigs as $bucketName => $bucketConfig) {
             $class = isset($bucketConfig["class"]) ? $bucketConfig["class"] : "\Kbrw\RiakBundle\Model\Bucket\Bucket";
@@ -110,6 +116,14 @@ class Cluster
     public function bucketNames()
     {
         return $this->riakClusterServiceClient->buckets($this);
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function status()
+    {
+        return $this->riakStatusServiceClient->status($this);
     }
 
     /**
@@ -301,6 +315,16 @@ class Cluster
     public function setRiakMapReduceServiceClient($riakMapReduceServiceClient)
     {
         $this->riakMapReduceServiceClient = $riakMapReduceServiceClient;
+    }
+
+    public function getRiakStatusServiceClient()
+    {
+        return $this->riakStatusServiceClient;
+    }
+
+    public function setRiakStatusServiceClient($riakStatusServiceClient)
+    {
+        $this->riakStatusServiceClient = $riakStatusServiceClient;
     }
 
     public function getBuckets()
