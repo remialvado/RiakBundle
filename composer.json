@@ -29,9 +29,7 @@
         "doctrine/orm": "*",
         "symfony/form": "*",
         "symfony/validator": "*",
-        "symfony/monolog-bundle": "*",
-        "phpunit/phpunit": "3.7.*",
-        "phpunit/php-timer": "1.0.*"
+        "symfony/monolog-bundle": "*"
     },
     "minimum-stability": "dev",
     "autoload": {
