@@ -67,7 +67,6 @@ class MapReducePhase extends Phase
 
     /**
      * @var string
-     * @Ser\Type("string")
      * @Ser\SerializedName("arg")
      */
     protected $arg;
