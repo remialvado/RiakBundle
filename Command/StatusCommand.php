@@ -10,13 +10,15 @@ class StatusCommand extends ContainerAwareCommand
 {
 
     const OPTION_CLUSTER = "cluster";
+    const OPTION_KEY     = "key";
 
     protected function configure()
     {
         $this
             ->setName('riak:cluster:status')
-            ->setDescription('Get status.')
+            ->setDescription('List all status informations on a cluster. You can also display a single status key.')
             ->addOption(self::OPTION_CLUSTER, "c", InputOption::VALUE_REQUIRED, "Cluster name")
+            ->addOption(self::OPTION_KEY,     "k", InputOption::VALUE_OPTIONAL, "The key you want to display. If not provided, all keys will be displayed.")
         ;
     }
 
@@ -35,10 +37,32 @@ class StatusCommand extends ContainerAwareCommand
         }
         $status = $this->getContainer()->get("riak.cluster.$clusterName")->status();
         $output->writeln("<info>Status for '$clusterName' cluster : </info>");
-        foreach ($status as $k => $v) {
-            echo " - $k: $v\n";
+        $key = $input->getOption(self::OPTION_KEY);
+        if (empty($key)) {
+            foreach ($status as $key => $value) {
+               $this->displayStatusInformation($key, $value, $output);
+            }
         }
-
+        else if (array_key_exists($key, $status)) {
+            $this->displayStatusInformation($key, $status->{$key}, $output);
+        }
+        else {
+            $output->writeln("<error>Not Found Key</error> : Key '$key' not found.");
+        }
+        
         return 0;
+    }
+    
+    protected function displayStatusInformation($key, $value, $output)
+    {
+        if (!empty($key) && is_array($value)) {
+            $output->writeln("$key : ");
+            foreach($value as $subvalue) {
+                $output->writeln(" - '$subvalue'");
+            }
+        }
+        else {
+            $output->writeln("$key : '" . $value . "'");
+        }
     }
 }
