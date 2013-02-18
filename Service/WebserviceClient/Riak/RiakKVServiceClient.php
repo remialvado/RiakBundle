@@ -16,12 +16,13 @@ class RiakKVServiceClient extends BaseServiceClient
      * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster                                                                 $cluster
      * @param  \Kbrw\RiakBundle\Model\Bucket\Bucket                                                                   $bucket
      * @param  mixed | array<string, mixed> | array<\Kbrw\RiakBundle\Model\KV\Data> | \Kbrw\RiakBundle\Model\KV\Datas $datas
+     * @param  array<string, mixed>                                                                                   $headers
      * @return boolean
      */
-    public function put($cluster, $bucket, $datas)
+    public function put($cluster, $bucket, $datas, $headers)
     {
         // normalize $datas parameter
-        $datas = $this->normalizeDatas($datas, $bucket->getFormat(), $cluster->getClientId());
+        $datas = $this->normalizeDatas($datas, $bucket->getFormat(), $cluster->getClientId(), false, $headers);
 
         // Split work in smaller pieces to avoid exception caused by too many opened connections
         $chunks = $datas->chunk($cluster->getMaxParallelCalls());
@@ -170,6 +171,8 @@ class RiakKVServiceClient extends BaseServiceClient
                             $data->setContent($riakKVObject);
                         }
                     }
+                    $headerBag = new HeaderBag($response->getHeaders()->toArray());
+                    $data->setHeaderBag($headerBag);
                 }
             } catch (\Exception $e) {
                 $this->logger->err("Unable to create the Data object for key '$key'. Full message is : \n" . $e->getMessage() . "");
@@ -227,9 +230,11 @@ class RiakKVServiceClient extends BaseServiceClient
      * @param  mixed | \Kbrw\RiakBundle\Model\KV\Data | array<string, mixed> | array<\Kbrw\RiakBundle\Model\KV\Data> | \Kbrw\RiakBundle\Model\KV\Datas $objects
      * @param  string                                                                                                                                  $format
      * @param  string                                                                                                                                  $clientId
+     * @param  boolean                                                                                                                                 $objectsAreKeys
+     * @param  array<string, mixed>                                                                                                                    $headers
      * @return \Kbrw\RiakBundle\Model\KV\Datas
      */
-    public function normalizeDatas($objects, $format, $clientId, $objectsAreKeys = false)
+    public function normalizeDatas($objects, $format, $clientId, $objectsAreKeys = false, $headers = null)
     {
         $datas = new Datas();
 
@@ -257,6 +262,10 @@ class RiakKVServiceClient extends BaseServiceClient
             // prepare headers
             $data->getHeaderBag()->set("X-Riak-ClientId", $clientId);
             $data->getHeaderBag()->set("Content-Type",    $this->contentTypeNormalizer->getContentType($format));
+
+            if ($headers) {
+                $data->getHeaderBag()->add($headers);
+            }
 
             // prepare string representation
             if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($format)) {

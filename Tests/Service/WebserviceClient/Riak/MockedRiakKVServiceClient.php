@@ -16,9 +16,10 @@ class MockedRiakKVServiceClient extends RiakKVServiceClient
      * @param  \Kbrw\RiakBundle\Model\Cluster\Cluster $cluster
      * @param  \Kbrw\RiakBundle\Model\Bucket\Bucket   $bucket
      * @param  array<string, mixed>                   $objects
+     * @param  array<string, mixed>                   $headers
      * @return boolean
      */
-    public function put($cluster, $bucket, $objects)
+    public function put($cluster, $bucket, $objects, $headers = null)
     {
         if (!is_array($objects)) $objects = array($objects);
 
