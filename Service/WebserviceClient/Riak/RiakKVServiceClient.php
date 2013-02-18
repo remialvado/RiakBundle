@@ -7,6 +7,7 @@ use Kbrw\RiakBundle\Model\KV\Transmutable;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 use Kbrw\RiakBundle\Model\KV\Data;
 use Kbrw\RiakBundle\Model\KV\Datas;
+use Symfony\Component\HttpFoundation\HeaderBag;
 
 class RiakKVServiceClient extends BaseServiceClient
 {
@@ -159,6 +160,7 @@ class RiakKVServiceClient extends BaseServiceClient
                 if ($request->getState() === RequestInterface::STATE_COMPLETE && $request->getResponse()->getStatusCode() === 200 ) {
                     $response = $request->getResponse();
                     $data->setStringContent($response->getBody(true));
+                    $data->setHeaderBag(new HeaderBag($response->getHeaders()->getAll()));
                     if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($bucket->getFormat())) {
                         $riakKVObject = $this->serializer->deserialize($data->getContent(true), $bucket->getFullyQualifiedClassName(), $this->contentTypeNormalizer->getNormalizedContentType($response->getContentType()));
                         if ($riakKVObject !== false) {
