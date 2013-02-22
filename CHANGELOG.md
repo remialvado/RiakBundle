@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+* 1.1.4 (2013-02-22)
+
+ * Composer : revert minimum-stability to dev
+
 * 1.1.3 (2013-02-22)
 
  * Composer : move minimum-stability from dev to alpha

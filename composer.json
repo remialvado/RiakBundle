@@ -31,7 +31,7 @@
         "symfony/validator": "*",
         "symfony/monolog-bundle": "*"
     },
-    "minimum-stability": "alpha",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-0": { "Kbrw\\RiakBundle": "" }
     },
