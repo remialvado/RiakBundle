@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+* 1.1.3 (2013-02-22)
+
+ * Composer : move minimum-stability from dev to alpha
+
 * 1.1.2 (2013-02-22)
 
  * Composer : change dependency towards jms/serializer-bundle 
