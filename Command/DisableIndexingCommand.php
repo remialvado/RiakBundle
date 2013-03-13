@@ -45,7 +45,7 @@ class DisableIndexingCommand extends ContainerAwareCommand
             return 0;
         }
 
-        $cluster = $this->getContainer()->get("riak.cluster.backend");
+        $cluster = $this->getContainer()->get("riak.cluster.$clusterName");
         $bucket = $cluster->getBucket($bucketName);
         $bucket->disableSearchIndexing();
         $bucket->save();
