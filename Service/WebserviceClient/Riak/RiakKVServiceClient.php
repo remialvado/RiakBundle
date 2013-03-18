@@ -282,7 +282,7 @@ class RiakKVServiceClient extends BaseServiceClient
     {
         $requests = array();
         foreach ($datas->getDatas() as $data) {
-            $request = $client->createRequest($method, $data->getKey(), $data->getHeaderBag()->all(), $data->getContent(true));
+            $request = $client->createRequest($method, urlencode($data->getKey()), $data->getHeaderBag()->all(), $data->getContent(true));
             $this->logger->debug("[$method] '" . $request->getUrl() . "'");
             $curlMulti->add($request);
             $requests[$data->getKey()] = $request;
