@@ -2,6 +2,7 @@
 
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
+use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 
 class RiakBucketServiceClient extends BaseServiceClient
@@ -30,6 +31,7 @@ class RiakBucketServiceClient extends BaseServiceClient
             $request->send();
         } catch (\Exception $e) {
             $this->logger->err("Error while getting keys" . $e->getMessage());
+            throw new RiakUnavailableException();
         }
 
         return $keys;
@@ -57,6 +59,7 @@ class RiakBucketServiceClient extends BaseServiceClient
             $request->send();
         } catch (\Exception $e) {
             $this->logger->err("Error while getting keys" . $e->getMessage());
+            throw new RiakUnavailableException();
         }
 
         return $keys;
@@ -78,6 +81,7 @@ class RiakBucketServiceClient extends BaseServiceClient
             }
         } catch (\Exception $e) {
             $this->logger->err("Error while getting properties on bucket '" . $bucketName . "'. Full message is : " . $e->getMessage());
+            throw new RiakUnavailableException();
         }
 
         return $bucket;
@@ -99,6 +103,7 @@ class RiakBucketServiceClient extends BaseServiceClient
             return ($response->getStatusCode() == "204");
         } catch (\Exception $e) {
             $this->logger->err("Error while setting properties on bucket '" . $bucket->getName() . "'. Full message is : " . $e->getMessage());
+            throw new RiakUnavailableException();
         }
 
         return false;

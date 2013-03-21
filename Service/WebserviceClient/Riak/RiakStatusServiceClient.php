@@ -3,6 +3,7 @@
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
+use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 
 class RiakStatusServiceClient extends BaseServiceClient
 {
@@ -21,6 +22,7 @@ class RiakStatusServiceClient extends BaseServiceClient
             }
         } catch (\Exception $e) {
             $this->logger->err("Error while getting buckets" . $e->getMessage());
+            throw new RiakUnavailableException();
         }
 
         return $content;

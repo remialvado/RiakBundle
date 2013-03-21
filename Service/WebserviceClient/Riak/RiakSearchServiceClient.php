@@ -5,6 +5,7 @@ namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 use Kbrw\RiakBundle\Model\Search\Query;
 use Kbrw\RiakBundle\Model\Search\Response;
+use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 
 class RiakSearchServiceClient extends BaseServiceClient
 {
@@ -26,6 +27,7 @@ class RiakSearchServiceClient extends BaseServiceClient
             }
         } catch (\Exception $e) {
             $this->logger->err("Unable to execute a search query. Full message is : \n" . $e->getMessage() . "");
+            throw new RiakUnavailableException();
         }
 
         return new Response();

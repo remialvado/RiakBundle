@@ -3,6 +3,7 @@
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
+use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 
 class RiakMapReduceServiceClient extends BaseServiceClient
 {
@@ -30,6 +31,7 @@ class RiakMapReduceServiceClient extends BaseServiceClient
             }
         } catch (\Exception $e) {
             $this->logger->err("Unable to execute a mapreduce query. Full message is : \n" . $e->getMessage() . "");
+            throw new RiakUnavailableException();
         }
 
         return null;

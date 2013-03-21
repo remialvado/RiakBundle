@@ -3,6 +3,7 @@
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
 use Guzzle\Http\Message\RequestInterface;
+use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 use Kbrw\RiakBundle\Model\KV\Transmutable;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 use Kbrw\RiakBundle\Model\KV\Data;
@@ -50,8 +51,7 @@ class RiakKVServiceClient extends BaseServiceClient
             $curlMulti->send();
         } catch (\Exception $e) {
             $this->logger->err("Unable to put an object into Riak. Full message is : \n" . $e->getMessage() . "");
-
-            return false;
+            throw new RiakUnavailableException();
         }
         foreach ($requests as $request) {
             if ($request->getState() !== RequestInterface::STATE_COMPLETE ||
@@ -102,8 +102,7 @@ class RiakKVServiceClient extends BaseServiceClient
             $curlMulti->send();
         } catch (\Exception $e) {
             $this->logger->err("Unable to delete an object in Riak. Full message is : \n" . $e->getMessage() . "");
-
-            return false;
+            throw new RiakUnavailableException();
         }
         foreach ($requests as $request) {
             if ($request->getState() !== RequestInterface::STATE_COMPLETE || $request->getResponse()->getStatusCode() !==  204) {
@@ -152,6 +151,7 @@ class RiakKVServiceClient extends BaseServiceClient
             $curlMulti->send();
         } catch (\Exception $e) {
             $this->logger->err("Unable to get an object from Riak. Full message is : \n" . $e->getMessage() . "");
+            throw new RiakUnavailableException();
         }
 
         foreach ($requests as $key => $request) {
@@ -173,6 +173,7 @@ class RiakKVServiceClient extends BaseServiceClient
                 }
             } catch (\Exception $e) {
                 $this->logger->err("Unable to create the Data object for key '$key'. Full message is : \n" . $e->getMessage() . "");
+                throw new RiakUnavailableException();
             }
             $result->add($data);
         }
