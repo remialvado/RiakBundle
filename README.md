@@ -17,6 +17,7 @@ Table Of Content
     - [Count keys inside a Bucket](#count-keys-inside-a-bucket)
     - [Search items inside a Bucket using Riak Search](#search-items-inside-a-bucket-using-riak-search)
     - [Perform MapReduce request on a Cluster](#perform-mapreduce-request-on-a-cluster)
+    - [Exceptions](#exceptions)
 - [Extended Usage](#extended-usage)
     - [Load and edit Bucket configuration](#load-and-edit-bucket-configuration)
     - [Enable Automatic Indexation](#enable-automatic-indexation)
