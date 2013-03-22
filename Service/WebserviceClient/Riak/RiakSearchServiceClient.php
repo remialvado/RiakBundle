@@ -2,6 +2,7 @@
 
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
+use Guzzle\Http\Exception\CurlException;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 use Kbrw\RiakBundle\Model\Search\Query;
 use Kbrw\RiakBundle\Model\Search\Response;
@@ -25,9 +26,11 @@ class RiakSearchServiceClient extends BaseServiceClient
             if ($response->getStatusCode() === 200) {
                 return $this->getSerializer()->deserialize($response->getBody(), 'Kbrw\RiakBundle\Model\Search\Response', $query->getWt());
             }
+        } catch (CurlException $e) {
+            $this->logger->err("Riak is unavailable" . $e->getMessage());
+            throw new RiakUnavailableException();
         } catch (\Exception $e) {
             $this->logger->err("Unable to execute a search query. Full message is : \n" . $e->getMessage() . "");
-            throw new RiakUnavailableException();
         }
 
         return new Response();

@@ -2,6 +2,7 @@
 
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
+use Guzzle\Http\Exception\CurlException;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 
@@ -29,9 +30,11 @@ class RiakMapReduceServiceClient extends BaseServiceClient
 
                 return $response->getBody(true);
             }
+        } catch (CurlException $e) {
+            $this->logger->err("Riak is unavailable" . $e->getMessage());
+            throw new RiakUnavailableException();
         } catch (\Exception $e) {
             $this->logger->err("Unable to execute a mapreduce query. Full message is : \n" . $e->getMessage() . "");
-            throw new RiakUnavailableException();
         }
 
         return null;

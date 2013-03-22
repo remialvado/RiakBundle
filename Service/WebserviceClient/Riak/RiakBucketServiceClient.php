@@ -2,6 +2,7 @@
 
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
+use Guzzle\Http\Exception\CurlException;
 use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 
@@ -29,9 +30,11 @@ class RiakBucketServiceClient extends BaseServiceClient
         $this->logger->debug("[GET] '" . $request->getUrl() . "'");
         try {
             $request->send();
+        } catch (CurlException $e) {
+            $this->logger->err("Riak is unavailable" . $e->getMessage());
+            throw new RiakUnavailableException();
         } catch (\Exception $e) {
             $this->logger->err("Error while getting keys" . $e->getMessage());
-            throw new RiakUnavailableException();
         }
 
         return $keys;
@@ -57,9 +60,11 @@ class RiakBucketServiceClient extends BaseServiceClient
         $this->logger->debug("[GET] '" . $request->getUrl() . "'");
         try {
             $request->send();
+        } catch (CurlException $e) {
+            $this->logger->err("Riak is unavailable" . $e->getMessage());
+            throw new RiakUnavailableException();
         } catch (\Exception $e) {
             $this->logger->err("Error while getting keys" . $e->getMessage());
-            throw new RiakUnavailableException();
         }
 
         return $keys;
@@ -79,9 +84,11 @@ class RiakBucketServiceClient extends BaseServiceClient
             if ($response->getStatusCode() == "200") {
                 $bucket = $this->serializer->deserialize($response->getBody(true), "Kbrw\RiakBundle\Model\Bucket\Bucket", "json");
             }
+        } catch (CurlException $e) {
+            $this->logger->err("Riak is unavailable" . $e->getMessage());
+            throw new RiakUnavailableException();
         } catch (\Exception $e) {
             $this->logger->err("Error while getting properties on bucket '" . $bucketName . "'. Full message is : " . $e->getMessage());
-            throw new RiakUnavailableException();
         }
 
         return $bucket;
@@ -101,9 +108,11 @@ class RiakBucketServiceClient extends BaseServiceClient
             $response = $request->send();
 
             return ($response->getStatusCode() == "204");
+        } catch (CurlException $e) {
+            $this->logger->err("Riak is unavailable" . $e->getMessage());
+            throw new RiakUnavailableException();
         } catch (\Exception $e) {
             $this->logger->err("Error while setting properties on bucket '" . $bucket->getName() . "'. Full message is : " . $e->getMessage());
-            throw new RiakUnavailableException();
         }
 
         return false;

@@ -2,6 +2,8 @@
 
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
+use Guzzle\Http\Exception\MultiTransferException;
+use Guzzle\Http\Message\Request as GuzzleRequest;
 use Guzzle\Http\Message\RequestInterface;
 use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 use Kbrw\RiakBundle\Model\KV\Transmutable;
@@ -49,9 +51,16 @@ class RiakKVServiceClient extends BaseServiceClient
 
         try {
             $curlMulti->send();
-        } catch (\Exception $e) {
-            $this->logger->err("Unable to put an object into Riak. Full message is : \n" . $e->getMessage() . "");
-            throw new RiakUnavailableException();
+        } catch (MultiTransferException $e) {
+            /** @var $request GuzzleRequest */
+            foreach ($e->getFailedRequests() as $request) {
+                if ($request->getResponse() === null) {
+                    $this->logger->err("Riak is unavailable. Full message is : \n" . $e->getMessage() . "");
+                    throw new RiakUnavailableException();
+                }
+            }
+        } catch (\Exception $e){
+            $this->logger->err("Unable to put an object from Riak. Full message is : \n" . $e->getMessage() . "");
         }
         foreach ($requests as $request) {
             if ($request->getState() !== RequestInterface::STATE_COMPLETE ||
@@ -100,9 +109,16 @@ class RiakKVServiceClient extends BaseServiceClient
 
         try {
             $curlMulti->send();
-        } catch (\Exception $e) {
-            $this->logger->err("Unable to delete an object in Riak. Full message is : \n" . $e->getMessage() . "");
-            throw new RiakUnavailableException();
+        } catch (MultiTransferException $e) {
+            /** @var $request GuzzleRequest */
+            foreach ($e->getFailedRequests() as $request) {
+                if ($request->getResponse() === null) {
+                    $this->logger->err("Riak is unavailable. Full message is : \n" . $e->getMessage() . "");
+                    throw new RiakUnavailableException();
+                }
+            }
+        } catch (\Exception $e){
+            $this->logger->err("Unable to delete an object from Riak. Full message is : \n" . $e->getMessage() . "");
         }
         foreach ($requests as $request) {
             if ($request->getState() !== RequestInterface::STATE_COMPLETE || $request->getResponse()->getStatusCode() !==  204) {
@@ -149,9 +165,16 @@ class RiakKVServiceClient extends BaseServiceClient
         $result = new Datas();
         try {
             $curlMulti->send();
-        } catch (\Exception $e) {
+        } catch (MultiTransferException $e) {
+            /** @var $request GuzzleRequest */
+            foreach ($e->getFailedRequests() as $request) {
+                if ($request->getResponse() === null) {
+                    $this->logger->err("Riak is unavailable. Full message is : \n" . $e->getMessage() . "");
+                    throw new RiakUnavailableException();
+                }
+            }
+        } catch (\Exception $e){
             $this->logger->err("Unable to get an object from Riak. Full message is : \n" . $e->getMessage() . "");
-            throw new RiakUnavailableException();
         }
 
         foreach ($requests as $key => $request) {
@@ -173,7 +196,6 @@ class RiakKVServiceClient extends BaseServiceClient
                 }
             } catch (\Exception $e) {
                 $this->logger->err("Unable to create the Data object for key '$key'. Full message is : \n" . $e->getMessage() . "");
-                throw new RiakUnavailableException();
             }
             $result->add($data);
         }

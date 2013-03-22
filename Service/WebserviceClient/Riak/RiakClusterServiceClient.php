@@ -2,6 +2,7 @@
 
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
+use Guzzle\Http\Exception\CurlException;
 use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 
@@ -28,9 +29,11 @@ class RiakClusterServiceClient extends BaseServiceClient
                     }
                 }
             }
+        } catch (CurlException $e) {
+            $this->logger->err("Riak is unavailable" . $e->getMessage());
+            throw new RiakUnavailableException();
         } catch (\Exception $e) {
             $this->logger->err("Error while getting buckets" . $e->getMessage());
-            throw new RiakUnavailableException();
         }
 
         return $bucketNames;
