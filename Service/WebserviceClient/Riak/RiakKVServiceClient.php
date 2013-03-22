@@ -6,10 +6,10 @@ use Guzzle\Http\Exception\MultiTransferException;
 use Guzzle\Http\Message\Request as GuzzleRequest;
 use Guzzle\Http\Message\RequestInterface;
 use Kbrw\RiakBundle\Exception\RiakUnavailableException;
-use Kbrw\RiakBundle\Model\KV\Transmutable;
-use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 use Kbrw\RiakBundle\Model\KV\Data;
 use Kbrw\RiakBundle\Model\KV\Datas;
+use Kbrw\RiakBundle\Model\KV\Transmutable;
+use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 use Symfony\Component\HttpFoundation\HeaderBag;
 
 class RiakKVServiceClient extends BaseServiceClient

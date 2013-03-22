@@ -3,10 +3,10 @@
 namespace Kbrw\RiakBundle\Service\WebserviceClient\Riak;
 
 use Guzzle\Http\Exception\CurlException;
-use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
+use Kbrw\RiakBundle\Exception\RiakUnavailableException;
 use Kbrw\RiakBundle\Model\Search\Query;
 use Kbrw\RiakBundle\Model\Search\Response;
-use Kbrw\RiakBundle\Exception\RiakUnavailableException;
+use Kbrw\RiakBundle\Service\WebserviceClient\BaseServiceClient;
 
 class RiakSearchServiceClient extends BaseServiceClient
 {
