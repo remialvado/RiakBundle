@@ -389,6 +389,10 @@ $result = $this->cluster->mapReduce()
   ->send();
 ```
 
+### Exceptions ###
+
+If riak is unavailable or down, RiakBundle will throw a `RiakUnavailableException`
+
 Advanced Usage
 --------------
 
