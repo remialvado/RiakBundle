@@ -21,11 +21,16 @@ class RiakSearchServiceClient extends BaseServiceClient
         if (is_string($query)) $query = new Query($query);
         try {
             $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket, $query))->get();
-            $this->logger->debug("[GET] '" . $request->getUrl() . "'");
+            $extra = array("method" => "GET");
             $response = $request->send();
             if ($response->getStatusCode() === 200) {
-                return $this->getSerializer()->deserialize($response->getBody(), 'Kbrw\RiakBundle\Model\Search\Response', $query->getWt());
+                $ts = microtime(true);
+                $content = $this->getSerializer()->deserialize($response->getBody(), 'Kbrw\RiakBundle\Model\Search\Response', $query->getWt());
+                $extra["deserialization_time"] = microtime(true) - $ts;
+                $this->logResponse($response, $extra);
+                return $content;
             }
+            $this->logResponse($response, $extra);
         } catch (CurlException $e) {
             $this->logger->err("Riak is unavailable" . $e->getMessage());
             throw new RiakUnavailableException();

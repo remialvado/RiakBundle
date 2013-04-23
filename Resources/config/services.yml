@@ -35,43 +35,55 @@ services:
 
   kbrw.riak.cluster:
     class: "%kbrw.riak.cluster.class%"
+    arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.cluster.route%" ] ]
-      - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
+    tags:
+      - { name: monolog.logger, channel: riak }
 
   kbrw.riak.bucket:
     class: "%kbrw.riak.bucket.class%"
+    arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.bucket.route%" ] ]
-      - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
+    tags:
+      - { name: monolog.logger, channel: riak }
 
   kbrw.riak.kv:
     class: "%kbrw.riak.kv.class%"
+    arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.kv.route%" ] ]
-      - [setLogger,                [ "@logger" ] ]
       - [setContentTypeNormalizer, [ "@kbrw.content.type.normalizer" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
+    tags:
+      - { name: monolog.logger, channel: riak }
 
   kbrw.riak.search:
     class: "%kbrw.riak.search.class%"
+    arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.search.route%" ] ]
-      - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
+    tags:
+      - { name: monolog.logger, channel: riak }
 
   kbrw.riak.mapreduce:
     class: "%kbrw.riak.mapreduce.class%"
+    arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.mapreduce.route%" ] ]
-      - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
+    tags:
+      - { name: monolog.logger, channel: riak }
 
   kbrw.riak.status:
     class: "%kbrw.riak.status.class%"
+    arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.status.route%" ] ]
-      - [setLogger,                [ "@logger" ] ]
       - [setSerializer,            [ "@jms_serializer" ] ]
+    tags:
+      - { name: monolog.logger, channel: riak }

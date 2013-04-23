@@ -62,7 +62,9 @@ class RiakKVServiceClient extends BaseServiceClient
         } catch (\Exception $e){
             $this->logger->err("Unable to put an object from Riak. Full message is : \n" . $e->getMessage() . "");
         }
+        $extra = array("method" => "PUT");
         foreach ($requests as $request) {
+            $this->logResponse($request->getResponse(), $extra);
             if ($request->getState() !== RequestInterface::STATE_COMPLETE ||
                     $request->getResponse()->getStatusCode() < 200 ||
                     $request->getResponse()->getStatusCode() >= 300) {
@@ -120,7 +122,9 @@ class RiakKVServiceClient extends BaseServiceClient
         } catch (\Exception $e){
             $this->logger->err("Unable to delete an object from Riak. Full message is : \n" . $e->getMessage() . "");
         }
+        $extra = array("method" => "DELETE");
         foreach ($requests as $request) {
+            $this->logResponse($request->getResponse(), $extra);
             if ($request->getState() !== RequestInterface::STATE_COMPLETE || $request->getResponse()->getStatusCode() !==  204) {
                 return false;
             }
@@ -166,7 +170,6 @@ class RiakKVServiceClient extends BaseServiceClient
         try {
             $curlMulti->send();
         } catch (MultiTransferException $e) {
-            /** @var $request GuzzleRequest */
             foreach ($e->getFailedRequests() as $request) {
                 if ($request->getResponse() === null) {
                     $this->logger->err("Riak is unavailable. Full message is : \n" . $e->getMessage() . "");
@@ -182,10 +185,13 @@ class RiakKVServiceClient extends BaseServiceClient
             try {
                 if ($request->getState() === RequestInterface::STATE_COMPLETE && $request->getResponse()->getStatusCode() === 200 ) {
                     $response = $request->getResponse();
+                    $extra = array("method" => "GET");
                     $data->setStringContent($response->getBody(true));
                     $data->setHeaderBag(new HeaderBag($response->getHeaders()->getAll()));
                     if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($bucket->getFormat())) {
+                        $ts = microtime(true);
                         $riakKVObject = $this->serializer->deserialize($data->getContent(true), $bucket->getFullyQualifiedClassName(), $this->contentTypeNormalizer->getNormalizedContentType($response->getContentType()));
+                        $extra["deserialization_time"] = microtime(true) - $ts;
                         if ($riakKVObject !== false) {
                             if ($riakKVObject instanceof Transmutable) {
                                 $riakKVObject = $riakKVObject->transmute();
@@ -193,6 +199,7 @@ class RiakKVServiceClient extends BaseServiceClient
                             $data->setContent($riakKVObject);
                         }
                     }
+                    $this->logResponse($response, $extra);
                 }
             } catch (\Exception $e) {
                 $this->logger->err("Unable to create the Data object for key '$key'. Full message is : \n" . $e->getMessage() . "");
@@ -306,7 +313,6 @@ class RiakKVServiceClient extends BaseServiceClient
         $requests = array();
         foreach ($datas->getDatas() as $data) {
             $request = $client->createRequest($method, urlencode($data->getKey()), $data->getHeaderBag()->all(), $data->getContent(true));
-            $this->logger->debug("[$method] '" . $request->getUrl() . "'");
             $curlMulti->add($request);
             $requests[$data->getKey()] = $request;
         }

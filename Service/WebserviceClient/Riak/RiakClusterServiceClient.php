@@ -19,8 +19,11 @@ class RiakClusterServiceClient extends BaseServiceClient
         $this->logger->debug("[GET] '" . $request->getUrl() . "'");
         try {
             $response = $request->send();
+            $extra = array("method" => "GET");
             if ($response->getStatusCode() === 200) {
+                $ts = microtime(true);
                 $content = json_decode($response->getBody(true));
+                $extra["deserialization_time"] = microtime(true) - $ts;
                 if (isset($content)) {
                     foreach ($content->{"buckets"} as $bucketName) {
                         if (!fnmatch($ignore, $bucketName)) {
@@ -29,6 +32,7 @@ class RiakClusterServiceClient extends BaseServiceClient
                     }
                 }
             }
+            $this->logResponse($response, $extra);
         } catch (CurlException $e) {
             $this->logger->err("Riak is unavailable" . $e->getMessage());
             throw new RiakUnavailableException();

@@ -27,9 +27,9 @@ class RiakBucketServiceClient extends BaseServiceClient
 
             return strlen($data);
         });
-        $this->logger->debug("[GET] '" . $request->getUrl() . "'");
         try {
-            $request->send();
+            $response = $request->send();
+            $this->logResponse($response, array("method" => "GET"));
         } catch (CurlException $e) {
             $this->logger->err("Riak is unavailable" . $e->getMessage());
             throw new RiakUnavailableException();
@@ -57,9 +57,9 @@ class RiakBucketServiceClient extends BaseServiceClient
 
             return strlen($data);
         });
-        $this->logger->debug("[GET] '" . $request->getUrl() . "'");
         try {
-            $request->send();
+            $response = $request->send();
+            $this->logResponse($response, array("method" => "GET"));
         } catch (CurlException $e) {
             $this->logger->err("Riak is unavailable" . $e->getMessage());
             throw new RiakUnavailableException();
@@ -81,9 +81,13 @@ class RiakBucketServiceClient extends BaseServiceClient
         $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucketName, null, true))->get();
         try {
             $response = $request->send();
+            $extra = array("method" => "GET");
             if ($response->getStatusCode() == "200") {
+                $ts = microtime(true);
                 $bucket = $this->serializer->deserialize($response->getBody(true), "Kbrw\RiakBundle\Model\Bucket\Bucket", "json");
+                $extra["deserialization_time"] = microtime(true) - $ts;
             }
+            $this->logResponse($response, $extra);
         } catch (CurlException $e) {
             $this->logger->err("Riak is unavailable" . $e->getMessage());
             throw new RiakUnavailableException();
@@ -103,10 +107,13 @@ class RiakBucketServiceClient extends BaseServiceClient
     {
         $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster, $bucket->getName(), null))->put();
         try {
+            $extra = array("method"=> "PUT");
+            $ts = microtime(true);
             $request->setBody($this->serializer->serialize($bucket, "json"));
+            $extra["serialization_time"] = microtime(true); - $ts;
             $request->setHeader("Content-Type", "application/json");
             $response = $request->send();
-
+            $this->logResponse($response, $extra);
             return ($response->getStatusCode() == "204");
         } catch (CurlException $e) {
             $this->logger->err("Riak is unavailable" . $e->getMessage());

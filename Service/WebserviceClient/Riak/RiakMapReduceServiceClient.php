@@ -18,18 +18,25 @@ class RiakMapReduceServiceClient extends BaseServiceClient
     {
         try {
             $request = $this->getClient($cluster->getGuzzleClientProviderService(), $this->getConfig($cluster))->post();
+            $extra = array("method" => "POST");
+            $ts = microtime(true);
             $body = $this->getSerializer()->serialize($query, "json");
+            $extra["serialization_time"] = microtime(true) - $ts;
             $request->setBody($body, "application/json");
-            $this->logger->debug("[POST] '" . $request->getUrl() . "'. Request body is : $body");
             $response = $request->send();
             if ($response->getStatusCode() === 200) {
                 $fqcn = $query->getResponseFullyQualifiedClassName();
                 if (!empty($fqcn)) {
-                    return $this->getSerializer()->deserialize($response->getBody(true), $fqcn, "json");
+                    $ts = microtime(true);
+                    $content = $this->getSerializer()->deserialize($response->getBody(true), $fqcn, "json");
+                    $extra["serialization_time"] = microtime(true) - $ts;
+                    $this->logResponse($response, $extra);
+                    return $content;
                 }
-
+                $this->logResponse($response, $extra);
                 return $response->getBody(true);
             }
+            $this->logResponse($response, $extra);
         } catch (CurlException $e) {
             $this->logger->err("Riak is unavailable" . $e->getMessage());
             throw new RiakUnavailableException();
