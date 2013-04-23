@@ -19,13 +19,15 @@ abstract class BaseServiceClient
     {
         !array_key_exists("serialization_time", $extra)   && $extra["serialization_time"] = "-";
         !array_key_exists("deserialization_time", $extra) && $extra["deserialization_time"] = "-";
+        !array_key_exists("search_time", $extra)          && $extra["search_time"] = "-";
         !array_key_exists("method", $extra)               && $extra["method"] = "-";
         $this->logger->debug(
                 $extra["method"] . ' ' . 
                 $response->getInfo("url") . ' ' . 
                 $response->getInfo("total_time") . ' ' . 
                 $extra["deserialization_time"] . ' ' . 
-                $extra["serialization_time"]
+                $extra["serialization_time"] . ' ' . 
+                $extra["search_time"]
         );
     }
 

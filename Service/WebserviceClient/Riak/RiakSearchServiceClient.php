@@ -25,10 +25,15 @@ class RiakSearchServiceClient extends BaseServiceClient
             $response = $request->send();
             if ($response->getStatusCode() === 200) {
                 $ts = microtime(true);
-                $content = $this->getSerializer()->deserialize($response->getBody(), 'Kbrw\RiakBundle\Model\Search\Response', $query->getWt());
+                $searchResponse = $this->getSerializer()->deserialize($response->getBody(), 'Kbrw\RiakBundle\Model\Search\Response', $query->getWt());
                 $extra["deserialization_time"] = microtime(true) - $ts;
+                if (isset($searchResponse)) {
+                    $list = reset($searchResponse->getLsts());
+                    $qtime = $list->getSimpleTypeByName("QTime");
+                    $extra["search_time"] = isset($qtime) ? ($qtime->getValue() / 1000) : null;
+                }
                 $this->logResponse($response, $extra);
-                return $content;
+                return $searchResponse;
             }
             $this->logResponse($response, $extra);
         } catch (CurlException $e) {
