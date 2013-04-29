@@ -3,6 +3,15 @@ namespace Kbrw\RiakBundle\Service\WebserviceClient;
 
 abstract class BaseServiceClient
 {
+    public static $processId;
+    
+    public static function getProcessId()
+    {
+        if (empty(self::$processId))
+            self::$processId = hash("sha256", rand(0, 100000) . time());
+        return self::$processId;
+    }
+    
     /**
      * @return \Guzzle\Service\Client
      */
@@ -22,6 +31,7 @@ abstract class BaseServiceClient
         !array_key_exists("search_time", $extra)          && $extra["search_time"] = "-";
         !array_key_exists("method", $extra)               && $extra["method"] = "-";
         $this->logger->debug(
+                self::getProcessId() . ' ' .
                 $extra["method"] . ' ' . 
                 $response->getInfo("url") . ' ' . 
                 $response->getInfo("total_time") . ' ' . 
