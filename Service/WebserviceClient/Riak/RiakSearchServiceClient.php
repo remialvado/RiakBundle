@@ -28,7 +28,8 @@ class RiakSearchServiceClient extends BaseServiceClient
                 $searchResponse = $this->getSerializer()->deserialize($response->getBody(), 'Kbrw\RiakBundle\Model\Search\Response', $query->getWt());
                 $extra["deserialization_time"] = microtime(true) - $ts;
                 if (isset($searchResponse)) {
-                    $list = reset($searchResponse->getLsts());
+                    $lists = $searchResponse->getLsts();
+                    $list = reset($lists);
                     $qtime = $list->getSimpleTypeByName("QTime");
                     $extra["search_time"] = isset($qtime) ? ($qtime->getValue() / 1000) : null;
                 }
