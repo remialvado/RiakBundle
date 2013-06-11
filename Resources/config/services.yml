@@ -37,6 +37,7 @@ services:
     arguments:
       - "@kbrw.content.type.normalizer"
       - "@serializer"
+      - "@logger"
 
   kbrw.guzzle.client.provider:
     class: "%kbrw.guzzle.client.provider.class%"

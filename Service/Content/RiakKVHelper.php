@@ -44,11 +44,13 @@ class RiakKVHelper
     /**
      * @param \Kbrw\RiakBundle\Service\Content\ContentTypeNormalizer $contentTypeNormalizer
      * @param \JMS\Serializer\Serializer $serializer
+     * @param \Psr\Log\LoggerInterface $logger
      */
-    function __construct($contentTypeNormalizer, $serializer)
+    function __construct($contentTypeNormalizer, $serializer, $logger)
     {
         $this->contentTypeNormalizer = $contentTypeNormalizer;
         $this->serializer = $serializer;
+        $this->logger = $logger;
     }
     
     /**
@@ -60,4 +62,9 @@ class RiakKVHelper
      * @var \JMS\Serializer\Serializer
      */
     public $serializer;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    public $logger;
 }
