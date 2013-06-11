@@ -4,6 +4,8 @@ parameters:
     "application/xml": [xml, xsd, xslt]
     "application/json": [json]
     "text/plain": [txt]
+    
+  kbrw.riak.kv.helper.class: "Kbrw\RiakBundle\Service\Content\RiakKVHelper"
 
   kbrw.guzzle.client.provider.class: "Kbrw\RiakBundle\Service\WebserviceClient\Guzzle\SimpleGuzzleClientProvider"
 
@@ -30,6 +32,12 @@ services:
     class: "%kbrw.content.type.normalizer.class%"
     arguments: [%kbrw.content.type.normalizer.types%]
 
+  kbrw.riak.kv.helper:
+    class: "%kbrw.riak.kv.helper.class%"
+    arguments:
+      - "@kbrw.content.type.normalizer"
+      - "@serializer"
+
   kbrw.guzzle.client.provider:
     class: "%kbrw.guzzle.client.provider.class%"
 
@@ -38,7 +46,7 @@ services:
     arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.cluster.route%" ] ]
-      - [setSerializer,            [ "@jms_serializer" ] ]
+      - [setSerializer,            [ "@serializer" ] ]
     tags:
       - { name: monolog.logger, channel: riak }
 
@@ -47,7 +55,7 @@ services:
     arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.bucket.route%" ] ]
-      - [setSerializer,            [ "@jms_serializer" ] ]
+      - [setSerializer,            [ "@serializer" ] ]
     tags:
       - { name: monolog.logger, channel: riak }
 
@@ -57,7 +65,8 @@ services:
     calls:
       - [setRoute,                 [ "%kbrw.riak.kv.route%" ] ]
       - [setContentTypeNormalizer, [ "@kbrw.content.type.normalizer" ] ]
-      - [setSerializer,            [ "@jms_serializer" ] ]
+      - [setSerializer,            [ "@serializer" ] ]
+      - [setRiakKVHelper,          [ "@kbrw.riak.kv.helper" ] ]
     tags:
       - { name: monolog.logger, channel: riak }
 
@@ -66,7 +75,7 @@ services:
     arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.search.route%" ] ]
-      - [setSerializer,            [ "@jms_serializer" ] ]
+      - [setSerializer,            [ "@serializer" ] ]
     tags:
       - { name: monolog.logger, channel: riak }
 
@@ -75,7 +84,7 @@ services:
     arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.mapreduce.route%" ] ]
-      - [setSerializer,            [ "@jms_serializer" ] ]
+      - [setSerializer,            [ "@serializer" ] ]
     tags:
       - { name: monolog.logger, channel: riak }
 
@@ -84,6 +93,6 @@ services:
     arguments: ["@logger"]
     calls:
       - [setRoute,                 [ "%kbrw.riak.status.route%" ] ]
-      - [setSerializer,            [ "@jms_serializer" ] ]
+      - [setSerializer,            [ "@serializer" ] ]
     tags:
       - { name: monolog.logger, channel: riak }

@@ -181,29 +181,15 @@ class RiakKVServiceClient extends BaseServiceClient
         }
 
         foreach ($requests as $key => $request) {
-            $data = new Data($key);
-            try {
-                if ($request->getState() === RequestInterface::STATE_COMPLETE && $request->getResponse()->getStatusCode() === 200 ) {
-                    $response = $request->getResponse();
-                    $extra = array("method" => "GET");
-                    $data->setStringContent($response->getBody(true));
-                    $data->setHeaderBag(new HeaderBag($response->getHeaders()->getAll()));
-                    if ($this->contentTypeNormalizer->isFormatSupportedForSerialization($bucket->getFormat())) {
-                        $ts = microtime(true);
-                        $riakKVObject = $this->serializer->deserialize($data->getContent(true), $bucket->getFullyQualifiedClassName(), $this->contentTypeNormalizer->getNormalizedContentType($response->getContentType()));
-                        $extra["deserialization_time"] = microtime(true) - $ts;
-                        if ($riakKVObject !== false) {
-                            if ($riakKVObject instanceof Transmutable) {
-                                $riakKVObject = $riakKVObject->transmute();
-                            }
-                            $data->setContent($riakKVObject);
-                        }
-                    }
-                    $this->logResponse($response, $extra);
-                }
-            } catch (\Exception $e) {
-                $this->logger->err("Unable to create the Data object for key '$key'. Full message is : \n" . $e->getMessage() . "");
+            $content = null;
+            $extra = array("method" => "GET");
+            $response = $request->getResponse();
+            if ($request->getState() === RequestInterface::STATE_COMPLETE && $response->getStatusCode() === 200) {
+                $content = $response->getBody(true);
             }
+            $data = $this->riakKVHelper->read($key, $content, $response->getContentType(), $bucket->getFullyQualifiedClassName(), $extra);
+            $data->setHeaderBag(new HeaderBag($response->getHeaders()->getAll()));
+            $this->logResponse($response, $extra);
             $result->add($data);
         }
 
@@ -339,6 +325,16 @@ class RiakKVServiceClient extends BaseServiceClient
     {
         $this->serializer = $serializer;
     }
+    
+    public function getRiakKVHelper()
+    {
+        return $this->riakKVHelper;
+    }
+
+    public function setRiakKVHelper($riakKVHelper)
+    {
+        $this->riakKVHelper = $riakKVHelper;
+    }
 
     /**
      * @var \Kbrw\RiakBundle\Service\Content\ContentTypeNormalizer
@@ -349,4 +345,9 @@ class RiakKVServiceClient extends BaseServiceClient
      * @var \JMS\Serializer\Serializer
      */
     public $serializer;
+
+    /**
+     * @var \Kbrw\RiakBundle\Service\Content\RiakKVHelper
+     */
+    public $riakKVHelper;
 }
