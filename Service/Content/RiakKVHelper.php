@@ -36,7 +36,7 @@ class RiakKVHelper
                 }
             }
         } catch (\Exception $e) {
-            $this->logger->err("Unable to create the Data object for key '$key'. Full message is : \n" . $e->getMessage() . "");
+            $this->logger->error("Unable to create the Data object for key '$key'. Full message is : \n" . $e->getMessage() . "");
         }
         return $data;
     }
