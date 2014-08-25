@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+* 1.5.0 (2014-08-25)
+
+ * r, w, dw and rw quorum values are now configurable via YAML
+ * r, w, dw and rw quorum values are now null by default (value was "quorum" before) meaning that bucket configuration prevail.
+
 * 1.1.4 (2013-02-22)
 
  * Composer : revert minimum-stability to dev

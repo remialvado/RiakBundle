@@ -192,7 +192,7 @@ class Props
      * @param string                                          $w
      * @param integer                                         $youngVclock
      */
-    public function __construct($name = null, $allowMult = false, $basicQuorum = false, $bigVclock = 50, $chashKeyfun = null, $dw = "quorum", $lastWriteWins = false, $linkfun = null, $nVal = 3, $notfoundOk = true, $oldVclock = 86400, $postcommit = array(), $pr = 0, $precommit = array(), $pw = 0, $r = "quorum", $rw = "quorum", $smallVclock = 50, $w = "quorum", $youngVclock = 20)
+    public function __construct($name = null, $allowMult = false, $basicQuorum = false, $bigVclock = 50, $chashKeyfun = null, $dw = null, $lastWriteWins = false, $linkfun = null, $nVal = 3, $notfoundOk = true, $oldVclock = 86400, $postcommit = array(), $pr = 0, $precommit = array(), $pw = 0, $r = null, $rw = null, $smallVclock = 50, $w = null, $youngVclock = 20)
     {
         if (!isset($chashKeyfun)) $chashKeyfun = ErlangCall::getDefaultChashKeyFun();
         if (!isset($linkfun))     $linkfun     = ErlangCall::getDefaultLinkFun();

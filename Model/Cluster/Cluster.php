@@ -3,6 +3,7 @@
 namespace Kbrw\RiakBundle\Model\Cluster;
 
 use \Kbrw\RiakBundle\Model\Bucket\Bucket;
+use Kbrw\RiakBundle\Model\Bucket\Props;
 use \Symfony\Component\EventDispatcher\GenericEvent;
 use \Kbrw\RiakBundle\Model\MapReduce\Query;
 
@@ -96,6 +97,12 @@ class Cluster
             $bucket->setName($bucketName);
             $bucket->setFormat($bucketConfig["format"]);
             $bucket->setFullyQualifiedClassName($bucketConfig["fqcn"]);
+            $props = new Props($bucketName);
+            $props->setR($bucketConfig["r"]);
+            $props->setW($bucketConfig["w"]);
+            $props->setRw($bucketConfig["rw"]);
+            $props->setDw($bucketConfig["dw"]);
+            $bucket->setProps($props);
             $this->addBucket($bucket);
         }
     }
