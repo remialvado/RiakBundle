@@ -29,9 +29,10 @@
         "doctrine/orm": "*",
         "symfony/form": "*",
         "symfony/validator": "*",
-        "symfony/monolog-bundle": "*"
+        "symfony/monolog-bundle": "*",
+        "phpunit/phpunit": "*"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-0": { "Kbrw\\RiakBundle": "" }
     },

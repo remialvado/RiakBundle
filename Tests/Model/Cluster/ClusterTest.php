@@ -58,11 +58,19 @@ class ClusterTest extends BaseTestCase
         $bucketConfigurations = array(
             "users" => array(
                 "fqcn" => "MyCompanyBundle\Model\User",
-                "format" => "json"
+                "format" => "json",
+                "r" => null,
+                "w" => null,
+                "rw" => null,
+                "dw" => null
             ),
             "cities" => array(
                 "fqcn" => "MyCompanyBundle\Model\City",
-                "format" => "xml"
+                "format" => "xml",
+                "r" => null,
+                "w" => null,
+                "rw" => null,
+                "dw" => null
             )
         );
         $cluster = new Cluster(null,null,null,null,null,null,$bucketConfigurations);
