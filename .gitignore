@@ -8,6 +8,7 @@ vendor/*
 Resources/tests/app/cache/*
 web/uploads/*
 web/bundles/*
+bin/*
 
 # Configuration files
 app/config/parameters.ini
@@ -15,6 +16,7 @@ app/config/parameters.yml
 
 # Composer
 composer.lock
+composer.phar
 
 # Misc
 nbproject/*

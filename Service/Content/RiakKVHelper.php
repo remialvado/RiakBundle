@@ -2,7 +2,9 @@
 
 namespace Kbrw\RiakBundle\Service\Content;
 
+use Kbrw\RiakBundle\Model\KV\BaseRiakObject;
 use Kbrw\RiakBundle\Model\KV\Data;
+use Kbrw\RiakBundle\Model\KV\Link;
 use Kbrw\RiakBundle\Model\KV\Transmutable;
 
 /**
@@ -16,9 +18,10 @@ class RiakKVHelper
      * @param string $contentType
      * @param string $fqcn
      * @param array $infos
+     * @param \Guzzle\Http\Message\Header[] $headers
      * @return \Kbrw\RiakBundle\Model\KV\Data
      */
-    public function read($key, $content, $contentType, $fqcn, &$infos = array())
+    public function read($key, $content, $contentType, $fqcn, &$infos = array(), $headers = array())
     {
         $data = new Data($key);
         try {
@@ -31,6 +34,21 @@ class RiakKVHelper
                 if ($riakKVObject !== false) {
                     if ($riakKVObject instanceof Transmutable) {
                         $riakKVObject = $riakKVObject->transmute();
+                    }
+                    if ($riakKVObject instanceof BaseRiakObject) {
+                        if (array_key_exists("x-riak-vclock", $headers)) {
+                            $vclockHeader = $headers["x-riak-vclock"];
+                            $riakKVObject->setRiakVectorClock($vclockHeader->__toString());
+                        }
+                        if (array_key_exists("link", $headers)) {
+                            $linksHeader = $headers["link"];
+                            foreach($linksHeader->toArray() as $linkHeader) {
+                                $matches = array();
+                                if (preg_match('/<(riak/.*/.* )>; riaktag="(.*)"/', $linkHeader, $matches)) {
+                                    $riakKVObject->addRiakLink(new Link($matches[1], $matches[2]));
+                                }
+                            }
+                        }
                     }
                     $data->setContent($riakKVObject);
                 }
