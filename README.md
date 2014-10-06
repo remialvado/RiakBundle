@@ -443,7 +443,7 @@ The same mecanism can be used to handle Riak merge issues with the X-Riak-Vclock
 
 ### Define your own Bucket class
 
-Sometimes, you might want to define you own Bucket class so that you can override some existing methods, add new ones, ... This can easily be done by hacking the condiguration like that : 
+Sometimes, you might want to define you own Bucket class so that you can override some existing methods, add new ones, ... This can easily be done by hacking the configuration like that : 
 ```yaml
 riak:
   clusters:
